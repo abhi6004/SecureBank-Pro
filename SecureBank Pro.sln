@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35828.75 d17.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SecureBank Pro", "SecureBank Pro.csproj", "{9ADB6A95-7841-47C3-A37A-D10E0D69B52B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9ADB6A95-7841-47C3-A37A-D10E0D69B52B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9ADB6A95-7841-47C3-A37A-D10E0D69B52B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9ADB6A95-7841-47C3-A37A-D10E0D69B52B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9ADB6A95-7841-47C3-A37A-D10E0D69B52B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3F174591-4976-4FBD-9C45-BBAF02F1D81F}
+	EndGlobalSection
+EndGlobal
