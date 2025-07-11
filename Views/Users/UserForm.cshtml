@@ -1,0 +1,127 @@
+﻿@model SecureBank_Pro.Models.User
+
+@{
+    string Role = Model.Role;
+}
+
+<div>
+    @if (!string.IsNullOrEmpty(Role))
+    {
+        <h3>User Registration From</h3>
+        <form asp-action="UserForm" method="post">
+
+            <!-- Common for All Roles -->
+            <div>
+                <label>Full Name</label>
+                <input asp-for="FullName" />
+            </div>
+
+            <div>
+                <label>Password</label>
+                <input asp-for="PasswordHash" type="password" />
+            </div>
+
+            <div>
+                <label>Phone Number</label>
+                <input asp-for="PhoneNumber" />
+            </div>
+
+            <!-- Show Email if NOT Auditor -->
+            @if (Model.Role != "Auditor")
+            {
+                <div>
+                    <label>Email</label>
+                    <input asp-for="Email" type="email" />
+                </div>
+            }
+
+            <!-- Customer Fields -->
+            @if (Model.Role == "Customer")
+            {
+                <div>
+                    <label>Address</label>
+                    <input asp-for="Address" />
+                </div>
+
+                <div>
+                    <label>Date of Birth</label>
+                    <input asp-for="DateOfBirth" type="date" />
+                </div>
+
+                <div>
+                    <label>KYC Status</label>
+                    <select asp-for="KycStatus">
+                        <option value="Pending">Pending</option>
+                        <option value="Verified">Verified</option>
+                        <option value="Rejected">Rejected</option>
+                    </select>
+                </div>
+            }
+
+            <!-- Manager & Employee Fields -->
+            @if (Model.Role == "Manager" || Model.Role == "Employee")
+            {
+                <div>
+                    <label>Branch Assigned</label>
+                    <input asp-for="BranchAssigned" />
+                </div>
+
+                <div>
+                    <label>Hire Date</label>
+                    <input asp-for="HireDate" type="date" />
+                </div>
+            }
+
+            <!-- Employee Specific Field -->
+            @if (Model.Role == "Employee")
+            {
+                <div>
+                    <label>Role Title</label>
+                    <input asp-for="RoleTitle" />
+                </div>
+            }
+
+            <!-- Auditor Specific Fields -->
+            @if (Model.Role == "Auditor")
+            {
+                <div>
+                    <label>Assigned Region</label>
+                    <input asp-for="AssignedRegion" />
+                </div>
+
+                <div>
+                    <label>Can Export Reports</label>
+                    <input asp-for="CanExportReports" type="checkbox" />
+                </div>
+
+                <div>
+                    <label>Last Login Time</label>
+                    <input asp-for="LastLoginTime" type="datetime-local" />
+                </div>
+            }
+
+            <!-- Active Status -->
+            <div>
+                <label>Is Active</label>
+                <input asp-for="IsActive" type="checkbox" />
+            </div>
+
+            <div>
+                <button type="submit">Submit</button>
+            </div>
+
+        </form>
+    }
+    else
+    {
+        <form asp-action="UserForm" method="get">
+            <div>
+                <label for="Role">Role</label>
+                <input type="text" name="Role" value="@Role" />
+                <button type="submit">Next</button>
+            </div>
+        </form>
+
+    }
+</div>
+
