@@ -1,0 +1,12 @@
+﻿@{
+    foreach (var user in Model)
+    {
+        <div>
+            <p>Name: @user.full_name</p>
+            <p>Email: @user.email</p>
+            <p>Region: @user.assigned_region</p>
+            <p>Can Export: @(user.can_export_reports == true ? "Yes" : "No")</p>
+            <p>Last Login: @user.last_login_time</p>
+        </div>
+    }
+}

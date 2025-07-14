@@ -1,0 +1,13 @@
+﻿
+@{
+    foreach(var user in Model)
+    {
+        <div>
+            <p>Name: @user.full_name</p>
+            <p>Email: @user.email</p>
+            <p>Address: @user.address</p>
+            <p>DOB: @user.date_of_birth</p>
+            <p>KYC: @user.kyc_status</p>
+        </div>
+    }
+}

@@ -1,7 +1,16 @@
+using Microsoft.EntityFrameworkCore;
+using SecureBank_Pro.Data;
+using SecureBank_Pro.Models;
+using SecureBank_Pro.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddDbContext<BankDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 
 var app = builder.Build();
 
