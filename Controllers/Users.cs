@@ -1,7 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Mvc;
 using SecureBank_Pro.Data;
 using SecureBank_Pro.Models;
 using SecureBank_Pro.Services;
+using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
 
 namespace SecureBank_Pro.Controllers
 {
@@ -48,8 +52,16 @@ namespace SecureBank_Pro.Controllers
         {
             bool isLogin = await UserInserToDB.UserLoginCheck(_context, email, password);
 
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Email, email),
+                new Claim("password", password)
+            };
+            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
             if (isLogin)
             {
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
                 return RedirectToAction("Index", "Home");
             }
             else

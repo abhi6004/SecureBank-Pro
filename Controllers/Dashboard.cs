@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SecureBank_Pro.BankEntities;
 using SecureBank_Pro.Data;
 using SecureBank_Pro.Services;
@@ -15,6 +16,7 @@ namespace SecureBank_Pro.Controllers
             return View();
         }
 
+        [Authorize]
         public async Task<IActionResult> Customers()
         {
             var Users = await GetUsers.FetchUsers("Customer", _context);
