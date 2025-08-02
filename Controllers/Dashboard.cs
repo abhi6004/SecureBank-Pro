@@ -6,6 +6,7 @@ using SecureBank_Pro.Services;
 
 namespace SecureBank_Pro.Controllers
 {
+    [Authorize(AuthenticationSchemes = "UserCookies")]
     public class DashboardController : Controller
     {
         private readonly BankDbContext _context;

@@ -54,15 +54,14 @@ namespace SecureBank_Pro.Controllers
 
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Email, email),
-                new Claim("password", password)
+                new Claim(ClaimTypes.Email, email)
             };
-            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var claimsIdentity = new ClaimsIdentity(claims, "UserCookies");
 
             if (isLogin)
             {
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Profile", "Dashboard");
             }
             else
             {

@@ -19,7 +19,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.LogoutPath = "/User/Login";
         options.ExpireTimeSpan = TimeSpan.FromMinutes(2);
         options.Cookie.Name = "UserCookie";
-        options.Cookie.Path = "/";
+        options.Cookie.Path = "/Users";
     });
 
 var app = builder.Build();
