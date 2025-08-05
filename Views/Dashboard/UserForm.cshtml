@@ -1,7 +1,12 @@
-﻿@model SecureBank_Pro.Models.User
+﻿@{
+    Layout = null;
+}
+
+@model SecureBank_Pro.Models.User
 
 @{
     string Role = Model.Role;
+    string userRole = ViewBag.Role;
 }
 
 <div>
@@ -117,11 +122,25 @@
         <form asp-action="UserForm" method="get">
             <div>
                 <label for="Role">Role</label>
-                <input type="text" name="Role" value="@Role" />
+                @if (userRole == "Employee")
+                {
+                    <select name="Role">
+                        <option value="Customers">Customers</option>
+                    </select>
+                }
+                else if (userRole == "Manager")
+                {
+                    <select name="Role">
+                        <option value="Customers">Customers</option>
+                        <option value="Employee">Employee</option>
+                        <option value="Managers">Managers</option>
+                        <option value="Auditor">Auditor</option>
+                    </select>
+                }
+
                 <button type="submit">Next</button>
             </div>
         </form>
-
     }
 </div>
 

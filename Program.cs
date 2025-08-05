@@ -8,18 +8,19 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddSession();
 
 builder.Services.AddDbContext<BankDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(options =>
+builder.Services.AddAuthentication("UserCookies")
+    .AddCookie("UserCookies", options =>
     {
-        options.LoginPath = "/User/Login";
-        options.LogoutPath = "/User/Login";
-        options.ExpireTimeSpan = TimeSpan.FromMinutes(2);
+        options.LoginPath = "/Users/Login";
+        options.ExpireTimeSpan = TimeSpan.FromMinutes(1);
         options.Cookie.Name = "UserCookie";
-        options.Cookie.Path = "/Users";
+        options.Cookie.Path = "/";
+        options.AccessDeniedPath = "/Users/AccessDenied";
     });
 
 var app = builder.Build();
@@ -34,6 +35,7 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseRouting();
+app.UseSession();
 
 app.UseAuthentication();
 app.UseAuthorization();

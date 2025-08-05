@@ -1,6 +1,12 @@
-﻿<h3>Login Form</h3>
+﻿@{
+    Layout = null;
+    var returnUrl = Context.Request.Query["ReturnUrl"].ToString();
+}
+
+<h3>Login Form</h3>
 
 <form asp-action="Login" method="post">
+
     <div>
         <label>Email</label>
         <input name="email" type="email" />

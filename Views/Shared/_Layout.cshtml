@@ -1,4 +1,16 @@
-﻿<!DOCTYPE html>
+﻿@using Newtonsoft.Json
+@{
+    var userJson = Context.Session.GetString("UserData");
+    SecureBank_Pro.BankEntities.Users _userData = null;
+
+    if (!string.IsNullOrEmpty(userJson))
+    {
+        _userData = JsonConvert.DeserializeObject<SecureBank_Pro.BankEntities.Users>(userJson);
+    }
+}
+
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -21,12 +33,42 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Dashboard" asp-action="Profile">Profile</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
+                        @{
+                            if (_userData.role == "Manager" || _userData.role == "Employee" || _userData.role == "Auditor")
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Dashboard" asp-action="Customers">Customers</a>
+                                </li>
+                            }
+                            if (_userData.role == "Manager")
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Dashboard" asp-action="Employee">Employee</a>
+                                </li>
+                            }
+                            if (_userData.role == "Manager")
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Dashboard" asp-action="Managers">Managers</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Dashboard" asp-action="Auditor">Auditor</a>
+                                </li>
+                            }
+                            if (_userData.role == "Manager" || _userData.role == "Employee")
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Dashboard" asp-action="UserForm">UserForm</a>
+                                </li>
+                            }
+                        }
                     </ul>
+
+                    <button onclick="UserSignOut()">
+                        Logout
+                    </button>
                 </div>
             </div>
         </nav>
@@ -48,3 +90,9 @@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
+
+<script>
+    function UserSignOut(){
+        window.location.href = "/Users/Logout";
+    }
+</script>

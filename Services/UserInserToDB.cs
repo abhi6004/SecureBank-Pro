@@ -1,8 +1,10 @@
-﻿using SecureBank_Pro.Data;
-using SecureBank_Pro.Models;
-using SecureBank_Pro.BankEntities;
-using System;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using SecureBank_Pro.BankEntities;
+using SecureBank_Pro.Data;
+using SecureBank_Pro.Models;
+using System;
 
 namespace SecureBank_Pro.Services
 {
@@ -53,10 +55,17 @@ namespace SecureBank_Pro.Services
             }
         }
 
-        public static async Task<bool> UserLoginCheck(BankDbContext _context, string email, string password)
+        public static async Task<Users> UserLoginCheck(BankDbContext _context, string email, string password)
         {
             bool isLoginUser = await _context.Users.AnyAsync(u => u.email == email && u.password_hash == password);
-            return isLoginUser;
+            Users _user = await _context.Users.FirstOrDefaultAsync(u => u.email == email && u.password_hash == password);
+
+            if (_user == null)
+            {
+                return null;
+            }
+
+            return _user;
         }
     }
 }

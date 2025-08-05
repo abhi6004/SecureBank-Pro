@@ -1,5 +1,65 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿@model SecureBank_Pro.BankEntities.Users
+
+<div>
+    <div><strong>ID:</strong> @Model.id</div>
+    <div><strong>Full Name:</strong> @Model.full_name</div>
+    <div><strong>Email:</strong> @Model.email</div>
+    <div><strong>Password Hash:</strong> @Model.password_hash</div>
+    <div><strong>Phone Number:</strong> @Model.phone_number</div>
+    <div><strong>Role:</strong> @Model.role</div>
+
+    @if (!string.IsNullOrEmpty(Model.address))
+    {
+        <div><strong>Address:</strong> @Model.address</div>
+    }
+
+    @if (Model.date_of_birth != null)
+    {
+        <div><strong>Date of Birth:</strong> @Model.date_of_birth?.ToString("dd-MM-yyyy")</div>
+    }
+
+    @if (!string.IsNullOrEmpty(Model.kyc_status))
+    {
+        <div><strong>KYC Status:</strong> @Model.kyc_status</div>
+    }
+
+    @if (!string.IsNullOrEmpty(Model.branch_assigned))
+    {
+        <div><strong>Branch Assigned:</strong> @Model.branch_assigned</div>
+    }
+
+    @if (Model.hire_date != null)
+    {
+        <div><strong>Hire Date:</strong> @Model.hire_date?.ToString("dd-MM-yyyy")</div>
+    }
+
+    @if (!string.IsNullOrEmpty(Model.role_title))
+    {
+        <div><strong>Role Title:</strong> @Model.role_title</div>
+    }
+
+    @if (!string.IsNullOrEmpty(Model.assigned_region))
+    {
+        <div><strong>Assigned Region:</strong> @Model.assigned_region</div>
+    }
+
+    @if (Model.can_export_reports != null)
+    {
+        <div><strong>Can Export Reports:</strong> @(Model.can_export_reports == true ? "Yes" : "No")</div>
+    }
+
+    @if (Model.last_login_time != null)
+    {
+        <div><strong>Last Login Time:</strong> @Model.last_login_time?.ToString("g")</div>
+    }
+
+    @if (Model.is_active != null)
+    {
+        <div><strong>Is Active:</strong> @(Model.is_active == true ? "Yes" : "No")</div>
+    }
+
+    @if (Model.created_at != null)
+    {
+        <div><strong>Created At:</strong> @Model.created_at?.ToString("g")</div>
+    }
+</div>

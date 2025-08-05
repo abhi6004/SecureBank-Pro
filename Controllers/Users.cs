@@ -1,11 +1,17 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using SecureBank_Pro.BankEntities;
 using SecureBank_Pro.Data;
 using SecureBank_Pro.Models;
 using SecureBank_Pro.Services;
 using System.ComponentModel.DataAnnotations;
+using System.Net.Http.Json;
 using System.Security.Claims;
+using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 
 namespace SecureBank_Pro.Controllers
 {
@@ -14,31 +20,6 @@ namespace SecureBank_Pro.Controllers
 
         private readonly BankDbContext _context;
         public UsersController(BankDbContext context) => _context = context;
-
-        [HttpGet]
-        public IActionResult UserForm(string Role)
-        {
-            User user = new User { Role = Role }; 
-            TempData["role"] = Role;
-            return View(user);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> UserForm(User user)
-        {
-            user.Role = TempData["role"].ToString();
-            bool isUserCreate = await UserInserToDB.InsertUserToDB(_context, user);
-            if (isUserCreate)
-            {
-                await UserInserToDB.InsertUserToDB(_context, user);
-                return RedirectToAction("Index", "Home");
-            }
-            else
-            {
-                throw new Exception("User Is Alredy Create");
-            }
-
-        }
 
         [HttpGet]
         public IActionResult Login()
@@ -50,23 +31,38 @@ namespace SecureBank_Pro.Controllers
 
         public async Task<IActionResult> Login(string email, string password)
         {
-            bool isLogin = await UserInserToDB.UserLoginCheck(_context, email, password);
+            Users isLogin = await UserInserToDB.UserLoginCheck(_context, email, password);
 
-            var claims = new List<Claim>
+            if (isLogin != null)
             {
-                new Claim(ClaimTypes.Email, email)
-            };
-            var claimsIdentity = new ClaimsIdentity(claims, "UserCookies");
+                var claims = new List<Claim>
+                {
+                new Claim(ClaimTypes.Email, email) ,
+                new Claim(ClaimTypes.Role , isLogin.role)
+                };
+                var claimsIdentity = new ClaimsIdentity(claims, "UserCookies");
 
-            if (isLogin)
-            {
-                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+                HttpContext.Session.SetString("UserData", JsonConvert.SerializeObject(isLogin));
+                await HttpContext.SignInAsync("UserCookies", new ClaimsPrincipal(claimsIdentity));
                 return RedirectToAction("Profile", "Dashboard");
             }
             else
             {
                 throw new Exception("Invalid User Login");
             }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync("UserCookies");
+            return RedirectToAction("Login", "Users");
+        }
+
+        [HttpGet]
+        public IActionResult AccessDenied()
+        {
+            return View();
         }
     }
 }
