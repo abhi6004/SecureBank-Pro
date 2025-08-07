@@ -1,7 +1,7 @@
-﻿@model SecureBank_Pro.Models.User
+﻿@model SecureBank_Pro.BankEntities.Users;
 
 @{
-    string Role = Model.Role;
+    string Role = Model.role;
     string userRole = ViewBag.Role;
 }
 
@@ -14,44 +14,44 @@
             <!-- Common for All Roles -->
             <div>
                 <label>Full Name</label>
-                <input asp-for="FullName" />
+                <input asp-for="full_name" />
             </div>
 
             <div>
                 <label>Password</label>
-                <input asp-for="PasswordHash" type="password" />
+                <input asp-for="password_hash" type="password" />
             </div>
 
             <div>
                 <label>Phone Number</label>
-                <input asp-for="PhoneNumber" />
+                <input asp-for="phone_number" />
             </div>
 
             <!-- Show Email if NOT Auditor -->
-            @if (Model.Role != "Auditor")
+            @if (Model.role != "Auditor")
             {
                 <div>
                     <label>Email</label>
-                    <input asp-for="Email" type="email" />
+                    <input asp-for="email" type="email" />
                 </div>
             }
 
             <!-- Customer Fields -->
-            @if (Model.Role == "Customer")
+            @if (Model.role == "Customer")
             {
                 <div>
                     <label>Address</label>
-                    <input asp-for="Address" />
+                    <input asp-for="address" />
                 </div>
 
                 <div>
                     <label>Date of Birth</label>
-                    <input asp-for="DateOfBirth" type="date" />
+                    <input asp-for="date_of_birth" type="date" />
                 </div>
 
                 <div>
                     <label>KYC Status</label>
-                    <select asp-for="KycStatus">
+                    <select asp-for="kyc_status">
                         <option value="Pending">Pending</option>
                         <option value="Verified">Verified</option>
                         <option value="Rejected">Rejected</option>
@@ -60,82 +60,57 @@
             }
 
             <!-- Manager & Employee Fields -->
-            @if (Model.Role == "Manager" || Model.Role == "Employee")
+            @if (Model.role == "Manager" || Model.role == "Employee")
             {
                 <div>
                     <label>Branch Assigned</label>
-                    <input asp-for="BranchAssigned" />
+                    <input asp-for="branch_assigned" />
                 </div>
 
                 <div>
                     <label>Hire Date</label>
-                    <input asp-for="HireDate" type="date" />
+                    <input asp-for="hire_date" type="date" />
                 </div>
             }
 
             <!-- Employee Specific Field -->
-            @if (Model.Role == "Employee")
+            @if (Model.role == "Employee")
             {
                 <div>
                     <label>Role Title</label>
-                    <input asp-for="RoleTitle" />
+                    <input asp-for="role_title" />
                 </div>
             }
 
             <!-- Auditor Specific Fields -->
-            @if (Model.Role == "Auditor")
+            @if (Model.role == "Auditor")
             {
                 <div>
                     <label>Assigned Region</label>
-                    <input asp-for="AssignedRegion" />
+                    <input asp-for="assigned_region" />
                 </div>
 
                 <div>
                     <label>Can Export Reports</label>
-                    <input asp-for="CanExportReports" type="checkbox" />
+                    <input asp-for="can_export_reports" type="checkbox" />
                 </div>
 
                 <div>
                     <label>Last Login Time</label>
-                    <input asp-for="LastLoginTime" type="datetime-local" />
+                    <input asp-for="last_login_time" type="datetime-local" />
                 </div>
             }
 
             <!-- Active Status -->
             <div>
                 <label>Is Active</label>
-                <input asp-for="IsActive" type="checkbox" />
+                <input asp-for="is_active" type="checkbox" />
             </div>
 
             <div>
                 <button type="submit">Submit</button>
             </div>
 
-        </form>
-    }
-    else
-    {
-        <form asp-action="UserForm" method="get">
-            <div>
-                <label for="Role">Role</label>
-                @if (userRole == "Employee")
-                {
-                    <select name="Role">
-                        <option value="Customers">Customers</option>
-                    </select>
-                }
-                else if (userRole == "Manager")
-                {
-                    <select name="Role">
-                        <option value="Customers">Customers</option>
-                        <option value="Employee">Employee</option>
-                        <option value="Managers">Managers</option>
-                        <option value="Auditor">Auditor</option>
-                    </select>
-                }
-
-                <button type="submit">Next</button>
-            </div>
         </form>
     }
 </div>

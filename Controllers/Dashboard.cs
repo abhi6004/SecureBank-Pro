@@ -26,28 +26,28 @@ namespace SecureBank_Pro.Controllers
         [Authorize(Roles = "Employee , Manager")]
         public async Task<IActionResult> Customers()
         {
-            var Users = await GetUsers.FetchUsers("Customer", _context);
+            List<Users> Users = await GetUsers.FetchUsers("Customer", _context);
             return View(Users);
         }
 
         [Authorize(Roles = "Manager")]
         public async Task<IActionResult> Employee()
         {
-            var Users = await GetUsers.FetchUsers("Employee", _context);
+            List<Users> Users = await GetUsers.FetchUsers("Employee", _context);
             return View(Users);
         }
 
         [Authorize(Roles = "Manager")]
         public async Task<IActionResult> Managers()
         {
-            var Users = await GetUsers.FetchUsers("Manager", _context);
+            List<Users> Users = await GetUsers.FetchUsers("Manager", _context);
             return View(Users);
         }
 
         [Authorize(Roles = "Manager")]
         public async Task<IActionResult> Auditor()
         {
-            var Users = await GetUsers.FetchUsers("Auditor", _context);
+            List<Users> Users = await GetUsers.FetchUsers("Auditor", _context);
             return View(Users);
         }
 
@@ -76,6 +76,19 @@ namespace SecureBank_Pro.Controllers
                 throw new Exception("User Is Alredy Create");
             }
 
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> EditUsers(string email)
+        {
+            Users newUser = await GetUsers.GetUserById(email, _context);
+            return View(newUser);
+        }
+
+        [HttpPost]
+        public IActionResult EditUsers()
+        {
+            return View();
         }
     }
 }
