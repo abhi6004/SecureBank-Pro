@@ -92,7 +92,10 @@
 
                 <div>
                     <label>Can Export Reports</label>
-                    <input asp-for="CanExportReports" type="checkbox" />
+                    <select asp-for="CanExportReports">
+                        <option value="true">Yes</option>
+                        <option value="false">No</option>
+                    </select>
                 </div>
 
                 <div>

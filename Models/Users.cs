@@ -21,7 +21,7 @@
 
         // Auditor fields
         public string? AssignedRegion { get; set; }
-        public bool CanExportReports { get; set; }
+        public string CanExportReports { get; set; } 
         public DateTime? LastLoginTime { get; set; }
 
         // Common fields

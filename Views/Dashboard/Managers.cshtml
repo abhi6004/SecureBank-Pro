@@ -6,6 +6,21 @@
             <p>Email: @user.email</p>
             <p>Branch: @user.branch_assigned</p>
             <p>Hire Date: @user.hire_date</p>
+
+            <button onclick="EdituserForm('@user.email')">Edit</button>
+            <button onclick="DeletedUser()">Deleted</button>
+
         </div>
     }
 }
+
+<script>
+        function EdituserForm(email) {
+        window.location.href = "/Dashboard/EditUsers?email=" + encodeURIComponent(email);
+    }
+
+
+    function DeletedUser(){
+
+    }
+</script>

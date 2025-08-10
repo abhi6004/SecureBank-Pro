@@ -45,7 +45,7 @@
 
     @if (Model.can_export_reports != null)
     {
-        <div><strong>Can Export Reports:</strong> @(Model.can_export_reports == true ? "Yes" : "No")</div>
+        <div><strong>Can Export Reports:</strong> @(Model.can_export_reports == "true" ? "Yes" : "No")</div>
     }
 
     @if (Model.last_login_time != null)

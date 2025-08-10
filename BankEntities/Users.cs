@@ -21,10 +21,10 @@
 
         // Auditor
         public string? assigned_region { get; set; }
-        public bool? can_export_reports { get; set; }
+        public string can_export_reports { get; set; }
         public DateTime? last_login_time { get; set; }
 
-        public bool? is_active { get; set; }
+        public bool is_active { get; set; } = false;
         public DateTime? created_at { get; set; }
     }
 }

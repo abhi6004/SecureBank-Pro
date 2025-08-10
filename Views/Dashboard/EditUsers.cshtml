@@ -14,7 +14,7 @@
             <!-- Common for All Roles -->
             <div>
                 <label>Full Name</label>
-                <input asp-for="full_name" />
+                <input asp-for="full_name" type="text"/>
             </div>
 
             <div>
@@ -24,7 +24,7 @@
 
             <div>
                 <label>Phone Number</label>
-                <input asp-for="phone_number" />
+                <input asp-for="phone_number" type="number"/>
             </div>
 
             <!-- Show Email if NOT Auditor -->
@@ -64,7 +64,7 @@
             {
                 <div>
                     <label>Branch Assigned</label>
-                    <input asp-for="branch_assigned" />
+                    <input asp-for="branch_assigned" type="text"/>
                 </div>
 
                 <div>
@@ -78,7 +78,7 @@
             {
                 <div>
                     <label>Role Title</label>
-                    <input asp-for="role_title" />
+                    <input asp-for="role_title" type="text"/>
                 </div>
             }
 
@@ -87,13 +87,17 @@
             {
                 <div>
                     <label>Assigned Region</label>
-                    <input asp-for="assigned_region" />
+                    <input asp-for="assigned_region" type="text"/>
                 </div>
 
                 <div>
                     <label>Can Export Reports</label>
-                    <input asp-for="can_export_reports" type="checkbox" />
+                    <select asp-for="can_export_reports" class="form-control">
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
                 </div>
+
 
                 <div>
                     <label>Last Login Time</label>

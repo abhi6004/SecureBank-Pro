@@ -5,8 +5,24 @@
             <p>Name: @user.full_name</p>
             <p>Email: @user.email</p>
             <p>Region: @user.assigned_region</p>
-            <p>Can Export: @(user.can_export_reports == true ? "Yes" : "No")</p>
+            <p>Can Export: @(user.can_export_reports == "true" ? "Yes" : "No")</p>
             <p>Last Login: @user.last_login_time</p>
+
+            <button onclick="EdituserForm('@user.email')">Edit</button>
+            <button onclick="DeletedUser()">Deleted</button>
+
         </div>
     }
 }
+
+<script>
+        function EdituserForm(email) {
+        window.location.href = "/Dashboard/EditUsers?email=" + encodeURIComponent(email);
+    }
+
+
+    function DeletedUser(){
+
+    }
+</script>
+

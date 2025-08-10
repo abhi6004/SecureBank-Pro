@@ -8,6 +8,21 @@
             <p>Address: @user.address</p>
             <p>DOB: @user.date_of_birth</p>
             <p>KYC: @user.kyc_status</p>
+
+            <button onclick="EdituserForm('@user.email')">Edit</button>
+            <button onclick="DeletedUser()">Deleted</button>
+
         </div>
     }
 }
+
+<script>
+        function EdituserForm(email) {
+        window.location.href = "/Dashboard/EditUsers?email=" + encodeURIComponent(email);
+    }
+
+
+    function DeletedUser(){
+
+    }
+</script>
