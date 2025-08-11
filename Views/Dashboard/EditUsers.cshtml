@@ -9,7 +9,7 @@
     @if (!string.IsNullOrEmpty(Role))
     {
         <h3>User Registration From</h3>
-        <form asp-action="UserForm" method="post">
+        <form asp-action="EditUsers" method="post">
 
             <!-- Common for All Roles -->
             <div>
@@ -25,6 +25,10 @@
             <div>
                 <label>Phone Number</label>
                 <input asp-for="phone_number" type="number"/>
+            </div>
+
+            <div>
+                <input asp-for="role" type="hidden" value="@Model.role" />
             </div>
 
             <!-- Show Email if NOT Auditor -->

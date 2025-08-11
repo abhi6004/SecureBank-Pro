@@ -86,9 +86,11 @@ namespace SecureBank_Pro.Controllers
         }
 
         [HttpPost]
-        public IActionResult EditUsers()
+        public async Task<IActionResult> EditUsers(Users users)
         {
-            return View();
+            string role = users.role;
+            bool isUpdate = await UserInserToDB.UserUpdate(_context, users);
+            return RedirectToAction(role , "Dashboard");
         }
     }
 }
