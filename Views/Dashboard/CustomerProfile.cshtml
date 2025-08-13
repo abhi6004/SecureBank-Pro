@@ -1,0 +1,81 @@
+﻿@model SecureBank_Pro.Models.UserProfile
+
+@{
+    ViewData["Title"] = "Customer Profile";
+}
+
+<h1>Customer Profile</h1>
+
+<!-- User Details -->
+<section>
+    <h2>User Information</h2>
+    <table>
+        <tr><th>Full Name</th><td>@Model.Users.full_name</td></tr>
+        <tr><th>Email</th><td>@Model.Users.email</td></tr>
+        <tr><th>Phone</th><td>@Model.Users.phone_number</td></tr>
+        <tr><th>Address</th><td>@Model.Users.address</td></tr>
+        <tr><th>Date of Birth</th><td>@Model.Users.date_of_birth?.ToString("dd-MM-yyyy")</td></tr>
+        <tr><th>KYC Status</th><td>@Model.Users.kyc_status</td></tr>
+        <tr><th>Created At</th><td>@Model.Users.created_at?.ToString("dd-MM-yyyy HH:mm")</td></tr>
+        <tr><th>Active</th><td>@(Model.Users.is_active ? "Yes" : "No")</td></tr>
+    </table>
+</section>
+
+<hr />
+
+<!-- Balance -->
+<section>
+    <h2>Balance</h2>
+    @if (Model.Balance != null)
+    {
+        <table>
+            <tr><th>Amount</th><td>@Model.Balance.Amount</td></tr>
+            <tr><th>Currency</th><td>@Model.Balance.CurrencyCode</td></tr>
+            <tr><th>Last Updated</th><td>@Model.Balance.LastUpdated.ToString("dd-MM-yyyy HH:mm")</td></tr>
+            <tr><th>Frozen</th><td>@(Model.Balance.IsFrozen ? "Yes" : "No")</td></tr>
+        </table>
+    }
+    else
+    {
+        <p>No balance information available.</p>
+    }
+</section>
+
+<hr />
+
+<!-- Transactions -->
+<section>
+    <h2>Transactions</h2>
+    @if (Model.Transactions != null && Model.Transactions.Any())
+    {
+        <table border="1" cellpadding="5" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Type</th>
+                    <th>Amount</th>
+                    <th>Balance After</th>
+                    <th>Description</th>
+                    <th>Created At</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var txn in Model.Transactions)
+                {
+                    <tr>
+                        <td>@txn.Trasactionsid</td>
+                        <td>@txn.TransactionType</td>
+                        <td>@txn.Amount</td>
+                        <td>@txn.BalanceAfter</td>
+                        <td>@txn.Description</td>
+                        <td>@txn.CreatedAt.ToString("dd-MM-yyyy HH:mm")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>No transactions available.</p>
+    }
+</section>

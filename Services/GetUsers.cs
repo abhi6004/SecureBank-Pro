@@ -20,5 +20,27 @@ namespace SecureBank_Pro.Services
             Users user = await context.Users.FirstOrDefaultAsync(c => c.email == email);
             return user;
         }
+
+        public static async Task<UserProfile> GetUserProfile(string email , BankDbContext context)
+        {
+            Users user = await context.Users.FirstOrDefaultAsync(c => c.email == email);
+            List<Transaction> transactions = await context.Transactions.Where(c => c.UserId == user.id).ToListAsync();
+            Balance userBalance = await context.Balances.FirstOrDefaultAsync(c => c.UserId == user.id);
+
+            if (user != null)
+            {
+                UserProfile userProfile = new UserProfile();
+                userProfile.Transactions = new List<Transaction>();
+                userProfile.Users = user;
+                userProfile.Balance = userBalance;
+                userProfile.Transactions = transactions;
+
+                return userProfile;
+            }
+            else
+            {
+                return null; // or throw an exception, depending on your error handling strategy
+            }
+        }
     }
 }

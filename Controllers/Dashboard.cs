@@ -92,5 +92,11 @@ namespace SecureBank_Pro.Controllers
             bool isUpdate = await UserInserToDB.UserUpdate(_context, users);
             return RedirectToAction(role , "Dashboard");
         }
+
+        public async Task<IActionResult> CustomerProfile(string email)
+        {
+            UserProfile userProfile = await GetUsers.GetUserProfile(email, _context);
+            return View(userProfile);
+        }
     }
 }

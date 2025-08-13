@@ -7,6 +7,8 @@ namespace SecureBank_Pro.Data
     public class BankDbContext : DbContext
     {
         public DbSet<Users> Users { get; set; }
+        public DbSet<Balance> Balances { get; set; }
+        public DbSet<Transaction> Transactions { get; set; }
 
         public BankDbContext(DbContextOptions<BankDbContext> options) : base(options) { }
     }

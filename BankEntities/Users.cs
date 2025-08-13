@@ -1,4 +1,6 @@
-﻿namespace SecureBank_Pro.BankEntities
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace SecureBank_Pro.BankEntities
 {
     public class Users
     {
@@ -26,5 +28,27 @@
 
         public bool is_active { get; set; } = false;
         public DateTime? created_at { get; set; }
+    }
+    public class Balance
+    {
+        [Key]
+        public int UserId { get; set; } // PK + FK
+        public decimal Amount { get; set; }
+        public string CurrencyCode { get; set; }
+        public DateTime LastUpdated { get; set; }
+        public bool IsFrozen { get; set; }
+
+    }
+    public class Transaction
+    {
+        [Key]
+        public long Trasactionsid { get; set; } // PK
+        public int UserId { get; set; } // FK
+        public string TransactionType { get; set; }
+        public decimal Amount { get; set; }
+        public decimal BalanceAfter { get; set; }
+        public string Description { get; set; }
+        public DateTime CreatedAt { get; set; }
+
     }
 }

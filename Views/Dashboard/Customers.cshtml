@@ -1,6 +1,5 @@
-﻿
-@{
-    foreach(var user in Model)
+﻿@{
+    foreach (var user in Model)
     {
         <div>
             <p>Name: @user.full_name</p>
@@ -10,6 +9,7 @@
             <p>KYC: @user.kyc_status</p>
 
             <button onclick="EdituserForm('@user.email')">Edit</button>
+            <button onclick="ViewUser('@user.email')">View</button>
             <button onclick="DeletedUser()">Deleted</button>
 
         </div>
@@ -17,12 +17,16 @@
 }
 
 <script>
-        function EdituserForm(email) {
-        window.location.href = "/Dashboard/EditUsers?email=" + encodeURIComponent(email);
+    function EdituserForm(email) {
+    window.location.href = "/Dashboard/EditUsers?email=" + encodeURIComponent(email);
     }
 
 
     function DeletedUser(){
 
+    }
+
+    function ViewUser(email){
+        window.location.href = "/Dashboard/CustomerProfile?email=" + encodeURIComponent(email);
     }
 </script>
