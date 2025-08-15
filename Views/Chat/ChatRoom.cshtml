@@ -6,50 +6,58 @@
 <div class="chat-container">
 
     <!-- General Section -->
-    <section onclick="GetAllUsers('MainChat')" id="general-section" class="chat-section general-chat">
-        <h2>General Chat</h2>
-        <div class="chat-messages" id="general-messages"></div>
+    <section id="general-section" class="chat-section general-chat">
+        <h2 onclick="GetAllUsers('MainChat')">General Chat</h2>
+        @if (Current != "rooms-section" && Current != "private-messages")
+        {
+            <div onclick="GetUserChat('' , 'general')" class="chat-messages" id="general">
+                <h3>General Room</h3>
+                <div class="chat-messages" id="manager"></div>
+            </div>
+        }
     </section>
 
+
+
     <!-- Room Sections -->
-    <section onclick="GetAllUsers('rooms-section')" id="rooms-section" class="chat-section rooms-chat">
-        <h2>Room Chats</h2>
+    <section id="rooms-section" class="chat-section rooms-chat">
+        <h2 onclick="GetAllUsers('rooms-section')" id="rooms-section">Room Chats</h2>
         @if (Current == "rooms-section")
         {
-            <div class="room-chat" id="room-Manager">
+            <div onclick="GetUserChat('manager' , 'room')" class="room-chat" id="manager-messages">
                 <h3>Manager Room</h3>
-                <div class="chat-messages" id="manager-messages"></div>
+                <div class="chat-messages" id="manager"></div>
             </div>
 
-            <div class="room-chat" id="room-Employee">
+            <div onclick="GetUserChat('employee' , 'room')" class="room-chat" id="employee-messages">
                 <h3>Employee Room</h3>
-                <div class="chat-messages" id="employee-messages"></div>
+                <div class="chat-messages" id="employee"></div>
             </div>
 
-            <div class="room-chat" id="room-Auditor">
+            <div onclick="GetUserChat('auditor' , 'room')" class="room-chat" id="auditor-messages">
                 <h3>Auditor Room</h3>
-                <div class="chat-messages" id="auditor-messages"></div>
+                <div class="chat-messages" id="auditor"></div>
             </div>
         }
 
     </section>
 
     <!-- Private Section -->
-    <section onclick="GetAllUsers('private-messages')" id="private-section" class="chat-section private-chat">
-        <h2>Private Chats</h2>
+    <section id="private-section" class="chat-section private-chat">
+        <h2 onclick="GetAllUsers('private-messages')">Private Chats</h2>
         <div class="private-messages" id="private-messages"></div>
 
         @if (Current == "private-messages")
         {
             foreach (var user in Model)
             {
-                <div onclick="GetUserChat(@user)" class=@user">
+                <div onclick="GetUserChat('@user' , 'private')" class="@user">
                     <p>@user</p>
+                    <div id="@user"></div>
                 </div>
             }
         }
     </section>
-
 </div>
 
 
@@ -58,7 +66,25 @@
         window.location.href = "/Chat/ChatRoom?section=" + encodeURIComponent(section);
     }
 
-    function GetUserChat(user){
-        window.location.href = "/Chat/ChatRoom?section=" + encodeURIComponent(section);
+        function GetUserChat(userId, section) {
+        fetch('/Chat/UserChat?Reciver=' + encodeURIComponent(userId) + '&Section=' + encodeURIComponent(section))
+            .then(response => response.text())
+            .then(html => {
+                // For private chats, userId will be the id of the container div
+                if(section === 'private'){
+                    document.getElementById(userId).innerHTML = html;
+                } else {
+                    // For general and room chats, section parameter matches the outer div id
+                    // For room, the div inside has id = userId + "-messages"
+                    if(section === 'room'){
+                        document.getElementById(userId).innerHTML = html;
+                    } else if(section === 'general'){
+                        document.getElementById('general').innerHTML = html;
+                    }
+                }
+            })
+            .catch(err => console.error(err));
     }
+
+
 </script>

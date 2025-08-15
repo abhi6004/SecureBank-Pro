@@ -1,23 +1,30 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using SecureBank_Pro.BankEntities;
 using SecureBank_Pro.Data;
 using SecureBank_Pro.Services;
 
+
 namespace SecureBank_Pro.Controllers
 {
+    [Authorize(AuthenticationSchemes = "UserCookies")]
     public class ChatController : Controller
     {
         private readonly BankDbContext _context;
         public ChatController(BankDbContext context) => _context = context;
 
+        [Authorize(Roles = "Employee , Manager , Auditor")]
         public async Task<IActionResult> ChatRoom(string section)
         {
             List<string> users = new List<string>();
             ViewBag.Current = "MainChat";
+            var userJson = HttpContext.Session.GetString("UserData");
+            Users currentUser = JsonConvert.DeserializeObject<Users>(userJson);
 
             if (section == "private-messages")
             {
-                users = await Chat.GetAllUsers(section, _context);
+                users = await Chat.GetAllUsers(section, _context , currentUser.full_name);
                 ViewBag.Current = "private-messages";
             }
             else if (section == "rooms-section")
@@ -28,13 +35,23 @@ namespace SecureBank_Pro.Controllers
             return View(users);
         }
 
-        public async Task<string> UserChat(string SenderId, string ReciverId, string Section)
+        [HttpGet]
+        public async Task<string> UserChat(string Reciver, string Section)
         {
             List<ChatHistory> chatHistory = new List<ChatHistory>();
             try
             {
-                chatHistory = await Chat.GetUserChat(SenderId, ReciverId, Section, _context);
+                var userJson = HttpContext.Session.GetString("UserData");
+                Users currentUser = JsonConvert.DeserializeObject<Users>(userJson);
+
+                chatHistory = await Chat.GetUserChat(Reciver, Section, _context , currentUser);
                 string chatResponse = string.Empty;
+
+                if(chatHistory.Count == 0)
+                {
+                    chatResponse = "<p>No Chat </p>";
+                    return chatResponse;
+                }
 
                 foreach (var chat in chatHistory)
                 {
