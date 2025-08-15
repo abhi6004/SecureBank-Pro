@@ -1,0 +1,64 @@
+﻿@{
+    @model dynamic
+    string Current = ViewBag.Current;
+}
+
+<div class="chat-container">
+
+    <!-- General Section -->
+    <section onclick="GetAllUsers('MainChat')" id="general-section" class="chat-section general-chat">
+        <h2>General Chat</h2>
+        <div class="chat-messages" id="general-messages"></div>
+    </section>
+
+    <!-- Room Sections -->
+    <section onclick="GetAllUsers('rooms-section')" id="rooms-section" class="chat-section rooms-chat">
+        <h2>Room Chats</h2>
+        @if (Current == "rooms-section")
+        {
+            <div class="room-chat" id="room-Manager">
+                <h3>Manager Room</h3>
+                <div class="chat-messages" id="manager-messages"></div>
+            </div>
+
+            <div class="room-chat" id="room-Employee">
+                <h3>Employee Room</h3>
+                <div class="chat-messages" id="employee-messages"></div>
+            </div>
+
+            <div class="room-chat" id="room-Auditor">
+                <h3>Auditor Room</h3>
+                <div class="chat-messages" id="auditor-messages"></div>
+            </div>
+        }
+
+    </section>
+
+    <!-- Private Section -->
+    <section onclick="GetAllUsers('private-messages')" id="private-section" class="chat-section private-chat">
+        <h2>Private Chats</h2>
+        <div class="private-messages" id="private-messages"></div>
+
+        @if (Current == "private-messages")
+        {
+            foreach (var user in Model)
+            {
+                <div onclick="GetUserChat(@user)" class=@user">
+                    <p>@user</p>
+                </div>
+            }
+        }
+    </section>
+
+</div>
+
+
+<script>
+    function GetAllUsers(section){
+        window.location.href = "/Chat/ChatRoom?section=" + encodeURIComponent(section);
+    }
+
+    function GetUserChat(user){
+        window.location.href = "/Chat/ChatRoom?section=" + encodeURIComponent(section);
+    }
+</script>

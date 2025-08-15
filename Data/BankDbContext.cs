@@ -9,6 +9,7 @@ namespace SecureBank_Pro.Data
         public DbSet<Users> Users { get; set; }
         public DbSet<Balance> Balances { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
+        public DbSet<ChatHistory> ChatHistory { get; set; }
 
         public BankDbContext(DbContextOptions<BankDbContext> options) : base(options) { }
     }

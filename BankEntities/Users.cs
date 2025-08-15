@@ -51,4 +51,15 @@ namespace SecureBank_Pro.BankEntities
         public DateTime CreatedAt { get; set; }
 
     }
+    public class ChatHistory
+    {
+        public int Id { get; set; }
+        public int SenderId { get; set; }
+        public int? ReceiverId { get; set; }
+        public string MessageText { get; set; }
+        public DateTime SentAt { get; set; }
+        public string Section { get; set; }
+        public string? Room { get; set; }
+    }
+
 }
