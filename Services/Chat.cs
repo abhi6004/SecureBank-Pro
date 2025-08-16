@@ -1,7 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using SecureBank_Pro.BankEntities;
 using SecureBank_Pro.Data;
 using SecureBank_Pro.Models;
+using System.Text.Json;
 
 namespace SecureBank_Pro.Services
 {
@@ -56,5 +60,50 @@ namespace SecureBank_Pro.Services
                 throw ex;
             }
         }
+ 
+    }
+
+
+    public class ChatBoxHub : Hub
+    {
+        private readonly BankDbContext _context;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public ChatBoxHub(BankDbContext context, IHttpContextAccessor httpContextAccessor)
+        {
+            _context = context;
+            _httpContextAccessor = httpContextAccessor;
+        }
+
+
+
+        public async Task<string> SendChat([FromBody] JsonElement obj)
+        {
+            try
+            {
+                var userJson = _httpContextAccessor.HttpContext.Session.GetString("UserData");
+                Users currentUser = JsonConvert.DeserializeObject<Users>(userJson);
+
+                string message = obj.GetProperty("message").GetString();
+                string id = obj.GetProperty("id").GetString();
+                string section = obj.GetProperty("section").GetString();
+                string room = obj.GetProperty("room").GetString();
+
+                if (section == "private")
+                {
+                    id = id.Replace("-chatbox", "");
+                }
+                
+                return "";
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions, log errors, etc.
+                Console.WriteLine($"An error occurred while getting rooms: {ex.Message}");
+                return $"Error: {ex.Message}";
+            }
+        }
     }
 }
+
+
+

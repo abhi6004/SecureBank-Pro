@@ -10,9 +10,11 @@
         <h2 onclick="GetAllUsers('MainChat')">General Chat</h2>
         @if (Current != "rooms-section" && Current != "private-messages")
         {
-            <div onclick="GetUserChat('' , 'general')" class="chat-messages" id="general">
+            <div onclick="GetUserChat('' , 'general')" class="chat-messages" id="general-messages">
                 <h3>General Room</h3>
-                <div class="chat-messages" id="manager"></div>
+                <div class="chat-messages" id="general"></div>
+                <input id="general-chatbox" type="text" name="chat" value="" />
+                <button onclick="SendChat(document.getElementById('chat-messages').value, 'general-chatbox' , 'general' , '')">Send</button>
             </div>
         }
     </section>
@@ -27,16 +29,22 @@
             <div onclick="GetUserChat('manager' , 'room')" class="room-chat" id="manager-messages">
                 <h3>Manager Room</h3>
                 <div class="chat-messages" id="manager"></div>
+                <input id="manager-chatbox" type="text" name="chat" value="" />
+                <button onclick="SendChat(document.getElementById('manager-chatbox').value, 'manager-chatbox' , 'room' , 'manager')">Send</button>
             </div>
 
             <div onclick="GetUserChat('employee' , 'room')" class="room-chat" id="employee-messages">
                 <h3>Employee Room</h3>
                 <div class="chat-messages" id="employee"></div>
+                <input id="employee-chatbox" type="text" name="chat" value="" />
+                <button onclick="SendChat(document.getElementById('employee-chatbox').value, 'employee-chatbox' , 'room' , 'employee')">Send</button>
             </div>
 
             <div onclick="GetUserChat('auditor' , 'room')" class="room-chat" id="auditor-messages">
                 <h3>Auditor Room</h3>
                 <div class="chat-messages" id="auditor"></div>
+                <input id="auditor-chatbox" onclick="SendChat(this.value , 'auditor')" type="text" name="chat" value="" />
+                <button onclick="SendChat(document.getElementById('auditor-chatbox').value, 'auditor-chatbox' , 'room' ,'auditor')">Send</button>
             </div>
         }
 
@@ -54,6 +62,8 @@
                 <div onclick="GetUserChat('@user' , 'private')" class="@user">
                     <p>@user</p>
                     <div id="@user"></div>
+                    <input id="@user-chatbox" type="text" name="chat" value="" />
+                    <button onclick="SendChat(document.getElementById('@user-chatbox').value, '@user-chatbox' , 'private' , '')">Send</button>
                 </div>
             }
         }
@@ -66,25 +76,41 @@
         window.location.href = "/Chat/ChatRoom?section=" + encodeURIComponent(section);
     }
 
-        function GetUserChat(userId, section) {
-        fetch('/Chat/UserChat?Reciver=' + encodeURIComponent(userId) + '&Section=' + encodeURIComponent(section))
-            .then(response => response.text())
-            .then(html => {
-                // For private chats, userId will be the id of the container div
-                if(section === 'private'){
+    function GetUserChat(userId, section) {
+    fetch('/Chat/UserChat?Reciver=' + encodeURIComponent(userId) + '&Section=' + encodeURIComponent(section))
+        .then(response => response.text())
+        .then(html => {
+            // For private chats, userId will be the id of the container div
+            if(section === 'private'){
+                document.getElementById(userId).innerHTML = html;
+            } else {
+                if(section === 'room'){
                     document.getElementById(userId).innerHTML = html;
-                } else {
-                    // For general and room chats, section parameter matches the outer div id
-                    // For room, the div inside has id = userId + "-messages"
-                    if(section === 'room'){
-                        document.getElementById(userId).innerHTML = html;
-                    } else if(section === 'general'){
-                        document.getElementById('general').innerHTML = html;
-                    }
+                } else if(section === 'general'){
+                    document.getElementById('general').innerHTML = html;
                 }
-            })
-            .catch(err => console.error(err));
+            }
+        })
+        .catch(err => console.error(err));
     }
 
+    function SendChat(message , id , section , room) {
+        if (message.trim() === '') return;
+        connection.invoke("SendChat" , {message : message , id : id , section : section , room : room})
+
+        connection.on("ReceiveMessage" , (object) => {
+            if(object.section === 'private'){
+                document.getElementById(object.id).innerHTML = html;
+            } else {
+                if(object.section === 'room'){
+                    document.getElementById(object.section).innerHTML = html;
+                } else if(object.section === 'general'){
+                    document.getElementById('general').innerHTML = html;
+                }
+            }
+        })
+    }
+
+    
 
 </script>
