@@ -5,7 +5,9 @@ using Newtonsoft.Json;
 using SecureBank_Pro.BankEntities;
 using SecureBank_Pro.Data;
 using SecureBank_Pro.Models;
+using System.Security.Claims;
 using System.Text.Json;
+using static System.Collections.Specialized.BitVector32;
 
 namespace SecureBank_Pro.Services
 {
@@ -60,50 +62,130 @@ namespace SecureBank_Pro.Services
                 throw ex;
             }
         }
- 
-    }
 
+    }
 
     public class ChatBoxHub : Hub
     {
         private readonly BankDbContext _context;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        public ChatBoxHub(BankDbContext context, IHttpContextAccessor httpContextAccessor)
+
+        public ChatBoxHub(BankDbContext context)
         {
             _context = context;
-            _httpContextAccessor = httpContextAccessor;
         }
 
-
-
-        public async Task<string> SendChat([FromBody] JsonElement obj)
+        public async Task SendChat(string message, string id, string section, string room)
         {
             try
             {
-                var userJson = _httpContextAccessor.HttpContext.Session.GetString("UserData");
-                Users currentUser = JsonConvert.DeserializeObject<Users>(userJson);
+                // Get the current user's identity from the hub context
+                string email = Context.User.FindFirst(ClaimTypes.Email)?.Value;
 
-                string message = obj.GetProperty("message").GetString();
-                string id = obj.GetProperty("id").GetString();
-                string section = obj.GetProperty("section").GetString();
-                string room = obj.GetProperty("room").GetString();
+                var currentUser = await _context.Users.FirstOrDefaultAsync(u => u.email == email);
+                if (currentUser == null)
+                {
+                    // User not found in the database
+                    return;
+                }
 
+                int receiverId = 0;
                 if (section == "private")
                 {
                     id = id.Replace("-chatbox", "");
+                    var receiver = await _context.Users.FirstOrDefaultAsync(u => u.full_name == id);
                 }
-                
-                return "";
+
+                ChatHistory newChat = new ChatHistory
+                {
+                    SenderId = currentUser.id,
+                    ReceiverId = receiverId, // This will be 0 for rooms/general chats
+                    MessageText = message,
+                    SentAt = DateTime.Now,
+                    Section = section,
+                    Room = room
+                };
+
+                _context.ChatHistory.Add(newChat);
+                await _context.SaveChangesAsync();
+
+                if(newChat.Section == "private")
+                {
+                    newChat.Room = id;
+                }
+                // Send message to all connected clients
+                await Clients.All.SendAsync("ReceiveMessage", newChat);
+
+                // Or, to send a message back to the sender
+                // await Clients.Caller.SendAsync("ReceiveMessage", newChat);
             }
             catch (Exception ex)
             {
-                // Handle exceptions, log errors, etc.
-                Console.WriteLine($"An error occurred while getting rooms: {ex.Message}");
-                return $"Error: {ex.Message}";
+                // Log the exception
+                Console.WriteLine($"An error occurred while sending chat: {ex.Message}");
             }
         }
     }
 }
+//    public class ChatBoxHub : Hub
+//    {
+//        private readonly BankDbContext _context;
+//        private readonly IHttpContextAccessor _httpContextAccessor;
+//        public ChatBoxHub(BankDbContext context, IHttpContextAccessor httpContextAccessor)
+//        {
+//            _context = context;
+//            _httpContextAccessor = httpContextAccessor;
+//        }
+
+
+
+//        public async Task<object> SendChat(string message, string id, string section, string room)
+//        {
+//            try
+//            {
+//                var userJson = _httpContextAccessor.HttpContext.Session.GetString("UserData");
+//                Users currentUser = JsonConvert.DeserializeObject<Users>(userJson);
+
+
+//                //string message = obj.GetProperty("message").GetString();
+//                //string id = obj.GetProperty("id").GetString();
+//                //string section = obj.GetProperty("section").GetString();
+//                //string room = obj.GetProperty("room").GetString();
+//                int ReciverId = 0;
+
+//                if (section == "private")
+//                {
+//                    ReciverId = await _context.Users.Where(u => u.full_name == id).Select(u => u.id).FirstOrDefaultAsync();
+//                }
+
+//                if (section == "private")
+//                {
+//                    id = id.Replace("-chatbox", "");
+//                }
+
+//                ChatHistory newChat = new ChatHistory
+//                {
+//                    SenderId = currentUser.id,
+//                    ReceiverId = ReciverId,
+//                    MessageText = message,
+//                    SentAt = DateTime.Now,
+//                    Section = section
+//                };
+
+//                _context.ChatHistory.Add(newChat);
+//                await _context.SaveChangesAsync();
+
+//                await Clients.All.SendAsync("ReceiveMessage", newChat);
+//                return newChat;
+//            }
+//            catch (Exception ex)
+//            {
+//                // Handle exceptions, log errors, etc.
+//                Console.WriteLine($"An error occurred while getting rooms: {ex.Message}");
+//                return $"Error: {ex.Message}";
+//            }
+//        }
+//    }
+//}
 
 
 

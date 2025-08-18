@@ -13,9 +13,13 @@
             <div onclick="GetUserChat('' , 'general')" class="chat-messages" id="general-messages">
                 <h3>General Room</h3>
                 <div class="chat-messages" id="general"></div>
-                <input id="general-chatbox" type="text" name="chat" value="" />
-                <button onclick="SendChat(document.getElementById('chat-messages').value, 'general-chatbox' , 'general' , '')">Send</button>
             </div>
+
+            <div>
+                <input id="general-chatbox" type="text" name="chat" value="" />
+                <button onclick="SendChat(document.getElementById('general-chatbox').value, 'general-chatbox' , 'general' , '')">Send</button>
+            </div>
+            
         }
     </section>
 
@@ -29,23 +33,34 @@
             <div onclick="GetUserChat('manager' , 'room')" class="room-chat" id="manager-messages">
                 <h3>Manager Room</h3>
                 <div class="chat-messages" id="manager"></div>
+            </div>
+
+            <div>
                 <input id="manager-chatbox" type="text" name="chat" value="" />
                 <button onclick="SendChat(document.getElementById('manager-chatbox').value, 'manager-chatbox' , 'room' , 'manager')">Send</button>
             </div>
-
+            
             <div onclick="GetUserChat('employee' , 'room')" class="room-chat" id="employee-messages">
                 <h3>Employee Room</h3>
                 <div class="chat-messages" id="employee"></div>
+            </div>
+
+            <div>
                 <input id="employee-chatbox" type="text" name="chat" value="" />
                 <button onclick="SendChat(document.getElementById('employee-chatbox').value, 'employee-chatbox' , 'room' , 'employee')">Send</button>
             </div>
 
+
             <div onclick="GetUserChat('auditor' , 'room')" class="room-chat" id="auditor-messages">
                 <h3>Auditor Room</h3>
                 <div class="chat-messages" id="auditor"></div>
+            </div>
+
+            <div>
                 <input id="auditor-chatbox" onclick="SendChat(this.value , 'auditor')" type="text" name="chat" value="" />
                 <button onclick="SendChat(document.getElementById('auditor-chatbox').value, 'auditor-chatbox' , 'room' ,'auditor')">Send</button>
             </div>
+
         }
 
     </section>
@@ -62,6 +77,10 @@
                 <div onclick="GetUserChat('@user' , 'private')" class="@user">
                     <p>@user</p>
                     <div id="@user"></div>
+                    
+                </div>
+
+                <div>
                     <input id="@user-chatbox" type="text" name="chat" value="" />
                     <button onclick="SendChat(document.getElementById('@user-chatbox').value, '@user-chatbox' , 'private' , '')">Send</button>
                 </div>
@@ -70,8 +89,30 @@
     </section>
 </div>
 
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
 <script>
+    const connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
+
+    connection.start()
+        .then(() => console.log("SignalR connected"))
+        .catch(err => console.error("Connection failed:", err));
+
+    // Register ReceiveMessage handler ONCE
+    connection.on("ReceiveMessage", (chat) => {
+        console.log("Message received:", chat);
+
+        if(chat.section === 'private'){
+                document.getElementById(chat.room).appendChild(document.createElement("p")).innerText = chat.messageText;
+        } else {
+            if(chat.section === 'room'){
+                document.getElementById(chat.room).appendChild(document.createElement("p")).innerText = chat.messageText;
+            } else if(chat.section === 'general'){
+                document.getElementById('general').appendChild(document.createElement("p")).innerText = chat.messageText;
+            }
+            }
+    });
+
+
     function GetAllUsers(section){
         window.location.href = "/Chat/ChatRoom?section=" + encodeURIComponent(section);
     }
@@ -94,23 +135,14 @@
         .catch(err => console.error(err));
     }
 
-    function SendChat(message , id , section , room) {
-        if (message.trim() === '') return;
-        connection.invoke("SendChat" , {message : message , id : id , section : section , room : room})
+    function SendChat(message, id, section, room) {
+    if (message.trim() === '') return;
 
-        connection.on("ReceiveMessage" , (object) => {
-            if(object.section === 'private'){
-                document.getElementById(object.id).innerHTML = html;
-            } else {
-                if(object.section === 'room'){
-                    document.getElementById(object.section).innerHTML = html;
-                } else if(object.section === 'general'){
-                    document.getElementById('general').innerHTML = html;
-                }
-            }
-        })
+    connection.invoke("SendChat", message, id, section, room)
+        .catch(err => console.error("Invoke failed:", err));
     }
 
-    
+
+
 
 </script>

@@ -18,7 +18,7 @@ builder.Services.AddAuthentication("UserCookies")
     .AddCookie("UserCookies", options =>
     {
         options.LoginPath = "/Users/Login";
-        options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
+        options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
         options.Cookie.Name = "UserCookie";
         options.Cookie.Path = "/";
         options.AccessDeniedPath = "/Users/AccessDenied";
@@ -35,19 +35,17 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles();   // for .css and .js
 app.UseRouting();
 app.UseSession();
-
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapStaticAssets();
-
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}")
-    .WithStaticAssets();
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.MapHub<ChatBoxHub>("/chatHub");
+
 
 app.Run();
