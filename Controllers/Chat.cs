@@ -57,10 +57,19 @@ namespace SecureBank_Pro.Controllers
 
                 foreach (var chat in chatHistory)
                 {
-                    chatResponse += "<p>";
-                    chatResponse += $"{chat.SentAt.ToShortTimeString()} - {chat.MessageText}";
-                    chatResponse += "</p>\n";
+                    string style = chat.SenderId == currentUser.id
+                        ? "text-align:right;"
+                        : "text-align:left;";
+
+                    chatResponse += $"<p style='{style}'>{chat.SentAt.ToShortTimeString()} - {chat.MessageText}</p>\n";
                 }
+
+                //foreach (var chat in chatHistory)
+                //{
+                //    chatResponse += "<p>";
+                //    chatResponse += $"{chat.SentAt.ToShortTimeString()} - {chat.MessageText}";
+                //    chatResponse += "</p>\n";
+                //}
 
                 return chatResponse;
             }

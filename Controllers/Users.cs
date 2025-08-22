@@ -42,6 +42,7 @@ namespace SecureBank_Pro.Controllers
                 };
                 var claimsIdentity = new ClaimsIdentity(claims, "UserCookies");
 
+                ViewBag.UserName = isLogin.full_name;
                 HttpContext.Session.SetString("UserData", JsonConvert.SerializeObject(isLogin));
                 await HttpContext.SignInAsync("UserCookies", new ClaimsPrincipal(claimsIdentity));
                 return RedirectToAction("Profile", "Dashboard");

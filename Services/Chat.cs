@@ -16,10 +16,9 @@ namespace SecureBank_Pro.Services
         public static async Task<List<string>> GetAllUsers(string section, BankDbContext _context, string userName)
         {
             List<string> users = new List<string>();
-
             if (section == "private-messages")
             {
-                users = await _context.Users.Where(u => u.full_name != userName).Select(u => u.full_name).ToListAsync();
+                users = await _context.Users.Select(u => u.full_name).ToListAsync();
                 if (users.Count != 0)
                 {
                     return users;
@@ -46,7 +45,11 @@ namespace SecureBank_Pro.Services
 
                 if (Section == "private")
                 {
-                    chatHistory = await _context.ChatHistory.Where(c => c.SenderId.ToString() == SenderId && c.ReceiverId.ToString() == ReciverId && c.Section == Section).OrderBy(c => c.SentAt).ToListAsync();
+                    chatHistory = await _context.ChatHistory.Where(c => (c.SenderId.ToString() == SenderId && c.ReceiverId.ToString() == ReciverId && c.Section == Section) || (c.SenderId.ToString() == ReciverId && c.ReceiverId.ToString() == SenderId && c.Section == Section)).OrderBy(c => c.SentAt).ToListAsync();
+                }
+                else if (Section == "room")
+                {
+                    chatHistory = await _context.ChatHistory.Where(c => c.Room.ToString() == Reciver).OrderBy(c => c.SentAt).ToListAsync();
                 }
                 else
                 {
@@ -92,7 +95,7 @@ namespace SecureBank_Pro.Services
                 if (section == "private")
                 {
                     id = id.Replace("-chatbox", "");
-                    var receiver = await _context.Users.FirstOrDefaultAsync(u => u.full_name == id);
+                    receiverId = await _context.Users.Where(u => u.full_name == id).Select(c => c.id).FirstOrDefaultAsync();
                 }
 
                 ChatHistory newChat = new ChatHistory
@@ -108,9 +111,9 @@ namespace SecureBank_Pro.Services
                 _context.ChatHistory.Add(newChat);
                 await _context.SaveChangesAsync();
 
-                if(newChat.Section == "private")
+                if (newChat.Section == "private")
                 {
-                    newChat.Room = id;
+                    newChat.Room = id + "-" +currentUser.full_name;
                 }
                 // Send message to all connected clients
                 await Clients.All.SendAsync("ReceiveMessage", newChat);

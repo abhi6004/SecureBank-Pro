@@ -1,6 +1,7 @@
 ﻿@{
     @model dynamic
     string Current = ViewBag.Current;
+    string username = ViewBag.UserName;
 }
 
 <div class="chat-container">
@@ -17,7 +18,7 @@
 
             <div>
                 <input id="general-chatbox" type="text" name="chat" value="" />
-                <button onclick="SendChat(document.getElementById('general-chatbox').value, 'general-chatbox' , 'general' , '')">Send</button>
+                <button onclick="SendChat(document.getElementById('general-chatbox').value, 'general-chatbox' , 'general' , ''); document.getElementById('general-chatbox').value=''">Send</button>
             </div>
             
         }
@@ -37,7 +38,7 @@
 
             <div>
                 <input id="manager-chatbox" type="text" name="chat" value="" />
-                <button onclick="SendChat(document.getElementById('manager-chatbox').value, 'manager-chatbox' , 'room' , 'manager')">Send</button>
+                <button onclick="SendChat(document.getElementById('manager-chatbox').value, 'manager-chatbox' , 'room' , 'manager'); document.getElementById('manager-chatbox').value=''">Send</button>
             </div>
             
             <div onclick="GetUserChat('employee' , 'room')" class="room-chat" id="employee-messages">
@@ -47,7 +48,7 @@
 
             <div>
                 <input id="employee-chatbox" type="text" name="chat" value="" />
-                <button onclick="SendChat(document.getElementById('employee-chatbox').value, 'employee-chatbox' , 'room' , 'employee')">Send</button>
+                <button onclick="SendChat(document.getElementById('employee-chatbox').value, 'employee-chatbox' , 'room' , 'employee'); document.getElementById('employee-chatbox').value='')">Send</button>
             </div>
 
 
@@ -58,7 +59,7 @@
 
             <div>
                 <input id="auditor-chatbox" onclick="SendChat(this.value , 'auditor')" type="text" name="chat" value="" />
-                <button onclick="SendChat(document.getElementById('auditor-chatbox').value, 'auditor-chatbox' , 'room' ,'auditor')">Send</button>
+                <button onclick="SendChat(document.getElementById('auditor-chatbox').value, 'auditor-chatbox' , 'room' ,'auditor'); document.getElementById('auditor-chatbox').value=''">Send</button>
             </div>
 
         }
@@ -74,15 +75,14 @@
         {
             foreach (var user in Model)
             {
-                <div onclick="GetUserChat('@user' , 'private')" class="@user">
+                <div onclick="GetUserChat('@user' , 'private')" class="@user" @(user == username ? "hidden" : "")>
                     <p>@user</p>
                     <div id="@user"></div>
-                    
                 </div>
 
-                <div>
+                <div @(user == username ? "hidden" : "")>
                     <input id="@user-chatbox" type="text" name="chat" value="" />
-                    <button onclick="SendChat(document.getElementById('@user-chatbox').value, '@user-chatbox' , 'private' , '')">Send</button>
+                    <button onclick="SendChat(document.getElementById('@user-chatbox').value, '@user-chatbox' , 'private' , ''); document.getElementById('@user-chatbox').value=''">Send</button>
                 </div>
             }
         }
@@ -102,12 +102,36 @@
         console.log("Message received:", chat);
 
         if(chat.section === 'private'){
-                document.getElementById(chat.room).appendChild(document.createElement("p")).innerText = chat.messageText;
+
+                let parts = chat.room.split("-");
+                let id = parts[0];
+                let fullName = parts[1];
+
+                // sender (right)
+                let senderMsg = document.createElement("p");
+                senderMsg.innerText = chat.messageText;
+                senderMsg.style.textAlign = "right";
+                document.getElementById(id)?.appendChild(senderMsg);
+
+                // receiver (left)
+                let receiverMsg = document.createElement("p");
+                receiverMsg.innerText = chat.messageText;
+                receiverMsg.style.textAlign = "left";
+                document.getElementById(fullName)?.appendChild(receiverMsg);
+
         } else {
             if(chat.section === 'room'){
-                document.getElementById(chat.room).appendChild(document.createElement("p")).innerText = chat.messageText;
+
+                let receiverMsg = document.createElement("p");
+                receiverMsg.innerText = chat.messageText;
+                receiverMsg.style.textAlign = "right";
+                document.getElementById(chat.room)?.appendChild(receiverMsg);
             } else if(chat.section === 'general'){
-                document.getElementById('general').appendChild(document.createElement("p")).innerText = chat.messageText;
+
+                let receiverMsg = document.createElement("p");
+                receiverMsg.innerText = chat.messageText;
+                receiverMsg.style.textAlign = "right";
+                document.getElementById("general")?.appendChild(receiverMsg);
             }
             }
     });
