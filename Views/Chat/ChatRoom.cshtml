@@ -1,7 +1,12 @@
-﻿@{
+﻿@using Newtonsoft.Json
+@* <link rel="stylesheet" href="~/css/Chat/chat.css" /> *@
+
+@{
     @model dynamic
+    var newUser = JsonConvert.DeserializeObject<dynamic>(Context.Session.GetString("UserData"));
+
     string Current = ViewBag.Current;
-    string username = ViewBag.UserName;
+    string username = newUser.full_name;
 }
 
 <div class="chat-container">
