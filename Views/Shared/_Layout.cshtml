@@ -1,4 +1,6 @@
-﻿@using Newtonsoft.Json
+﻿<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+@using Newtonsoft.Json
 @{
     var userJson = Context.Session.GetString("UserData");
     SecureBank_Pro.BankEntities.Users _userData = null;
@@ -19,7 +21,7 @@
     <script type="importmap"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/SecureBank_Pro.styles.css" asp-append-version="true" />
+    @* <link rel="stylesheet" href="~/SecureBank_Pro.styles.css" asp-append-version="true" /> *@
 </head>
 <body>
     @if (_userData != null)

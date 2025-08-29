@@ -1,7 +1,7 @@
 ﻿@{
     foreach (var user in Model)
     {
-        <div>
+        <div id="customers">
             <p>Name: @user.full_name</p>
             <p>Email: @user.email</p>
             <p>Address: @user.address</p>
@@ -11,10 +11,12 @@
             <button onclick="EdituserForm('@user.email')">Edit</button>
             <button onclick="ViewUser('@user.email')">View</button>
             <button onclick="DeletedUser()">Deleted</button>
+            <button id="Transaction">Transaction</button>
 
         </div>
     }
 }
+
 
 <script>
     function EdituserForm(email) {
@@ -30,3 +32,16 @@
         window.location.href = "/Dashboard/CustomerProfile?email=" + encodeURIComponent(email);
     }
 </script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $("#Transaction").click(function () {
+            $.get("/Account/TransactionForm", function (data) {
+                $("#customers").html(data).show();
+            });
+        });
+    });
+</script>
+

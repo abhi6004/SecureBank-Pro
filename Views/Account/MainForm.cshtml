@@ -1,0 +1,64 @@
+﻿@{
+    ViewData["Title"] = "Dynamic Form Example";
+}
+
+<h2>Bank Transactions</h2>
+
+<!-- Menu Buttons -->
+<div>
+    <button type="button" onclick="showSection('withdraw')">Withdraw</button>
+    <button type="button" onclick="showSection('deposit')">Add Balance</button>
+    <button type="button" onclick="showSection('transfer')">User to User Transfer</button>
+</div>
+
+<br />
+
+<!-- Withdraw Section -->
+<div id="withdraw" style="display:block;">
+    <h3>Withdraw Money</h3>
+    <form method="post" asp-action="Withdraw">
+        <label>Amount:</label>
+        <input type="number" name="Amount" required />
+        <br /><br />
+        <button type="submit">Withdraw</button>
+    </form>
+</div>
+
+<!-- Deposit Section -->
+<div id="deposit" style="display:none;">
+    <h3>Add Balance</h3>
+    <form method="post" asp-action="Deposit">
+        <label>Amount:</label>
+        <input type="number" name="Amount" required />
+        <br /><br />
+        <button type="submit">Add Balance</button>
+    </form>
+</div>
+
+
+<!-- Transfer Section -->
+<div id="transfer" style="display:none;">
+    <h3>User to User Transfer</h3>
+    <form method="post" asp-action="Transfer">
+        <label>Recipient User ID:</label>
+        <input type="text" name="RecipientId" required />
+        <br /><br />
+        <label>Amount:</label>
+        <input type="number" name="Amount" required />
+        <br /><br />
+        <button type="submit">Transfer</button>
+    </form>
+</div>
+
+
+<script>
+    function showSection(sectionId) {
+        // Hide all
+        document.getElementById("withdraw").style.display = "none";
+        document.getElementById("deposit").style.display = "none";
+        document.getElementById("transfer").style.display = "none";
+
+        // Show selected
+        document.getElementById(sectionId).style.display = "block";
+    }
+</script>
