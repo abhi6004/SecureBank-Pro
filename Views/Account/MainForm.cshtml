@@ -1,5 +1,6 @@
 ﻿@{
     ViewData["Title"] = "Dynamic Form Example";
+    string email = ViewBag.email;
 }
 
 <h2>Bank Transactions</h2>
@@ -16,9 +17,11 @@
 <!-- Withdraw Section -->
 <div id="withdraw" style="display:block;">
     <h3>Withdraw Money</h3>
-    <form method="post" asp-action="Withdraw">
+    <form method="post">
         <label>Amount:</label>
         <input type="number" name="Amount" required />
+        <input type="hidden" name="Type" value="withdraw" />
+        <input type="hidden" name="Email" value="@email" />
         <br /><br />
         <button type="submit">Withdraw</button>
     </form>
@@ -27,9 +30,11 @@
 <!-- Deposit Section -->
 <div id="deposit" style="display:none;">
     <h3>Add Balance</h3>
-    <form method="post" asp-action="Deposit">
+    <form method="post">
         <label>Amount:</label>
         <input type="number" name="Amount" required />
+        <input type="hidden" name="Type" value="deposit" />
+        <input type="hidden" name="Email" value="@email" />
         <br /><br />
         <button type="submit">Add Balance</button>
     </form>
@@ -39,12 +44,14 @@
 <!-- Transfer Section -->
 <div id="transfer" style="display:none;">
     <h3>User to User Transfer</h3>
-    <form method="post" asp-action="Transfer">
+    <form method="post">
         <label>Recipient User ID:</label>
         <input type="text" name="RecipientId" required />
         <br /><br />
         <label>Amount:</label>
         <input type="number" name="Amount" required />
+        <input type="hidden" name="Type" value="transfer" />
+        <input type="hidden" name="Email" value="@email" />
         <br /><br />
         <button type="submit">Transfer</button>
     </form>
@@ -61,4 +68,33 @@
         // Show selected
         document.getElementById(sectionId).style.display = "block";
     }
+</script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+        $("form").submit(function(e){
+      e.preventDefault();
+
+      let postData = {
+        Amount: $(this).find("input[name='Amount']").val(),
+        RecipientId: $(this).find("input[name='RecipientId']").val(),
+        Type: $(this).find("input[name='Type']").val()
+        Email: $(this).find("input[name='Email']").val()
+    };
+    let container = $(this).closest(".customers");
+
+
+      $.ajax({
+        url: "/Account/Transaction",
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(postData),
+        success: function (data) {
+            container.html(data).show();
+        }
+    });
+
+    });
+
 </script>

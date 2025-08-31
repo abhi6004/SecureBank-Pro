@@ -1,7 +1,7 @@
 ﻿@{
     foreach (var user in Model)
     {
-        <div id="customers">
+        <div class="customers">
             <p>Name: @user.full_name</p>
             <p>Email: @user.email</p>
             <p>Address: @user.address</p>
@@ -11,7 +11,7 @@
             <button onclick="EdituserForm('@user.email')">Edit</button>
             <button onclick="ViewUser('@user.email')">View</button>
             <button onclick="DeletedUser()">Deleted</button>
-            <button id="Transaction">Transaction</button>
+            <button class="Transaction">Transaction</button>
 
         </div>
     }
@@ -37,11 +37,14 @@
 
 <script>
     $(document).ready(function () {
-        $("#Transaction").click(function () {
-            $.get("/Account/TransactionForm", function (data) {
-                $("#customers").html(data).show();
-            });
+    $(".Transaction").click(function () {
+        var container = $(this).closest(".customers");
+
+        let email = $(this).closest(".customers").find("p:nth-child(2)").text().replace("Email: ", "");)
+        $.get("/Account/TransactionForm" , email , function (data) {
+            container.html(data).show();
         });
     });
+});
 </script>
 
