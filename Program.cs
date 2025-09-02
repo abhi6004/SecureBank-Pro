@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using SecureBank_Pro.Data;
 using SecureBank_Pro.Models;
 using SecureBank_Pro.Services;
+using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +15,10 @@ builder.Services.AddSignalR();
 
 builder.Services.AddDbContext<BankDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddControllersWithViews().AddNewtonsoftJson();
+
+
 
 builder.Services.AddAuthentication("UserCookies")
     .AddCookie("UserCookies", options =>

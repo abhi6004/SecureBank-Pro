@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
+using SecureBank_Pro.BankEntities;
 using SecureBank_Pro.Data;
 
 namespace SecureBank_Pro.Controllers
@@ -17,7 +18,7 @@ namespace SecureBank_Pro.Controllers
         }
 
         [HttpPost]
-        public IActionResult Transaction([FromBody] JObject data)
+        public async Task<IActionResult> Transaction([FromBody] JObject data)
         {
             //var amount = data["Amount"]?.ToObject<decimal>();
             //var recipient = data["RecipientId"]?.ToObject<string?>();
@@ -54,15 +55,37 @@ namespace SecureBank_Pro.Controllers
 
             if (Type == "withdraw")
             {
-                SecureBank_Pro.Services.Account.WithdrawMoney(_context, amount, Type , Email);
+                Users user = await SecureBank_Pro.Services.GetUsers.GetUserById(Email, _context);
+
+                if (user == null)
+                {
+                    return BadRequest("User not found.");
+                }
+                await SecureBank_Pro.Services.Account.WithdrawMoney(_context, amount, Type , user.id);
             }
             else if (Type == "deposit")
             {
-                SecureBank_Pro.Services.Account.AddBalance(_context ,amount, Type , Email);
+                Users user = await SecureBank_Pro.Services.GetUsers.GetUserById(Email, _context);
+
+                if (user == null)
+                {
+                    return BadRequest("User not found.");
+                }
+
+                await SecureBank_Pro.Services.Account.AddBalance(_context ,amount, Type , user.id);
             }
             else if (Type == "transfer")
             {
-                SecureBank_Pro.Services.Account.UserTransfer(_context , amount, Type, Email, recipient);
+                Users user = await SecureBank_Pro.Services.GetUsers.GetUserById(Email, _context);
+                Users recipientUser = await SecureBank_Pro.Services.GetUsers.GetUserById(recipient, _context);
+
+                if (user == null || recipientUser == null)
+                {
+                    return Json(new { success = false, message = "User not found." });
+                }
+
+                await SecureBank_Pro.Services.Account.WithdrawMoney(_context, amount, Type, user.id);
+                await SecureBank_Pro.Services.Account.AddBalance(_context, amount, Type, recipientUser.id);
             }
 
             return PartialView("MainForm");

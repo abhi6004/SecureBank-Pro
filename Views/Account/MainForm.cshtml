@@ -3,6 +3,7 @@
     string email = ViewBag.email;
 }
 
+
 <h2>Bank Transactions</h2>
 
 <!-- Menu Buttons -->
@@ -40,7 +41,6 @@
     </form>
 </div>
 
-
 <!-- Transfer Section -->
 <div id="transfer" style="display:none;">
     <h3>User to User Transfer</h3>
@@ -56,6 +56,8 @@
         <button type="submit">Transfer</button>
     </form>
 </div>
+
+
 
 
 <script>
@@ -74,14 +76,16 @@
 
 <script>
         $("form").submit(function(e){
-      e.preventDefault();
+        e.preventDefault();
 
-      let postData = {
-        Amount: $(this).find("input[name='Amount']").val(),
-        RecipientId: $(this).find("input[name='RecipientId']").val(),
-        Type: $(this).find("input[name='Type']").val()
-        Email: $(this).find("input[name='Email']").val()
-    };
+
+        let postData = {
+                Amount: $(this).find("input[name='Amount']").val() || null,
+                RecipientId: $(this).find("input[name='RecipientId']").val() || null,
+                Type: $(this).find("input[name='Type']").val() || null,
+                Email: $(this).find("input[name='Email']").val() || null
+
+        };
     let container = $(this).closest(".customers");
 
 

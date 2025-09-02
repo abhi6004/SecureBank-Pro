@@ -2,18 +2,22 @@
     foreach (var user in Model)
     {
         <div class="customers">
-            <p>Name: @user.full_name</p>
-            <p>Email: @user.email</p>
-            <p>Address: @user.address</p>
-            <p>DOB: @user.date_of_birth</p>
-            <p>KYC: @user.kyc_status</p>
+            <div class="customers_data">
+                <p>Name: @user.full_name</p>
+                <p>Email: @user.email</p>
+                <p>Address: @user.address</p>
+                <p>DOB: @user.date_of_birth</p>
+                <p>KYC: @user.kyc_status</p>
 
-            <button onclick="EdituserForm('@user.email')">Edit</button>
-            <button onclick="ViewUser('@user.email')">View</button>
-            <button onclick="DeletedUser()">Deleted</button>
-            <button class="Transaction">Transaction</button>
+                <button onclick="EdituserForm('@user.email')">Edit</button>
+                <button onclick="ViewUser('@user.email')">View</button>
+                <button onclick="DeletedUser()">Deleted</button>
+                <button class="Transaction">Transaction</button>
+            </div>
 
+            <div class="Bank_transactions"></div>
         </div>
+        
     }
 }
 
@@ -36,15 +40,44 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
-    $(document).ready(function () {
-    $(".Transaction").click(function () {
-        var container = $(this).closest(".customers");
+    //     $(document).ready(function () {
+    //     $(".Transaction").click(function () {
+    //     $(".customers_data").addClass("active").show();
+    //     $(".Bank_transactions").removeClass("active").hide();
 
-        let email = $(this).closest(".customers").find("p:nth-child(2)").text().replace("Email: ", "");)
-        $.get("/Account/TransactionForm" , email , function (data) {
-            container.html(data).show();
+
+    //         var transactionsContainer = $(this).closest(".customers_data").siblings(".Bank_transactions");
+    //         var customersContainer = $(this).closest(".customers_data");
+
+    //         let email = $(this).closest(".customers_data").find("p:nth-child(2)").text().replace("Email: ", "");
+    //         $.get("/Account/TransactionForm" , email , function (data) {
+    //             customersContainer.children().hide();
+    //             transactionsContainer.html(data).show();
+    //         });
+    //     });
+    // });
+
+        $(document).ready(function () {
+        $(".Transaction").click(function () {
+
+            // Reset all customers first
+            $(".customers_data").show();
+            $(".Bank_transactions").hide();
+
+            // Current containers
+            var customersContainer = $(this).closest(".customers_data");
+            var transactionsContainer = customersContainer.siblings(".Bank_transactions");
+
+            // Get email
+            let email = customersContainer.find("p:nth-child(2)").text().replace("Email: ", "");
+
+            // Load form
+            $.get("/Account/TransactionForm", { email: email }, function (data) {
+                customersContainer.hide();  // hide current data
+                transactionsContainer.html(data).show(); // show form
+            });
         });
     });
-});
+
 </script>
 
