@@ -21,6 +21,8 @@
     <form method="post">
         <label>Amount:</label>
         <input type="number" name="Amount" required />
+        <label>Description:</label>
+        <input type="text" name="Description" value="" />
         <input type="hidden" name="Type" value="withdraw" />
         <input type="hidden" name="Email" value="@email" />
         <br /><br />
@@ -34,6 +36,8 @@
     <form method="post">
         <label>Amount:</label>
         <input type="number" name="Amount" required />
+        <label>Description:</label>
+        <input type="text" name="Description" value=""/>
         <input type="hidden" name="Type" value="deposit" />
         <input type="hidden" name="Email" value="@email" />
         <br /><br />
@@ -50,6 +54,8 @@
         <br /><br />
         <label>Amount:</label>
         <input type="number" name="Amount" required />
+        <label>Description:</label>
+        <input type="text" name="Description" value="" />
         <input type="hidden" name="Type" value="transfer" />
         <input type="hidden" name="Email" value="@email" />
         <br /><br />
@@ -75,28 +81,29 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
-        $("form").submit(function(e){
-        e.preventDefault();
+    $("form").submit(function(e){
+    e.preventDefault();
 
 
-        let postData = {
-                Amount: $(this).find("input[name='Amount']").val() || null,
-                RecipientId: $(this).find("input[name='RecipientId']").val() || null,
-                Type: $(this).find("input[name='Type']").val() || null,
-                Email: $(this).find("input[name='Email']").val() || null
+    let postData = {
+            Amount: $(this).find("input[name='Amount']").val() || null,
+            RecipientId: $(this).find("input[name='RecipientId']").val() || null,
+            Type: $(this).find("input[name='Type']").val() || null,
+            Email: $(this).find("input[name='Email']").val() || null,
+            Description: $(this).find("input[name='Description']").val() || null
+    };
 
-        };
     let container = $(this).closest(".customers");
 
 
-      $.ajax({
-        url: "/Account/Transaction",
-        type: "POST",
-        contentType: "application/json",
-        data: JSON.stringify(postData),
-        success: function (data) {
-            container.html(data).show();
-        }
+    $.ajax({
+    url: "/Account/Transaction",
+    type: "POST",
+    contentType: "application/json",
+    data: JSON.stringify(postData),
+    success: function (data) {
+        container.html(data).show();
+    }
     });
 
     });

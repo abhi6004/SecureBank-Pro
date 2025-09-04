@@ -20,13 +20,11 @@ namespace SecureBank_Pro.Controllers
         [HttpPost]
         public async Task<IActionResult> Transaction([FromBody] JObject data)
         {
-            //var amount = data["Amount"]?.ToObject<decimal>();
-            //var recipient = data["RecipientId"]?.ToObject<string?>();
-
             decimal amount = 0;
             string recipient = "";
             string Type = "";
             string Email = "";
+            string Description = "";
 
             if (data != null)
             {
@@ -50,6 +48,11 @@ namespace SecureBank_Pro.Controllers
                     Email = (string)data["Email"];
                 }
 
+                if (data["Description"] != null)
+                {
+                    Description = (string)data["Description"];
+                }
+
             }
 
 
@@ -61,7 +64,11 @@ namespace SecureBank_Pro.Controllers
                 {
                     return BadRequest("User not found.");
                 }
-                await SecureBank_Pro.Services.Account.WithdrawMoney(_context, amount, Type , user.id);
+
+                await SecureBank_Pro.Services.Account.WithdrawMoney(_context, amount, Type, user.id);
+                decimal balance = await SecureBank_Pro.Services.Account.CheckBalance(_context, user.id);
+
+                await SecureBank_Pro.Services.Account.TransectionEntry(_context, Description, amount, Type, user.id, balance);
             }
             else if (Type == "deposit")
             {
@@ -72,7 +79,14 @@ namespace SecureBank_Pro.Controllers
                     return BadRequest("User not found.");
                 }
 
-                await SecureBank_Pro.Services.Account.AddBalance(_context ,amount, Type , user.id);
+                bool isSuccess = await SecureBank_Pro.Services.Account.AddBalance(_context, amount, Type, user.id);
+
+                if (isSuccess)
+                {
+                    decimal balance = await SecureBank_Pro.Services.Account.CheckBalance(_context, user.id);
+
+                    await SecureBank_Pro.Services.Account.TransectionEntry(_context, Description, amount, Type, user.id, balance);
+                }
             }
             else if (Type == "transfer")
             {
@@ -85,7 +99,16 @@ namespace SecureBank_Pro.Controllers
                 }
 
                 await SecureBank_Pro.Services.Account.WithdrawMoney(_context, amount, Type, user.id);
-                await SecureBank_Pro.Services.Account.AddBalance(_context, amount, Type, recipientUser.id);
+                decimal senderBalance = await SecureBank_Pro.Services.Account.CheckBalance(_context, user.id);
+                await SecureBank_Pro.Services.Account.TransectionEntry(_context, $"Transfer to {recipientUser.email}", amount, Type, user.id, senderBalance);
+
+                bool recipientSuccess = await SecureBank_Pro.Services.Account.AddBalance(_context, amount, Type, recipientUser.id);
+
+                if (recipientSuccess)
+                {
+                    decimal recipientBalance = await SecureBank_Pro.Services.Account.CheckBalance(_context, recipientUser.id);
+                    await SecureBank_Pro.Services.Account.TransectionEntry(_context, $"Transfer from {user.email} {Description}", amount, Type, recipientUser.id, recipientBalance);
+                }
             }
 
             return PartialView("MainForm");

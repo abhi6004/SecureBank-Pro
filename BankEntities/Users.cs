@@ -28,7 +28,31 @@ namespace SecureBank_Pro.BankEntities
 
         public bool is_active { get; set; } = false;
         public DateTime? created_at { get; set; }
+
+        public Users(Users other)
+        {
+            this.id = other.id;
+            this.full_name = other.full_name;
+            this.email = other.email;
+            this.password_hash = other.password_hash;
+            this.phone_number = other.phone_number;
+            this.role = other.role;
+            this.address = other.address;
+            this.date_of_birth = other.date_of_birth;
+            this.kyc_status = other.kyc_status;
+            this.branch_assigned = other.branch_assigned;
+            this.hire_date = other.hire_date;
+            this.role_title = other.role_title;
+            this.assigned_region = other.assigned_region;
+            this.can_export_reports = other.can_export_reports;
+            this.last_login_time = other.last_login_time;
+            this.is_active = other.is_active;
+            this.created_at = other.created_at;
+        }
+
+        public Users() { }
     }
+
     public class Balance
     {
         [Key]
@@ -38,7 +62,18 @@ namespace SecureBank_Pro.BankEntities
         public DateTime LastUpdated { get; set; }
         public bool IsFrozen { get; set; }
 
+        public Balance(Balance other)
+        {
+            this.UserId = other.UserId;
+            this.Amount = other.Amount;
+            this.CurrencyCode = other.CurrencyCode;
+            this.LastUpdated = other.LastUpdated;
+            this.IsFrozen = other.IsFrozen;
+        }
+
+        public Balance() { }
     }
+
     public class Transaction
     {
         [Key]
@@ -50,7 +85,20 @@ namespace SecureBank_Pro.BankEntities
         public string Description { get; set; }
         public DateTime CreatedAt { get; set; }
 
+        public Transaction(Transaction other)
+        {
+            this.Trasactionsid = other.Trasactionsid;
+            this.UserId = other.UserId;
+            this.TransactionType = other.TransactionType;
+            this.Amount = other.Amount;
+            this.BalanceAfter = other.BalanceAfter;
+            this.Description = other.Description;
+            this.CreatedAt = other.CreatedAt;
+        }
+
+        public Transaction() { }
     }
+
     public class ChatHistory
     {
         public int Id { get; set; }
@@ -60,6 +108,18 @@ namespace SecureBank_Pro.BankEntities
         public DateTime SentAt { get; set; }
         public string Section { get; set; }
         public string? Room { get; set; }
-    }
 
+        public ChatHistory(ChatHistory other)
+        {
+            this.Id = other.Id;
+            this.SenderId = other.SenderId;
+            this.ReceiverId = other.ReceiverId;
+            this.MessageText = other.MessageText;
+            this.SentAt = other.SentAt;
+            this.Section = other.Section;
+            this.Room = other.Room;
+        }
+
+        public ChatHistory() { }
+    }
 }

@@ -90,6 +90,17 @@ namespace SecureBank_Pro.Controllers
         {
             string role = users.role;
             bool isUpdate = await UserInserToDB.UserUpdate(_context, users);
+
+            if(role == "Customer")
+            {
+                role = "Customers";
+            }
+
+            if(role == "Manager")
+            {
+                role = "Managers";
+            }
+
             return RedirectToAction(role , "Dashboard");
         }
 
