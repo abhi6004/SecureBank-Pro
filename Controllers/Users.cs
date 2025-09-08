@@ -22,8 +22,9 @@ namespace SecureBank_Pro.Controllers
         public UsersController(BankDbContext context) => _context = context;
 
         [HttpGet]
-        public IActionResult Login()
+        public async Task<IActionResult> Login()
         {
+            await HttpContext.SignOutAsync("UserCookies");
             return View();
         }
 
