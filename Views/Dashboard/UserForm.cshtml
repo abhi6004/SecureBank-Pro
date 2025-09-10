@@ -1,12 +1,12 @@
 ﻿@model SecureBank_Pro.Models.User
 
 @{
-    string Role = Model.Role;
     string userRole = ViewBag.Role;
+    string currentRole = ViewBag.currentRole;
 }
 
 <div>
-    @if (!string.IsNullOrEmpty(Role))
+    @if (!string.IsNullOrEmpty(userRole))
     {
         <h3>User Registration From</h3>
         <form asp-action="UserForm" method="post">
@@ -19,7 +19,7 @@
 
             <div>
                 <label>Password</label>
-                <input asp-for="PasswordHash" type="password" />
+                <input asp-for="PasswordHash" type="password" autocomplete="new-password"/>
             </div>
 
             <div>
@@ -28,16 +28,15 @@
             </div>
 
             <!-- Show Email if NOT Auditor -->
-            @if (Model.Role != "Auditor")
-            {
-                <div>
-                    <label>Email</label>
-                    <input asp-for="Email" type="email" />
-                </div>
-            }
+            
+            <div>
+                <label>Email</label>
+                <input asp-for="Email" type="email" autocomplete="off"/>
+            </div>
+            
 
             <!-- Customer Fields -->
-            @if (Model.Role == "Customer")
+            @if (userRole == "Customer")
             {
                 <div>
                     <label>Address</label>
@@ -60,7 +59,7 @@
             }
 
             <!-- Manager & Employee Fields -->
-            @if (Model.Role == "Manager" || Model.Role == "Employee")
+            @if (userRole == "Manager" || userRole == "Employee")
             {
                 <div>
                     <label>Branch Assigned</label>
@@ -74,7 +73,7 @@
             }
 
             <!-- Employee Specific Field -->
-            @if (Model.Role == "Employee")
+            @if (userRole == "Employee")
             {
                 <div>
                     <label>Role Title</label>
@@ -83,7 +82,7 @@
             }
 
             <!-- Auditor Specific Fields -->
-            @if (Model.Role == "Auditor")
+            @if (userRole == "Auditor")
             {
                 <div>
                     <label>Assigned Region</label>
@@ -121,18 +120,18 @@
         <form asp-action="UserForm" method="get">
             <div>
                 <label for="Role">Role</label>
-                @if (userRole == "Employee")
+                @if (currentRole == "Employee")
                 {
                     <select name="Role">
-                        <option value="Customers">Customers</option>
+                        <option value="Customer">Customers</option>
                     </select>
                 }
-                else if (userRole == "Manager")
+                else if (currentRole == "Manager")
                 {
                     <select name="Role">
-                        <option value="Customers">Customers</option>
+                        <option value="Customer">Customers</option>
                         <option value="Employee">Employee</option>
-                        <option value="Managers">Managers</option>
+                        <option value="Manager">Managers</option>
                         <option value="Auditor">Auditor</option>
                     </select>
                 }

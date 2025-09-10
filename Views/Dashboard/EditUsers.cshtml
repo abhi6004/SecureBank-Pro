@@ -17,10 +17,13 @@
                 <input asp-for="full_name" type="text"/>
             </div>
 
-            <div>
-                <label>Password</label>
-                <input asp-for="password_hash" type="password" />
-            </div>
+            @* <div>
+                <label >Password</label>
+                <div style="display : flex">
+                    <input id="password" asp-for="password_hash" type="password" />
+                    <img id="toggleButton" src="~/images/hide.png" />
+                </div>
+            </div> *@
 
             <div>
                 <label>Phone Number</label>
@@ -31,14 +34,10 @@
                 <input asp-for="role" type="hidden" value="@Model.role" />
             </div>
 
-            <!-- Show Email if NOT Auditor -->
-            @if (Model.role != "Auditor")
-            {
-                <div>
-                    <label>Email</label>
-                    <input asp-for="email" type="email" />
-                </div>
-            }
+            <div>
+                <label>Email</label>
+                <input asp-for="email" type="email" readonly/>
+            </div>
 
             <!-- Customer Fields -->
             @if (Model.role == "Customer")
@@ -105,7 +104,7 @@
 
                 <div>
                     <label>Last Login Time</label>
-                    <input asp-for="last_login_time" type="datetime-local" />
+                    <input asp-for="last_login_time" type="datetime-local" readonly/>
                 </div>
             }
 
@@ -123,3 +122,14 @@
     }
 </div>
 
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $("#toggleButton").click(function(){
+        var passField = $("#password");
+        var type = passField.attr("type") === "password" ? "text" : "password";
+        passField.attr("type", type);
+
+        $(this).attr("src", type === "password" ? "/images/hide.png" : "/images/view.png");
+    });
+</script>

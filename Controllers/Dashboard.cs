@@ -55,16 +55,19 @@ namespace SecureBank_Pro.Controllers
         [Authorize(Roles = "Employee , Manager")]
         public IActionResult UserForm(string Role)
         {
-            ViewBag.Role = User.FindFirst(ClaimTypes.Role).Value;
-            User user = new User { Role = Role };
+            ModelState.Clear();
+            ViewBag.currentRole = User.FindFirst(ClaimTypes.Role).Value;
+            ViewBag.Role = Role;
             TempData["role"] = Role;
-            return View(user);
+
+            return View();
         }
 
         [HttpPost]
         public async Task<IActionResult> UserForm(User user)
         {
             user.Role = TempData["role"].ToString();
+
             bool isUserCreate = await UserInserToDB.InsertUserToDB(_context, user);
             if (isUserCreate)
             {

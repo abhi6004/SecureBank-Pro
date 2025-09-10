@@ -21,12 +21,38 @@
 
         // Auditor fields
         public string? AssignedRegion { get; set; }
-        public string CanExportReports { get; set; } 
+        public string CanExportReports { get; set; } = "false";
         public DateTime? LastLoginTime { get; set; }
 
         // Common fields
         public bool IsActive { get; set; } = true;
         public DateTime CreatedAt { get; set; } = DateTime.Now;
-    }
 
+        // Empty constructor (optional but explicit)
+        public User() { }
+
+        // Copy constructor
+        public User(User other)
+        {
+            if (other == null) return;
+
+            Id = other.Id;
+            FullName = other.FullName;
+            Email = other.Email;
+            PasswordHash = other.PasswordHash;
+            PhoneNumber = other.PhoneNumber;
+            Role = other.Role;
+            Address = other.Address;
+            DateOfBirth = other.DateOfBirth;
+            KycStatus = other.KycStatus;
+            BranchAssigned = other.BranchAssigned;
+            HireDate = other.HireDate;
+            RoleTitle = other.RoleTitle;
+            AssignedRegion = other.AssignedRegion;
+            CanExportReports = other.CanExportReports;
+            LastLoginTime = other.LastLoginTime;
+            IsActive = other.IsActive;
+            CreatedAt = other.CreatedAt;
+        }
+    }
 }
