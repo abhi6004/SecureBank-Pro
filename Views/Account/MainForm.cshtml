@@ -101,9 +101,12 @@
     type: "POST",
     contentType: "application/json",
     data: JSON.stringify(postData),
-    success: function (data) {
-        container.html(data).show();
+        success: function (data) {
+            // debugger;
+        $(`#customer_${data}`).show();
+        $(".Bank_transactions").empty();
     }
+
     });
 
     });

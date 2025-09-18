@@ -15,6 +15,7 @@ namespace SecureBank_Pro.Services
 
                 Account.Amount = Account.Amount - amount;
                 await context.SaveChangesAsync();
+                //await Logs.LogTransaction($"Withdraw of {amount} for User ID: {id}");
                 return true;
             }
             catch (Exception ex)
@@ -33,6 +34,7 @@ namespace SecureBank_Pro.Services
 
                 Account.Amount = Account.Amount + amount;
                 await context.SaveChangesAsync();
+                //await Logs.LogTransaction($"Deposit of {amount} for User ID: {id}");
                 return true;
             }
             catch (Exception ex)

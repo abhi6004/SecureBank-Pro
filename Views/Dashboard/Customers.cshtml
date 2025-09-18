@@ -2,7 +2,7 @@
     foreach (var user in Model)
     {
         <div class="customers">
-            <div class="customers_data">
+            <div class="customers_data" id="customer_@user.id">
                 <p>Name: @user.full_name</p>
                 <p>Email: @user.email</p>
                 <p>Address: @user.address</p>
@@ -40,23 +40,6 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
-    //     $(document).ready(function () {
-    //     $(".Transaction").click(function () {
-    //     $(".customers_data").addClass("active").show();
-    //     $(".Bank_transactions").removeClass("active").hide();
-
-
-    //         var transactionsContainer = $(this).closest(".customers_data").siblings(".Bank_transactions");
-    //         var customersContainer = $(this).closest(".customers_data");
-
-    //         let email = $(this).closest(".customers_data").find("p:nth-child(2)").text().replace("Email: ", "");
-    //         $.get("/Account/TransactionForm" , email , function (data) {
-    //             customersContainer.children().hide();
-    //             transactionsContainer.html(data).show();
-    //         });
-    //     });
-    // });
-
         $(document).ready(function () {
         $(".Transaction").click(function () {
 

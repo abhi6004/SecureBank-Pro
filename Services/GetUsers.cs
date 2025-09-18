@@ -9,9 +9,13 @@ namespace SecureBank_Pro.Services
     {
         public static async Task<List<Users>> FetchUsers(string role, BankDbContext context)
         {
-            // Use LINQ to filter users by role
-            List<Users> listOfUsers = await context.Users.Where(c => c.role == role).ToListAsync();
-            return listOfUsers;
+            try
+            {
+                List<Users> listOfUsers = await context.Users.Where(c => c.role == role).ToListAsync();
+                return listOfUsers;
+            }
+            catch(Exception ex) { return null; }
+
         }
 
         public static async Task<Users> GetUserById(string email, BankDbContext context)
@@ -21,25 +25,34 @@ namespace SecureBank_Pro.Services
             return user;
         }
 
-        public static async Task<UserProfile> GetUserProfile(string email , BankDbContext context)
+        public static async Task<UserProfile> GetUserProfile(string email, BankDbContext context)
         {
-            Users user = await context.Users.FirstOrDefaultAsync(c => c.email == email);
-            List<Transaction> transactions = await context.Transactions.Where(c => c.UserId == user.id).ToListAsync();
-            Balance userBalance = await context.Balances.FirstOrDefaultAsync(c => c.UserId == user.id);
-
-            if (user != null)
+            try
             {
-                UserProfile userProfile = new UserProfile();
-                userProfile.Transactions = new List<Transaction>();
-                userProfile.Users = user;
-                userProfile.Balance = userBalance;
-                userProfile.Transactions = transactions;
+                Users user = await context.Users.FirstOrDefaultAsync(c => c.email == email);
 
-                return userProfile;
+                if (user != null)
+                {
+                    List<Transaction> transactions = await context.Transactions.Where(c => c.UserId == user.id).ToListAsync();
+                    Balance userBalance = await context.Balances.FirstOrDefaultAsync(c => c.UserId == user.id);
+
+                    UserProfile userProfile = new UserProfile();
+                    userProfile.Transactions = new List<Transaction>();
+                    userProfile.Users = user;
+                    userProfile.Balance = userBalance;
+                    userProfile.Transactions = transactions;
+
+                    return userProfile;
+                }
+                else
+                {
+                    return null;
+                }
+
             }
-            else
+            catch (Exception ex)
             {
-                return null; // or throw an exception, depending on your error handling strategy
+                return null;
             }
         }
     }
