@@ -19,22 +19,30 @@ namespace SecureBank_Pro.Controllers
         [Authorize(Roles = "Employee , Manager , Auditor")]
         public async Task<IActionResult> ChatRoom(string section)
         {
-            List<string> users = new List<string>();
-            ViewBag.Current = "MainChat";
-            var userJson = HttpContext.Session.GetString("UserData");
-            Users currentUser = JsonConvert.DeserializeObject<Users>(userJson);
-
-            if (section == "private-messages")
+            try
             {
-                users = await Chat.GetAllUsers(section, _context , currentUser.full_name);
-                ViewBag.Current = "private-messages";
-            }
-            else if (section == "rooms-section")
-            {
-                ViewBag.Current = "rooms-section";
-            }
+                List<string> users = new List<string>();
+                ViewBag.Current = "MainChat";
+                var userJson = HttpContext.Session.GetString("UserData");
+                Users currentUser = JsonConvert.DeserializeObject<Users>(userJson);
 
-            return View(users);
+                if (section == "private-messages")
+                {
+                    users = await Chat.GetAllUsers(section, _context, currentUser.full_name);
+                    ViewBag.Current = "private-messages";
+                }
+                else if (section == "rooms-section")
+                {
+                    ViewBag.Current = "rooms-section";
+                }
+
+                return View(users);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw;
+            }
         }
 
         [HttpGet]
@@ -77,7 +85,7 @@ namespace SecureBank_Pro.Controllers
             {
                 // Handle exceptions, log errors, etc.
                 Console.WriteLine($"An error occurred while getting user chat: {ex.Message}");
-                return $"Error: {ex.Message}";
+                throw;
             }
         }
 

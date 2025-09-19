@@ -32,25 +32,33 @@ namespace SecureBank_Pro.Controllers
 
         public async Task<IActionResult> Login(string email, string password)
         {
-            Users isLogin = await UserInserToDB.UserLoginCheck(_context, email, password);
-
-            if (isLogin != null)
+            try
             {
-                var claims = new List<Claim>
+                Users isLogin = await UserInserToDB.UserLoginCheck(_context, email, password);
+
+                if (isLogin != null)
+                {
+                    var claims = new List<Claim>
                 {
                 new Claim(ClaimTypes.Email, email) ,
                 new Claim(ClaimTypes.Role , isLogin.role)
                 };
-                var claimsIdentity = new ClaimsIdentity(claims, "UserCookies");
+                    var claimsIdentity = new ClaimsIdentity(claims, "UserCookies");
 
-                ViewBag.UserName = isLogin.full_name;
-                HttpContext.Session.SetString("UserData", JsonConvert.SerializeObject(isLogin));
-                await HttpContext.SignInAsync("UserCookies", new ClaimsPrincipal(claimsIdentity));
-                return RedirectToAction("Profile", "Dashboard");
+                    ViewBag.UserName = isLogin.full_name;
+                    HttpContext.Session.SetString("UserData", JsonConvert.SerializeObject(isLogin));
+                    await HttpContext.SignInAsync("UserCookies", new ClaimsPrincipal(claimsIdentity));
+                    return RedirectToAction("Profile", "Dashboard");
+                }
+                else
+                {
+                    throw new Exception("Invalid User Login");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                throw new Exception("Invalid User Login");
+                Console.WriteLine(ex.Message);
+                throw;
             }
         }
 

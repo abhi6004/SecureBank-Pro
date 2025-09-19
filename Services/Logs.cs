@@ -4,9 +4,17 @@
     {
         public static async Task LogTransaction(string message)
         {
-            string _transactionLogFile = Path.Combine(Directory.GetCurrentDirectory(), "Logs/transaction.txt");
-            string log = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss} - {message}{Environment.NewLine}";
-            await File.AppendAllTextAsync(_transactionLogFile, log);
+            try
+            {
+                string _transactionLogFile = Path.Combine(Directory.GetCurrentDirectory(), "Logs/transaction.txt");
+                string log = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss} - {message}{Environment.NewLine}";
+                await File.AppendAllTextAsync(_transactionLogFile, log);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw;
+            }
         }
     }
 }

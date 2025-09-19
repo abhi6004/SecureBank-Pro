@@ -2,6 +2,7 @@
 using SecureBank_Pro.BankEntities;
 using SecureBank_Pro.Data;
 using SecureBank_Pro.Models;
+using System.Data;
 
 namespace SecureBank_Pro.Services
 {
@@ -14,15 +15,27 @@ namespace SecureBank_Pro.Services
                 List<Users> listOfUsers = await context.Users.Where(c => c.role == role).ToListAsync();
                 return listOfUsers;
             }
-            catch(Exception ex) { return null; }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw;
+            }
 
         }
 
         public static async Task<Users> GetUserById(string email, BankDbContext context)
         {
-            // Use LINQ to find a user by ID
-            Users user = await context.Users.FirstOrDefaultAsync(c => c.email == email);
-            return user;
+
+            try
+            {
+                Users user = await context.Users.FirstOrDefaultAsync(c => c.email == email);
+                return user;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw;
+            }
         }
 
         public static async Task<UserProfile> GetUserProfile(string email, BankDbContext context)
@@ -52,7 +65,8 @@ namespace SecureBank_Pro.Services
             }
             catch (Exception ex)
             {
-                return null;
+                Console.WriteLine(ex.Message);
+                throw;
             }
         }
     }

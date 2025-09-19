@@ -51,21 +51,29 @@ namespace SecureBank_Pro.Services
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                return false;
+                throw;
             }
         }
 
         public static async Task<Users> UserLoginCheck(BankDbContext _context, string email, string password)
         {
-            bool isLoginUser = await _context.Users.AnyAsync(u => u.email == email && u.password_hash == password);
-            Users _user = await _context.Users.FirstOrDefaultAsync(u => u.email == email && u.password_hash == password);
-
-            if (_user == null)
+            try
             {
-                return null;
-            }
+                bool isLoginUser = await _context.Users.AnyAsync(u => u.email == email && u.password_hash == password);
+                Users _user = await _context.Users.FirstOrDefaultAsync(u => u.email == email && u.password_hash == password);
 
-            return _user;
+                if (_user == null)
+                {
+                    return null;
+                }
+
+                return _user;
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw;
+            }
         }
 
         public static async Task<bool> UserUpdate(BankDbContext _context, Users user)
@@ -105,7 +113,7 @@ namespace SecureBank_Pro.Services
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                return false;
+                throw;
             }
         }
     }

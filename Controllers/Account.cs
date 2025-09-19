@@ -20,111 +20,128 @@ namespace SecureBank_Pro.Controllers
         [HttpGet]
         public IActionResult TransactionForm(string email)
         {
-            ViewBag.email = email;
-            return PartialView("MainForm");
+            try
+            {
+                ViewBag.email = email;
+                return PartialView("MainForm");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw;
+            }
         }
 
         [HttpPost]
         public async Task<IActionResult> Transaction([FromBody] JObject data)
         {
-            decimal amount = 0;
-            string recipient = "";
-            string Type = "";
-            string Email = "";
-            string Description = "";
-
-            if (data != null)
+            try
             {
-                if (data["Amount"] != null)
+                decimal amount = 0;
+                string recipient = "";
+                string Type = "";
+                string Email = "";
+                string Description = "";
+
+                if (data != null)
                 {
-                    amount = (decimal)data["Amount"];
+                    if (data["Amount"] != null)
+                    {
+                        amount = (decimal)data["Amount"];
+                    }
+
+                    if (data["RecipientId"] != null)
+                    {
+                        recipient = (string)data["RecipientId"];
+                    }
+
+                    if (data["Type"] != null)
+                    {
+                        Type = (string)data["Type"];
+                    }
+
+                    if (data["Email"] != null)
+                    {
+                        Email = (string)data["Email"];
+                    }
+
+                    if (data["Description"] != null)
+                    {
+                        Description = (string)data["Description"];
+                    }
+
                 }
 
-                if (data["RecipientId"] != null)
+
+                if (Type == "withdraw")
                 {
-                    recipient = (string)data["RecipientId"];
-                }
+                    Users user = await SecureBank_Pro.Services.GetUsers.GetUserById(Email, _context);
 
-                if (data["Type"] != null)
-                {
-                    Type = (string)data["Type"];
-                }
+                    if (user == null)
+                    {
+                        return BadRequest("User not found.");
+                    }
 
-                if (data["Email"] != null)
-                {
-                    Email = (string)data["Email"];
-                }
-
-                if (data["Description"] != null)
-                {
-                    Description = (string)data["Description"];
-                }
-
-            }
-
-
-            if (Type == "withdraw")
-            {
-                Users user = await SecureBank_Pro.Services.GetUsers.GetUserById(Email, _context);
-
-                if (user == null)
-                {
-                    return BadRequest("User not found.");
-                }
-
-                //_logger.LogInformation("Withdraw initiated for user: {Email}, Amount: {Amount}", Email, amount);
-                await SecureBank_Pro.Services.Account.WithdrawMoney(_context, amount, Type, user.id);
-                await Logs.LogTransaction($"Withdrawal of {amount} from {user.full_name} for {Description}");
-                decimal balance = await SecureBank_Pro.Services.Account.CheckBalance(_context, user.id);
-
-                await SecureBank_Pro.Services.Account.TransectionEntry(_context, Description, amount, Type, user.id, balance);
-                return Content(user.id.ToString());
-            }
-            else if (Type == "deposit")
-            {
-                Users user = await SecureBank_Pro.Services.GetUsers.GetUserById(Email, _context);
-
-                if (user == null)
-                {
-                    return BadRequest("User not found.");
-                }
-
-                bool isSuccess = await SecureBank_Pro.Services.Account.AddBalance(_context, amount, Type, user.id);
-
-                if (isSuccess)
-                {
+                    //_logger.LogInformation("Withdraw initiated for user: {Email}, Amount: {Amount}", Email, amount);
+                    await SecureBank_Pro.Services.Account.WithdrawMoney(_context, amount, Type, user.id);
+                    await Logs.LogTransaction($"Withdrawal of {amount} from {user.full_name} for {Description}");
                     decimal balance = await SecureBank_Pro.Services.Account.CheckBalance(_context, user.id);
-                    await Logs.LogTransaction($"Deposit of {amount} from {user.full_name} for {Description}");
+
                     await SecureBank_Pro.Services.Account.TransectionEntry(_context, Description, amount, Type, user.id, balance);
                     return Content(user.id.ToString());
                 }
+                else if (Type == "deposit")
+                {
+                    Users user = await SecureBank_Pro.Services.GetUsers.GetUserById(Email, _context);
+
+                    if (user == null)
+                    {
+                        return BadRequest("User not found.");
+                    }
+
+                    bool isSuccess = await SecureBank_Pro.Services.Account.AddBalance(_context, amount, Type, user.id);
+
+                    if (isSuccess)
+                    {
+                        decimal balance = await SecureBank_Pro.Services.Account.CheckBalance(_context, user.id);
+                        await Logs.LogTransaction($"Deposit of {amount} from {user.full_name} for {Description}");
+                        await SecureBank_Pro.Services.Account.TransectionEntry(_context, Description, amount, Type, user.id, balance);
+                        return Content(user.id.ToString());
+                    }
+                }
+                else if (Type == "transfer")
+                {
+                    Users user = await SecureBank_Pro.Services.GetUsers.GetUserById(Email, _context);
+                    Users recipientUser = await SecureBank_Pro.Services.GetUsers.GetUserById(recipient, _context);
+
+                    if (user == null || recipientUser == null)
+                    {
+                        return Json(new { success = false, message = "User not found." });
+                    }
+
+                    await SecureBank_Pro.Services.Account.WithdrawMoney(_context, amount, Type, user.id);
+                    decimal senderBalance = await SecureBank_Pro.Services.Account.CheckBalance(_context, user.id);
+                    await SecureBank_Pro.Services.Account.TransectionEntry(_context, $"Transfer to {recipientUser.email}", amount, Type, user.id, senderBalance);
+
+                    bool recipientSuccess = await SecureBank_Pro.Services.Account.AddBalance(_context, amount, Type, recipientUser.id);
+
+                    if (recipientSuccess)
+                    {
+                        decimal recipientBalance = await SecureBank_Pro.Services.Account.CheckBalance(_context, recipientUser.id);
+                        await Logs.LogTransaction($"Transfer of {amount} from {user.full_name} to {recipientUser.full_name} ({Description})");
+                        await SecureBank_Pro.Services.Account.TransectionEntry(_context, $"Transfer from {user.email} {Description}", amount, Type, recipientUser.id, recipientBalance);
+                        return Content(user.id.ToString());
+                    }
+                }
+
+                return null;
             }
-            else if (Type == "transfer")
+            catch (Exception ex)
             {
-                Users user = await SecureBank_Pro.Services.GetUsers.GetUserById(Email, _context);
-                Users recipientUser = await SecureBank_Pro.Services.GetUsers.GetUserById(recipient, _context);
-
-                if (user == null || recipientUser == null)
-                {
-                    return Json(new { success = false, message = "User not found." });
-                }
-
-                await SecureBank_Pro.Services.Account.WithdrawMoney(_context, amount, Type, user.id);
-                decimal senderBalance = await SecureBank_Pro.Services.Account.CheckBalance(_context, user.id);
-                await SecureBank_Pro.Services.Account.TransectionEntry(_context, $"Transfer to {recipientUser.email}", amount, Type, user.id, senderBalance);
-
-                bool recipientSuccess = await SecureBank_Pro.Services.Account.AddBalance(_context, amount, Type, recipientUser.id);
-
-                if (recipientSuccess)
-                {
-                    decimal recipientBalance = await SecureBank_Pro.Services.Account.CheckBalance(_context, recipientUser.id);
-                    await Logs.LogTransaction($"Transfer of {amount} from {user.full_name} to {recipientUser.full_name} ({Description})");
-                    await SecureBank_Pro.Services.Account.TransectionEntry(_context, $"Transfer from {user.email} {Description}", amount, Type, recipientUser.id, recipientBalance);
-                    return Content(user.id.ToString());
-                }
+                Console.WriteLine(ex.Message);
+                throw;
             }
 
-            return null;
         }
     }
 }

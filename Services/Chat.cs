@@ -15,17 +15,25 @@ namespace SecureBank_Pro.Services
     {
         public static async Task<List<string>> GetAllUsers(string section, BankDbContext _context, string userName)
         {
-            List<string> users = new List<string>();
-            if (section == "private-messages")
+            try
             {
-                users = await _context.Users.Select(u => u.full_name).ToListAsync();
-                if (users.Count != 0)
+                List<string> users = new List<string>();
+                if (section == "private-messages")
                 {
-                    return users;
+                    users = await _context.Users.Select(u => u.full_name).ToListAsync();
+                    if (users.Count != 0)
+                    {
+                        return users;
+                    }
                 }
-            }
 
-            return null;
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw;
+            }
 
         }
 
@@ -62,7 +70,7 @@ namespace SecureBank_Pro.Services
             {
                 // Handle exceptions, log errors, etc.
                 Console.WriteLine($"An error occurred while getting user chat: {ex.Message}");
-                throw ex;
+                throw;
             }
         }
 
@@ -88,7 +96,7 @@ namespace SecureBank_Pro.Services
                 if (currentUser == null)
                 {
                     // User not found in the database
-                    return;
+                    throw new Exception("User not found.");
                 }
 
                 int receiverId = 0;
@@ -113,7 +121,7 @@ namespace SecureBank_Pro.Services
 
                 if (newChat.Section == "private")
                 {
-                    newChat.Room = id + "-" +currentUser.full_name;
+                    newChat.Room = id + "-" + currentUser.full_name;
                 }
                 // Send message to all connected clients
                 await Clients.All.SendAsync("ReceiveMessage", newChat);
@@ -125,70 +133,11 @@ namespace SecureBank_Pro.Services
             {
                 // Log the exception
                 Console.WriteLine($"An error occurred while sending chat: {ex.Message}");
+                throw;
             }
         }
     }
 }
-//    public class ChatBoxHub : Hub
-//    {
-//        private readonly BankDbContext _context;
-//        private readonly IHttpContextAccessor _httpContextAccessor;
-//        public ChatBoxHub(BankDbContext context, IHttpContextAccessor httpContextAccessor)
-//        {
-//            _context = context;
-//            _httpContextAccessor = httpContextAccessor;
-//        }
-
-
-
-//        public async Task<object> SendChat(string message, string id, string section, string room)
-//        {
-//            try
-//            {
-//                var userJson = _httpContextAccessor.HttpContext.Session.GetString("UserData");
-//                Users currentUser = JsonConvert.DeserializeObject<Users>(userJson);
-
-
-//                //string message = obj.GetProperty("message").GetString();
-//                //string id = obj.GetProperty("id").GetString();
-//                //string section = obj.GetProperty("section").GetString();
-//                //string room = obj.GetProperty("room").GetString();
-//                int ReciverId = 0;
-
-//                if (section == "private")
-//                {
-//                    ReciverId = await _context.Users.Where(u => u.full_name == id).Select(u => u.id).FirstOrDefaultAsync();
-//                }
-
-//                if (section == "private")
-//                {
-//                    id = id.Replace("-chatbox", "");
-//                }
-
-//                ChatHistory newChat = new ChatHistory
-//                {
-//                    SenderId = currentUser.id,
-//                    ReceiverId = ReciverId,
-//                    MessageText = message,
-//                    SentAt = DateTime.Now,
-//                    Section = section
-//                };
-
-//                _context.ChatHistory.Add(newChat);
-//                await _context.SaveChangesAsync();
-
-//                await Clients.All.SendAsync("ReceiveMessage", newChat);
-//                return newChat;
-//            }
-//            catch (Exception ex)
-//            {
-//                // Handle exceptions, log errors, etc.
-//                Console.WriteLine($"An error occurred while getting rooms: {ex.Message}");
-//                return $"Error: {ex.Message}";
-//            }
-//        }
-//    }
-//}
 
 
 

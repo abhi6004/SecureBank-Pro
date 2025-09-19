@@ -17,17 +17,33 @@ namespace SecureBank_Pro.Controllers
 
         public IActionResult Profile()
         {
-            var _userObj = HttpContext.Session.GetString("UserData");
+            try
+            {
+                var _userObj = HttpContext.Session.GetString("UserData");
 
-            var user = JsonConvert.DeserializeObject<Users>(_userObj);
-            return View(user);
+                var user = JsonConvert.DeserializeObject<Users>(_userObj);
+                return View(user);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw;
+            }
         }
 
         [Authorize(Roles = "Employee , Manager")]
         public async Task<IActionResult> Customers()
         {
-            List<Users> Users = await GetUsers.FetchUsers("Customer", _context);
-            return View(Users);
+            try
+            {
+                List<Users> Users = await GetUsers.FetchUsers("Customer", _context);
+                return View(Users);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw;
+            }
         }
 
         [Authorize(Roles = "Manager")]
@@ -40,13 +56,30 @@ namespace SecureBank_Pro.Controllers
         [Authorize(Roles = "Manager")]
         public async Task<IActionResult> Managers()
         {
-            List<Users> Users = await GetUsers.FetchUsers("Manager", _context);
-            return View(Users);
+            try
+            {
+                List<Users> Users = await GetUsers.FetchUsers("Manager", _context);
+                return View(Users);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw;
+            }
         }
 
         [Authorize(Roles = "Manager")]
         public async Task<IActionResult> Auditor()
         {
+            try
+            {
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw;
+            }
             List<Users> Users = await GetUsers.FetchUsers("Auditor", _context);
             return View(Users);
         }
@@ -55,62 +88,101 @@ namespace SecureBank_Pro.Controllers
         [Authorize(Roles = "Employee , Manager")]
         public IActionResult UserForm(string Role)
         {
-            ModelState.Clear();
-            ViewBag.currentRole = User.FindFirst(ClaimTypes.Role).Value;
-            ViewBag.Role = Role;
-            TempData["role"] = Role;
+            try
+            {
+                ModelState.Clear();
+                ViewBag.currentRole = User.FindFirst(ClaimTypes.Role).Value;
+                ViewBag.Role = Role;
+                TempData["role"] = Role;
 
-            return View();
+                return View();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw;
+            }
         }
 
         [HttpPost]
         public async Task<IActionResult> UserForm(User user)
         {
-            user.Role = TempData["role"].ToString();
-
-            bool isUserCreate = await UserInserToDB.InsertUserToDB(_context, user);
-            if (isUserCreate)
+            try
             {
-                await UserInserToDB.InsertUserToDB(_context, user);
-                return RedirectToAction("Index", "Home");
-            }
-            else
-            {
-                throw new Exception("User Is Alredy Create");
-            }
+                user.Role = TempData["role"].ToString();
 
+                bool isUserCreate = await UserInserToDB.InsertUserToDB(_context, user);
+                if (isUserCreate)
+                {
+                    await UserInserToDB.InsertUserToDB(_context, user);
+                    return RedirectToAction("Index", "Home");
+                }
+                else
+                {
+                    throw new Exception("User Is Alredy Create");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw;
+            }
         }
 
         [HttpGet]
         public async Task<IActionResult> EditUsers(string email)
         {
-            Users newUser = await GetUsers.GetUserById(email, _context);
-            return View(newUser);
+            try
+            {
+                Users newUser = await GetUsers.GetUserById(email, _context);
+                return View(newUser);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw;
+            }
         }
 
         [HttpPost]
         public async Task<IActionResult> EditUsers(Users users)
         {
-            string role = users.role;
-            bool isUpdate = await UserInserToDB.UserUpdate(_context, users);
-
-            if(role == "Customer")
+            try
             {
-                role = "Customers";
-            }
+                string role = users.role;
+                bool isUpdate = await UserInserToDB.UserUpdate(_context, users);
 
-            if(role == "Manager")
+                if (role == "Customer")
+                {
+                    role = "Customers";
+                }
+
+                if (role == "Manager")
+                {
+                    role = "Managers";
+                }
+
+                return RedirectToAction(role, "Dashboard");
+            }
+            catch (Exception ex)
             {
-                role = "Managers";
+                Console.WriteLine(ex.Message);
+                throw;
             }
-
-            return RedirectToAction(role , "Dashboard");
         }
 
         public async Task<IActionResult> CustomerProfile(string email)
         {
-            UserProfile userProfile = await GetUsers.GetUserProfile(email, _context);
-            return View(userProfile);
+            try
+            {
+                UserProfile userProfile = await GetUsers.GetUserProfile(email, _context);
+                return View(userProfile);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw;
+            }
         }
     }
 }

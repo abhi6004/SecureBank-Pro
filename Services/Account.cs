@@ -21,7 +21,7 @@ namespace SecureBank_Pro.Services
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                return false;
+                throw;
             }
 
         }
@@ -40,7 +40,7 @@ namespace SecureBank_Pro.Services
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                return false;
+                throw;
             }
         }
 
@@ -65,6 +65,7 @@ namespace SecureBank_Pro.Services
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
+                throw;
             }
 
         }
@@ -79,9 +80,8 @@ namespace SecureBank_Pro.Services
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
+                throw;
             }
-
-            return 0;
         }
     }
 }
