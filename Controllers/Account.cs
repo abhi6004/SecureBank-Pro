@@ -87,7 +87,7 @@ namespace SecureBank_Pro.Controllers
 
                     //_logger.LogInformation("Withdraw initiated for user: {Email}, Amount: {Amount}", Email, amount);
                     await SecureBank_Pro.Services.Account.WithdrawMoney(_context, amount, Type, user.id);
-                    await Logs.LogTransaction($"Withdrawal of {amount} from {user.full_name} for {Description}");
+                    //await Logs.LogTransaction($"Withdrawal of {amount} from {user.full_name} for {Description}");
                     decimal balance = await SecureBank_Pro.Services.Account.CheckBalance(_context, user.id);
 
                     await SecureBank_Pro.Services.Account.TransectionEntry(_context, Description, amount, Type, user.id, balance);
@@ -107,7 +107,7 @@ namespace SecureBank_Pro.Controllers
                     if (isSuccess)
                     {
                         decimal balance = await SecureBank_Pro.Services.Account.CheckBalance(_context, user.id);
-                        await Logs.LogTransaction($"Deposit of {amount} from {user.full_name} for {Description}");
+                        //await Logs.LogTransaction($"Deposit of {amount} from {user.full_name} for {Description}");
                         await SecureBank_Pro.Services.Account.TransectionEntry(_context, Description, amount, Type, user.id, balance);
                         return Content(user.id.ToString());
                     }
@@ -131,7 +131,7 @@ namespace SecureBank_Pro.Controllers
                     if (recipientSuccess)
                     {
                         decimal recipientBalance = await SecureBank_Pro.Services.Account.CheckBalance(_context, recipientUser.id);
-                        await Logs.LogTransaction($"Transfer of {amount} from {user.full_name} to {recipientUser.full_name} ({Description})");
+                        //await Logs.LogTransaction($"Transfer of {amount} from {user.full_name} to {recipientUser.full_name} ({Description})");
                         await SecureBank_Pro.Services.Account.TransectionEntry(_context, $"Transfer from {user.email} {Description}", amount, Type, recipientUser.id, recipientBalance);
                         return Content(user.id.ToString());
                     }

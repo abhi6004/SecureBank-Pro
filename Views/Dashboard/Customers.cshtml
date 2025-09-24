@@ -21,46 +21,6 @@
     }
 }
 
+<script src="~/js/Dashboard/Customers.js"></script>
 
-<script>
-    function EdituserForm(email) {
-    window.location.href = "/Dashboard/EditUsers?email=" + encodeURIComponent(email);
-    }
-
-
-    function DeletedUser(){
-
-    }
-
-    function ViewUser(email){
-        window.location.href = "/Dashboard/CustomerProfile?email=" + encodeURIComponent(email);
-    }
-</script>
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-<script>
-        $(document).ready(function () {
-        $(".Transaction").click(function () {
-
-            // Reset all customers first
-            $(".customers_data").show();
-            $(".Bank_transactions").hide();
-
-            // Current containers
-            var customersContainer = $(this).closest(".customers_data");
-            var transactionsContainer = customersContainer.siblings(".Bank_transactions");
-
-            // Get email
-            let email = customersContainer.find("p:nth-child(2)").text().replace("Email: ", "");
-
-            // Load form
-            $.get("/Account/TransactionForm", { email: email }, function (data) {
-                customersContainer.hide();  // hide current data
-                transactionsContainer.html(data).show(); // show form
-            });
-        });
-    });
-
-</script>
 
