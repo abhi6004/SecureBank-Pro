@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SecureBank_Pro.Data;
 using SecureBank_Pro.BankEntities;
+using Microsoft.AspNetCore.Mvc;
+using System.Text.Json.Nodes;
 
 namespace SecureBank_Pro.Services
 {
@@ -83,5 +85,36 @@ namespace SecureBank_Pro.Services
                 throw;
             }
         }
+
+        public static async Task<decimal> Amountconversion(HttpClient _httpClient ,decimal amount , string CurrencyCode)
+        {
+            try
+            {
+                string URL = "https://open.er-api.com/v6/latest/" + CurrencyCode.ToString();
+                var response = await _httpClient.GetAsync(URL);
+
+                if (response != null)
+                {
+                    JsonObject result = await response.Content.ReadFromJsonAsync<JsonObject>();
+
+                    if (result["rates"] != null)
+                    {
+                        if (result["rates"][CurrencyCode] != null)
+                        {
+                            decimal rate = result["rates"]["INR"].GetValue<decimal>();
+                            return amount * rate;
+                            
+                        }
+                    }
+                }
+                return 0;
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw;
+            }
+        }
+
     }
 }

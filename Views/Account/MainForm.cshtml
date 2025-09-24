@@ -16,13 +16,15 @@
 <br />
 
 <!-- Withdraw Section -->
-<div id="withdraw" style="display:block;">
+<div class="withdraw" style="display:block;">
     <h3>Withdraw Money</h3>
     <form method="post">
+
         <label>Amount:</label>
-        <input type="number" name="Amount" required />
+        <input id="WithdrawAmount" type="number" name="Amount" required />
+
         <label>Description:</label>
-        <input type="text" name="Description" value="" />
+        <input type="text" name="Description" value="" required />
         <input type="hidden" name="Type" value="withdraw" />
         <input type="hidden" name="Email" value="@email" />
         <br /><br />
@@ -31,13 +33,22 @@
 </div>
 
 <!-- Deposit Section -->
-<div id="deposit" style="display:none;">
+<div class="deposit" style="display:none;">
     <h3>Add Balance</h3>
     <form method="post">
         <label>Amount:</label>
-        <input type="number" name="Amount" required />
+        <input id="DepositAmount" type="number" name="Amount" required />
+        <div>
+            <select id="currency">
+                @foreach (var code in SecureBank_Pro.Models.StaticFiles.CurrencySymbols.Symbols.Keys)
+                {
+                    <option value="@code">@code (@SecureBank_Pro.Models.StaticFiles.CurrencySymbols.Symbols[code])</option>
+                }
+            </select>
+            <input type="number" name="conversionAmount" style="display:none" value="" readonly />
+        </div>
         <label>Description:</label>
-        <input type="text" name="Description" value=""/>
+        <input type="text" name="Description" value="" />
         <input type="hidden" name="Type" value="deposit" />
         <input type="hidden" name="Email" value="@email" />
         <br /><br />
@@ -46,14 +57,14 @@
 </div>
 
 <!-- Transfer Section -->
-<div id="transfer" style="display:none;">
+<div class="transfer" style="display:none;">
     <h3>User to User Transfer</h3>
     <form method="post">
         <label>Recipient User ID:</label>
         <input type="text" name="RecipientId" required />
         <br /><br />
         <label>Amount:</label>
-        <input type="number" name="Amount" required />
+        <input id="TransferAmount" type="number" name="Amount" required />
         <label>Description:</label>
         <input type="text" name="Description" value="" />
         <input type="hidden" name="Type" value="transfer" />
@@ -68,47 +79,118 @@
 
 <script>
     function showSection(sectionId) {
-        // Hide all
-        document.getElementById("withdraw").style.display = "none";
-        document.getElementById("deposit").style.display = "none";
-        document.getElementById("transfer").style.display = "none";
+        debugger;
+
+        // Hide all sections
+        document.querySelector(".withdraw").style.display = "none";
+        document.querySelector(".deposit").style.display = "none";
+        document.querySelector(".transfer").style.display = "none";
 
         // Show selected
-        document.getElementById(sectionId).style.display = "block";
+        document.querySelector("." + sectionId).style.display = "block";
     }
 </script>
+
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
-    $("form").submit(function(e){
-    e.preventDefault();
+    $(document).ready(function() {
 
+        $(document).on("submit", "form", function(e){
+            e.preventDefault();
 
-    let postData = {
-            Amount: $(this).find("input[name='Amount']").val() || null,
-            RecipientId: $(this).find("input[name='RecipientId']").val() || null,
-            Type: $(this).find("input[name='Type']").val() || null,
-            Email: $(this).find("input[name='Email']").val() || null,
-            Description: $(this).find("input[name='Description']").val() || null
-    };
+            // Get type first
+            let type = $(this).find("input[name='Type']").val() || null;
 
-    let container = $(this).closest(".customers");
+            // If deposit, check currency/amount
+            if(type === "deposit") {
+                let currencyVal = $(this).find("#currency").val();
+                let amountVal = $(this).find("input[name='Amount']").val();
 
+                // If currency or amount empty/null, do nothing
+                if(!currencyVal || !amountVal) return;
+            }
 
-    $.ajax({
-    url: "/Account/Transaction",
-    type: "POST",
-    contentType: "application/json",
-    data: JSON.stringify(postData),
-        success: function (data) {
-            // debugger;
-        $(`#customer_${data}`).show();
-        $(".Bank_transactions").empty();
+            // Debugger will hit only when valid
+            //debugger;
+
+            // Build postData
+            let postData = {
+                Amount: $(this).find("input[name='Amount']").val() || null,
+                RecipientId: $(this).find("input[name='RecipientId']").val() || null,
+                Type: type,
+                Email: $(this).find("input[name='Email']").val() || null,
+                Description: $(this).find("input[name='Description']").val() || null
+            };
+
+            if(type === "deposit" && $(this).find("#currency").val() != "INR"){
+                postData.Amount = $(this).find("input[name='conversionAmount']").val();
+            }
+
+            // AJAX call
+            $.ajax({
+                url: "/Account/Transaction",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(postData),
+                    success: function (data) {
+                    let customerDiv = $(`#customer_${data}`).closest(".customers");
+                    customerDiv.find(".Bank_transactions").empty();
+                    customerDiv.find(`#customer_${data}`).show();
     }
+            });
+
+        });
+
+        // Currency change handler (unchanged)
+        $(document).on("change", "#currency", function(){
+            let code = $(this).val();
+            let amount = $(this).closest("form").find("input[name='Amount']").val();
+
+            if(code == "INR"){
+                $(this).closest("form").find("input[name='conversionAmount']").hide();
+            } else {
+                let amountData = {
+                    Amount: amount,
+                    CurrencyCode: code
+                };
+
+                $.ajax({
+                    url: "/Account/ConvertCurrency",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(amountData),
+                    success: (data) => {
+                        let conversionAmount = data.conversionAmount;
+                        $(this).closest("form").find("input[name='conversionAmount']").val(conversionAmount).show();
+                    }
+                });
+            }
+        });
+
+        $(document).on("input", "#DepositAmount", function(){
+            if($("#currency").val() == "INR") return;
+
+            let postMessage = {
+                Amount: $(this).val(),
+                CurrencyCode: $("#currency").val()
+            };
+
+            $.ajax({
+                url: "/Account/ConvertCurrencyLatest",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(postMessage),
+                success: (data) => {
+                    let conversionAmount = data.conversionAmount;
+                    $("input[name='conversionAmount']").val(conversionAmount).show();
+                }
+            });
+        });
 
     });
-
-    });
-
 </script>
+
+
+

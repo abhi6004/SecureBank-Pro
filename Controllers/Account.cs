@@ -9,10 +9,13 @@ namespace SecureBank_Pro.Controllers
     public class AccountController : Controller
     {
         private readonly BankDbContext _context;
+        private readonly HttpClient _httpClient;
         //private readonly ILogger<AccountController> _logger;
-        public AccountController(BankDbContext context, ILogger<AccountController> logger)
+
+        public AccountController(BankDbContext context, HttpClient httpClient)
         {
             _context = context;
+            _httpClient = httpClient;
             //_logger = logger;
         }
 
@@ -143,5 +146,89 @@ namespace SecureBank_Pro.Controllers
             }
 
         }
-    }
+
+        [HttpPost]
+        public async Task<IActionResult> ConvertCurrency([FromBody] JObject data)
+        {
+            try
+            {
+                if (data != null)
+                {
+                    if (!string.IsNullOrEmpty(data["Amount"]?.ToString()) && !string.IsNullOrEmpty(data["CurrencyCode"]?.ToString()))
+                    {
+                        decimal Amount = (decimal)data["Amount"];
+                        string CurrencyCode = (string)data["CurrencyCode"];
+
+                        decimal conversionAmount = await SecureBank_Pro.Services.Account.Amountconversion(_httpClient, Amount, CurrencyCode);
+                        decimal ExchangeRate = conversionAmount / Amount;
+                        HttpContext.Session.SetString("ConvertedAmount", ExchangeRate.ToString());
+                        return Ok(new { conversionAmount = conversionAmount });
+                    }
+                    else
+                    {
+                        return new EmptyResult();
+                    }
+                }
+                else
+                {
+                    return new EmptyResult();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.Write(ex.Message);
+                throw;
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ConvertCurrencyLatest([FromBody] JObject data)
+        {
+            try
+            {
+                if (data != null)
+                {
+                    if (!string.IsNullOrEmpty(data["Amount"]?.ToString()) && !string.IsNullOrEmpty(data["CurrencyCode"]?.ToString()))
+                    {
+                        decimal Amount = (decimal)data["Amount"];
+                        string CurrencyCode = (string)data["CurrencyCode"];
+
+                        if (CurrencyCode != "INR")
+                        {
+                            if (!string.IsNullOrEmpty(HttpContext.Session.GetString("ConvertedAmount")))
+                            {
+                                decimal ExchangeRate = Convert.ToDecimal(HttpContext.Session.GetString("ConvertedAmount"));
+                                decimal conversionAmount = Amount * ExchangeRate;
+                                return Ok(new { conversionAmount = conversionAmount });
+                            }
+                            else
+                            {
+                                decimal conversionAmount = await SecureBank_Pro.Services.Account.Amountconversion(_httpClient, Amount, CurrencyCode);
+                                decimal ExchangeRate = conversionAmount / Amount;
+                                HttpContext.Session.SetString("ConvertedAmount", ExchangeRate.ToString());
+                                return Ok(new { conversionAmount = conversionAmount });
+                            }
+                        }
+                        else
+                        {
+                            return new EmptyResult();
+                        }
+                    }
+                    else
+                    {
+                        return new EmptyResult();
+                    }
+                }
+                else
+                {
+                    return new EmptyResult();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.Write(ex.Message);
+                throw;
+            }
+        }
+        }
 }
