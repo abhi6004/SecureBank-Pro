@@ -1,23 +1,32 @@
-﻿using Microsoft.EntityFrameworkCore;
-using SecureBank_Pro.Data;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using SecureBank_Pro.BankEntities;
-using Microsoft.AspNetCore.Mvc;
+using SecureBank_Pro.Data;
+using SecureBank_Pro.Models;
 using System.Text.Json.Nodes;
 
 namespace SecureBank_Pro.Services
 {
     public class Account
     {
-        public static async Task<bool> WithdrawMoney(BankDbContext context, decimal amount, string type, int id)
+        public static async Task<bool> MoneyTransaction(BankDbContext context, string Email, string Type ,string Description , decimal amount)
         {
             try
             {
-                //var userId = await context.Users.Where(e => e.email == email).Select(e => e.id).FirstOrDefaultAsync();
-                var Account = await context.Balances.Where(e => e.UserId == id).FirstOrDefaultAsync();
+                Users user = await SecureBank_Pro.Services.GetUsers.GetUserById(Email, context);
+                var Account = user.Balance;
 
-                Account.Amount = Account.Amount - amount;
+                if(Type == "withdraw")
+                {
+                    Account.Amount = Account.Amount - amount;
+                }
+                else
+                {
+                    Account.Amount = Account.Amount + amount;
+                }
+
+                await SecureBank_Pro.Services.Account.TransectionEntry(context, Description, amount, Type, user.id, Account.Amount);
                 await context.SaveChangesAsync();
-                //await Logs.LogTransaction($"Withdraw of {amount} for User ID: {id}");
                 return true;
             }
             catch (Exception ex)
@@ -26,24 +35,6 @@ namespace SecureBank_Pro.Services
                 throw;
             }
 
-        }
-
-        public static async Task<bool> AddBalance(BankDbContext context, decimal amount, string type, int id)
-        {
-            try
-            {
-                var Account = await context.Balances.Where(e => e.UserId == id).FirstOrDefaultAsync();
-
-                Account.Amount = Account.Amount + amount;
-                await context.SaveChangesAsync();
-                //await Logs.LogTransaction($"Deposit of {amount} for User ID: {id}");
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                throw;
-            }
         }
 
         public static async Task TransectionEntry(BankDbContext context, string Description, decimal amount, string type, int id , decimal balance)

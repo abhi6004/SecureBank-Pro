@@ -75,69 +75,15 @@ namespace SecureBank_Pro.Controllers
 
                 }
 
-
-                if (Type == "withdraw")
+                await SecureBank_Pro.Services.Account.MoneyTransaction(_context , Email, Type , Description , amount);
+                
+                if (Type == "transfer")
                 {
-                    Users user = await SecureBank_Pro.Services.GetUsers.GetUserById(Email, _context);
-
-                    if (user == null)
-                    {
-                        return BadRequest("User not found.");
-                    }
-
-                    //_logger.LogInformation("Withdraw initiated for user: {Email}, Amount: {Amount}", Email, amount);
-                    await SecureBank_Pro.Services.Account.WithdrawMoney(_context, amount, Type, user.id);
-                    //await Logs.LogTransaction($"Withdrawal of {amount} from {user.full_name} for {Description}");
-                    decimal balance = await SecureBank_Pro.Services.Account.CheckBalance(_context, user.id);
-
-                    await SecureBank_Pro.Services.Account.TransectionEntry(_context, Description, amount, Type, user.id, balance);
-                    return Content(user.id.ToString());
-                }
-                else if (Type == "deposit")
-                {
-                    Users user = await SecureBank_Pro.Services.GetUsers.GetUserById(Email, _context);
-
-                    if (user == null)
-                    {
-                        return BadRequest("User not found.");
-                    }
-
-                    bool isSuccess = await SecureBank_Pro.Services.Account.AddBalance(_context, amount, Type, user.id);
-
-                    if (isSuccess)
-                    {
-                        decimal balance = await SecureBank_Pro.Services.Account.CheckBalance(_context, user.id);
-                        //await Logs.LogTransaction($"Deposit of {amount} from {user.full_name} for {Description}");
-                        await SecureBank_Pro.Services.Account.TransectionEntry(_context, Description, amount, Type, user.id, balance);
-                        return Content(user.id.ToString());
-                    }
-                }
-                else if (Type == "transfer")
-                {
-                    Users user = await SecureBank_Pro.Services.GetUsers.GetUserById(Email, _context);
-                    Users recipientUser = await SecureBank_Pro.Services.GetUsers.GetUserById(recipient, _context);
-
-                    if (user == null || recipientUser == null)
-                    {
-                        return Json(new { success = false, message = "User not found." });
-                    }
-
-                    await SecureBank_Pro.Services.Account.WithdrawMoney(_context, amount, Type, user.id);
-                    decimal senderBalance = await SecureBank_Pro.Services.Account.CheckBalance(_context, user.id);
-                    await SecureBank_Pro.Services.Account.TransectionEntry(_context, $"Transfer to {recipientUser.email}", amount, Type, user.id, senderBalance);
-
-                    bool recipientSuccess = await SecureBank_Pro.Services.Account.AddBalance(_context, amount, Type, recipientUser.id);
-
-                    if (recipientSuccess)
-                    {
-                        decimal recipientBalance = await SecureBank_Pro.Services.Account.CheckBalance(_context, recipientUser.id);
-                        //await Logs.LogTransaction($"Transfer of {amount} from {user.full_name} to {recipientUser.full_name} ({Description})");
-                        await SecureBank_Pro.Services.Account.TransectionEntry(_context, $"Transfer from {user.email} {Description}", amount, Type, recipientUser.id, recipientBalance);
-                        return Content(user.id.ToString());
-                    }
+                    await SecureBank_Pro.Services.Account.MoneyTransaction(_context, Email, "withdraw", Description, amount);
+                    await SecureBank_Pro.Services.Account.MoneyTransaction(_context, recipient, "Deposit", Description, amount);
                 }
 
-                return null;
+                return Content(Email);
             }
             catch (Exception ex)
             {

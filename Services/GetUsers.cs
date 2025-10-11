@@ -3,6 +3,7 @@ using SecureBank_Pro.BankEntities;
 using SecureBank_Pro.Data;
 using SecureBank_Pro.Models;
 using System.Data;
+using System.Linq;
 
 namespace SecureBank_Pro.Services
 {
@@ -28,7 +29,7 @@ namespace SecureBank_Pro.Services
 
             try
             {
-                Users user = await context.Users.FirstOrDefaultAsync(c => c.email == email);
+                Users user = await context.Users.Include(u => u.Balance).Include(u => u.Transactions).FirstOrDefaultAsync(c => c.email == email);
                 return user;
             }
             catch (Exception ex)
@@ -42,18 +43,19 @@ namespace SecureBank_Pro.Services
         {
             try
             {
-                Users user = await context.Users.FirstOrDefaultAsync(c => c.email == email);
+                Users user = await context.Users.Include(u => u.Balance).Include(u => u.Transactions).FirstOrDefaultAsync(c => c.email == email);
 
                 if (user != null)
                 {
-                    List<Transaction> transactions = await context.Transactions.Where(c => c.UserId == user.id).ToListAsync();
-                    Balance userBalance = await context.Balances.FirstOrDefaultAsync(c => c.UserId == user.id);
-
                     UserProfile userProfile = new UserProfile();
                     userProfile.Transactions = new List<Transaction>();
                     userProfile.Users = user;
-                    userProfile.Balance = userBalance;
-                    userProfile.Transactions = transactions;
+                    userProfile.Balance = user.Balance;
+
+                    if(user.Transactions != null)
+                    {
+                        userProfile.Transactions = user.Transactions.ToList();
+                    }
 
                     return userProfile;
                 }
