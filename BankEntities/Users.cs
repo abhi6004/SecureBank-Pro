@@ -134,7 +134,7 @@ namespace SecureBank_Pro.BankEntities
         public ChatHistory() { }
     }
 
-    public class Application
+    public class Applications
     {
         [Key]
         public int ApplicationId { get; set; }
@@ -145,15 +145,15 @@ namespace SecureBank_Pro.BankEntities
 
         [ForeignKey("CustomerOffer")]
         public int OfferId { get; set; }          // FK to CustomerOffers
-        public CustomerOffer CustomerOffer { get; set; } = null!;
+        public CustomerOffers CustomerOffers { get; set; } = null!;
 
         public DateTime ApplicationDate { get; set; }
         public string Status { get; set; } = string.Empty;
         public string? Notes { get; set; }
 
-        public Application() { }
+        public Applications() { }
 
-        public Application(Application other)
+        public Applications(Applications other)
         {
             this.ApplicationId = other.ApplicationId;
             this.CustomerId = other.CustomerId;
@@ -165,7 +165,7 @@ namespace SecureBank_Pro.BankEntities
 
     }
 
-    public class ActiveLoan
+    public class ActiveLoans
     {
         [Key]
         public int LoanId { get; set; }
@@ -185,9 +185,9 @@ namespace SecureBank_Pro.BankEntities
         public string LoanStatus { get; set; } = string.Empty;
         public DateTime? DueDate { get; set; }
 
-        public ActiveLoan() { }
+        public ActiveLoans() { }
 
-        public ActiveLoan(ActiveLoan other)
+        public ActiveLoans(ActiveLoans other)
         {
             this.LoanId = other.LoanId;
             this.CustomerId = other.CustomerId;
@@ -203,7 +203,7 @@ namespace SecureBank_Pro.BankEntities
 
     }
 
-    public class CustomerOffer
+    public class CustomerOffers
     {
         [Key]
         public int CustomerOfferId { get; set; }
@@ -217,9 +217,9 @@ namespace SecureBank_Pro.BankEntities
         public DateTime? CustomValidTill { get; set; }
         public DateTime CreatedOn { get; set; }
 
-        public CustomerOffer() { }
+        public CustomerOffers() { }
 
-        public CustomerOffer(CustomerOffer other)
+        public CustomerOffers(CustomerOffers other)
         {
             this.CustomerOfferId = other.CustomerOfferId;
             this.CustomerId = other.CustomerId;
@@ -231,12 +231,12 @@ namespace SecureBank_Pro.BankEntities
 
     }
 
-    public class Offer
+    public class Offers
     {
         [Key]
         public int OfferId { get; set; }
 
-        public string OfferType { get; set; } = string.Empty;
+        public decimal LoanAmount { get; set; }
 
         public string? Title { get; set; }
 
@@ -247,13 +247,13 @@ namespace SecureBank_Pro.BankEntities
         public DateTime? ValidTill { get; set; }
 
         // Parameterless Constructor (Empty Constructor)
-        public Offer() { }
+        public Offers() { }
 
         // Copy Constructor
-        public Offer(Offer other)
+        public Offers(Offers other)
         {
             this.OfferId = other.OfferId;
-            this.OfferType = other.OfferType;
+            this.LoanAmount = other.LoanAmount;
             this.Title = other.Title;
             this.Description = other.Description;
             this.InterestRate = other.InterestRate;

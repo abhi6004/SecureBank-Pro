@@ -1,0 +1,27 @@
+﻿@model IEnumerable<SecureBank_Pro.BankEntities.Offers>
+
+
+<h2>All Offers</h2>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Loan Amount</th>
+            <th>Interest Rate</th>
+            <th>Valid Till</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var offer in Model)
+        {
+            <tr id="@offer.OfferId">
+                <td>@offer.Title</td>
+                <td>@offer.Description</td>
+                <td>@offer.LoanAmount</td>
+                <td>@offer.InterestRate</td>
+                <td>@offer.ValidTill?.ToString("yyyy-MM-dd")</td>
+            </tr>
+        }
+    </tbody>
+</table>

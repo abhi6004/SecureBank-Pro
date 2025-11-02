@@ -74,6 +74,13 @@
                                         <a class="nav-link text-dark" asp-area="" asp-controller="Chat" asp-action="ChatRoom">ChatBox</a>
                                     </li>
                                 }
+
+                                if (_userData.role == "Customer")
+                                {
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Loan" asp-action="Offers">Offers</a>
+                                    </li>
+                                }
                             }
                         </ul>
 
