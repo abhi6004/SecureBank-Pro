@@ -1,5 +1,12 @@
-﻿@model IEnumerable<SecureBank_Pro.BankEntities.Offers>
+﻿@inject IHttpContextAccessor HttpContextAccessor
 
+@{
+    var loanString = HttpContextAccessor.HttpContext.Session.GetString("CustomerLoans") ?? "";
+    var parts = loanString.Split("[Loan]"); // assuming you separate them as "pendingIds|approvedIds"
+
+    var approvedLoans = parts.Length > 0 ? parts[0] : "";
+    var pendingLoans = parts.Length > 1 ? parts[1] : "";
+}
 
 <h2>All Offers</h2>
 <table class="table table-bordered">
@@ -10,6 +17,7 @@
             <th>Loan Amount</th>
             <th>Interest Rate</th>
             <th>Valid Till</th>
+            <th>Status</th>
         </tr>
     </thead>
     <tbody>
@@ -21,7 +29,25 @@
                 <td>@offer.LoanAmount</td>
                 <td>@offer.InterestRate</td>
                 <td>@offer.ValidTill?.ToString("yyyy-MM-dd")</td>
+                <td>
+                    @if (approvedLoans.Contains(offer.OfferId.ToString()))
+                    {
+                        <button disabled class="btn btn-danger">Approved</button>
+                    }
+                    else if (pendingLoans.Contains(offer.OfferId.ToString()))
+                    {
+                        <button disabled class="btn btn-warning">Applied</button>
+                    }
+                    else
+                    {
+                        <button class="btn btn-primary">Apply</button>
+                    }
+
+                </td>
             </tr>
         }
     </tbody>
 </table>
+
+<script src="~/js/Loan/Offers.js"></script>
+

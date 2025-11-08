@@ -32,6 +32,8 @@ namespace SecureBank_Pro.BankEntities
 
         public Balance? Balance { get; set; }
         public ICollection<Transaction> Transactions { get; set; } = new HashSet<Transaction>();
+        public ICollection<Applications> Applications { get; set; } = new HashSet<Applications>();
+
 
         public Users(Users other)
         {
@@ -145,7 +147,7 @@ namespace SecureBank_Pro.BankEntities
 
         [ForeignKey("CustomerOffer")]
         public int OfferId { get; set; }          // FK to CustomerOffers
-        public CustomerOffers CustomerOffers { get; set; } = null!;
+        public CustomerOffers CustomerOffer { get; set; } = null!;
 
         public DateTime ApplicationDate { get; set; }
         public string Status { get; set; } = string.Empty;
