@@ -1,4 +1,6 @@
-﻿@inject IHttpContextAccessor HttpContextAccessor
+﻿@model SecureBank_Pro.Models.LoanData;
+
+@inject IHttpContextAccessor HttpContextAccessor
 
 @{
     var loanString = HttpContextAccessor.HttpContext.Session.GetString("CustomerLoans") ?? "";
@@ -8,46 +10,95 @@
     var pendingLoans = parts.Length > 1 ? parts[1] : "";
 }
 
-<h2>All Offers</h2>
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Title</th>
-            <th>Description</th>
-            <th>Loan Amount</th>
-            <th>Interest Rate</th>
-            <th>Valid Till</th>
-            <th>Status</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var offer in Model)
-        {
-            <tr id="@offer.OfferId">
-                <td>@offer.Title</td>
-                <td>@offer.Description</td>
-                <td>@offer.LoanAmount</td>
-                <td>@offer.InterestRate</td>
-                <td>@offer.ValidTill?.ToString("yyyy-MM-dd")</td>
-                <td>
-                    @if (approvedLoans.Contains(offer.OfferId.ToString()))
-                    {
-                        <button disabled class="btn btn-danger">Approved</button>
-                    }
-                    else if (pendingLoans.Contains(offer.OfferId.ToString()))
-                    {
-                        <button disabled class="btn btn-warning">Applied</button>
-                    }
-                    else
-                    {
-                        <button class="btn btn-primary">Apply</button>
-                    }
-
-                </td>
+<h2 id="all-Offers">All Offers</h2>
+<h2 id="loan-History">Loan History</h2>
+<div id="loan-offers">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Loan Amount</th>
+                <th>Interest Rate</th>
+                <th>Valid Till</th>
+                <th>Status</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var offer in Model.Offers)
+            {
+                <tr id="@offer.OfferId">
+                    <td>@offer.Title</td>
+                    <td>@offer.Description</td>
+                    <td>@offer.LoanAmount</td>
+                    <td>@offer.InterestRate</td>
+                    <td>@offer.ValidTill?.ToString("yyyy-MM-dd")</td>
+                    <td>
+                        @if (approvedLoans.Contains(offer.OfferId.ToString()))
+                        {
+                            <button disabled class="btn btn-danger">Approved</button>
+                        }
+                        else if (pendingLoans.Contains(offer.OfferId.ToString()))
+                        {
+                            <button disabled class="btn btn-warning">Applied</button>
+                        }
+                        else
+                        {
+                            <button class="btn btn-primary">Apply</button>
+                        }
+
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div id="loan-applications" style="display:none">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Loan Amount</th>
+                <th>Interest Rate</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var Applications in Model.Applications)
+            {
+                <tr id="@Applications.ApplicationId">
+                    @foreach (var offer in Model.Offers)
+                    {
+                        if (offer.OfferId == Applications.OfferId)
+                        {
+                            <td>@offer.Title</td>
+                            <td>@offer.LoanAmount</td>
+                            <td>@offer.InterestRate</td>
+                            <td>
+                                @if (Applications.Status == "Approved")
+                                {
+                                    <button disabled class="btn btn-danger">Approved</button>
+                                }
+                                else if (Applications.Status == "Pending")
+                                {
+                                    <button disabled class="btn btn-warning">Pending</button>
+                                }
+                                else if (Applications.Status == "Rejected")
+                                {
+                                    <button class="btn btn-primary">Rejected</button>
+                                }
+
+                            </td>
+                            break;
+                        }
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
 
 <script src="~/js/Loan/Offers.js"></script>
 

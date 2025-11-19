@@ -216,7 +216,6 @@ namespace SecureBank_Pro.BankEntities
 
         public decimal LoanAmount { get; set; }
         public decimal? CustomInterestRate { get; set; }
-        public DateTime? CustomValidTill { get; set; }
         public DateTime CreatedOn { get; set; }
 
         public CustomerOffers() { }
@@ -227,7 +226,6 @@ namespace SecureBank_Pro.BankEntities
             this.CustomerId = other.CustomerId;
             this.LoanAmount = other.LoanAmount;
             this.CustomInterestRate = other.CustomInterestRate;
-            this.CustomValidTill = other.CustomValidTill;
             this.CreatedOn = other.CreatedOn;
         }
 

@@ -20,7 +20,8 @@ builder.Logging.SetMinimumLevel(LogLevel.Information);
 
 
 builder.Services.AddDbContext<BankDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")),
+    ServiceLifetime.Scoped);
 
 builder.Services.AddControllersWithViews().AddNewtonsoftJson();
 

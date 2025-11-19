@@ -4,17 +4,24 @@ using SecureBank_Pro.Data;
 using SecureBank_Pro.Models;
 using System.Data;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SecureBank_Pro.Services
 {
     public class Loan
     {
-        public static List<Offers> GetOffers(BankDbContext context)
+        public static async Task<LoanData> GetOffers(BankDbContext context , int id)
         {
             try
             {
-                var offers = context.Offers.ToList();
-                return offers;
+                var loan = new LoanData
+                {
+                    Applications = await context.Applications.Where(a => a.CustomerId == id).ToListAsync(),
+                    Offers = await context.Offers.ToListAsync(),
+                };
+
+                return loan;
+
             }
             catch (Exception ex)
             {
@@ -50,6 +57,37 @@ namespace SecureBank_Pro.Services
             else
             {
                 return null;
+            }
+        }
+
+        public static async Task<string> ApplyLoan(BankDbContext context, int customerId, int offerId)
+        {
+            try
+            {
+                var ApplyLoan =  await context.Offers.FirstOrDefaultAsync(o => o.OfferId == offerId);
+
+                if(ApplyLoan == null)
+                {
+                    return "Invalid Offer.";
+                }
+
+                var Application = new Applications
+                {
+                    CustomerId = customerId,
+                    OfferId = ApplyLoan.OfferId,
+                    ApplicationDate = DateTime.Now,
+                    Status = "Pending"
+                };
+
+                await context.Applications.AddAsync(Application);
+                await context.SaveChangesAsync();
+
+                return "Loan application submitted successfully.";
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw;
             }
         }
     }
