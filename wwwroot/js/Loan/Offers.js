@@ -35,8 +35,15 @@
             $("#loan-applications").hide();
         }
         else if (id === "loan-History") {
-            $("#loan-applications").show();
-            $("#loan-offers").hide();
+            $.ajax({
+                url: "/Loan/UpdateHistory",
+                type: "POST",
+                success: function (res) {
+                    $("#loan-applications").load(location.href + " #loan-applications");
+                    $("#loan-applications").show();
+                    $("#loan-offers").hide();
+                }
+            });
         }
     });
 });

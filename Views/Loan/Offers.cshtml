@@ -1,5 +1,9 @@
-﻿@model SecureBank_Pro.Models.LoanData;
-
+﻿@using Newtonsoft.Json;
+@model SecureBank_Pro.Models.LoanData;
+@{
+    var Data = Context.Session.GetString("LoanData");
+    LoanData loanData = JsonConvert.DeserializeObject<LoanData>(Data);
+}
 @inject IHttpContextAccessor HttpContextAccessor
 
 @{
@@ -25,7 +29,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var offer in Model.Offers)
+            @foreach (var offer in loanData.Offers)
             {
                 <tr id="@offer.OfferId">
                     <td>@offer.Title</td>
@@ -65,10 +69,10 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var Applications in Model.Applications)
+            @foreach (var Applications in loanData.Applications)
             {
                 <tr id="@Applications.ApplicationId">
-                    @foreach (var offer in Model.Offers)
+                    @foreach (var offer in loanData.Offers)
                     {
                         if (offer.OfferId == Applications.OfferId)
                         {

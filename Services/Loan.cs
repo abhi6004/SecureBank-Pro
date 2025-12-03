@@ -90,5 +90,18 @@ namespace SecureBank_Pro.Services
                 throw;
             }
         }
+
+        public static async Task<LoanData> HistoryUpdate(BankDbContext context , int userId , LoanData loanData)
+        {
+            try
+            {
+                loanData.Applications = await context.Applications.Where(a => a.CustomerId == userId).ToListAsync();
+                return loanData;
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }

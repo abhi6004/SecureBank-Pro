@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SecureBank_Pro.BankEntities;
 using SecureBank_Pro.Data;
+using SecureBank_Pro.Models;
 
 namespace SecureBank_Pro.Controllers
 {
@@ -30,8 +31,12 @@ namespace SecureBank_Pro.Controllers
                 HttpContext.Session.SetString("CustomerLoans", "");
             }
 
+
             var LoanData = await SecureBank_Pro.Services.Loan.GetOffers(_context , user.id);
-            return View(LoanData);
+
+            var json = JsonConvert.SerializeObject(LoanData, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
+            HttpContext.Session.SetString("LoanData", json);
+            return View();
         }
 
         public async Task<IActionResult> ApplyLoan([FromBody] JObject data)
@@ -60,6 +65,44 @@ namespace SecureBank_Pro.Controllers
                 }
             }
             catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateHistory()   
+        {
+            try
+            {
+                var _userObj = HttpContext.Session.GetString("UserData");
+                var user = JsonConvert.DeserializeObject<Users>(_userObj);
+
+                if (user != null)
+                {
+                    var loanString = SecureBank_Pro.Services.Loan.CustomerappliedLoan(_context, user.id);
+
+                    if (loanString != null)
+                    {
+                        HttpContext.Session.SetString("CustomerLoans", loanString);
+                    }
+                    else
+                    {
+                        HttpContext.Session.SetString("CustomerLoans", "");
+                    }
+                    LoanData loanData = HttpContext.Session.GetString("LoanData") != null ? Newtonsoft.Json.JsonConvert.DeserializeObject<LoanData>(HttpContext.Session.GetString("LoanData")) : null;
+                    LoanData newloanData = await SecureBank_Pro.Services.Loan.HistoryUpdate(_context , user.id , loanData);
+
+                    if (newloanData != null)
+                    {
+                        HttpContext.Session.SetString("LoanData", Newtonsoft.Json.JsonConvert.SerializeObject(newloanData, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore }));
+                    }
+                    return Ok();
+                }
+
+                return BadRequest("");
+            }
+            catch(Exception ex)
             {
                 throw ex;
             }
