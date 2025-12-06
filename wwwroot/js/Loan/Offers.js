@@ -39,7 +39,7 @@
                 url: "/Loan/UpdateHistory",
                 type: "POST",
                 success: function (res) {
-                    $("#loan-applications").load(location.href + " #loan-applications");
+                    $("#loan-applications-content").load(location.href + " #loan-applications-content > *");
                     $("#loan-applications").show();
                     $("#loan-offers").hide();
                 }
