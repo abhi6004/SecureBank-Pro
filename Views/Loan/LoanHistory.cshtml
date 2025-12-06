@@ -1,0 +1,49 @@
+﻿@using Newtonsoft.Json;
+@model SecureBank_Pro.Models.LoanData;
+@{
+    var Data = Context.Session.GetString("LoanData");
+    LoanData loanData = JsonConvert.DeserializeObject<LoanData>(Data);
+}
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Loan Amount</th>
+            <th>Interest Rate</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var Applications in loanData.Applications)
+        {
+            <tr id="@Applications.ApplicationId">
+                @foreach (var offer in loanData.Offers)
+                {
+                    if (offer.OfferId == Applications.OfferId)
+                    {
+                        <td>@offer.Title</td>
+                        <td>@offer.LoanAmount</td>
+                        <td>@offer.InterestRate</td>
+                        <td>
+                            @if (Applications.Status == "Approved")
+                            {
+                                <button disabled class="btn btn-danger">Approved</button>
+                            }
+                            else if (Applications.Status == "Pending")
+                            {
+                                <button disabled class="btn btn-warning">Pending</button>
+                            }
+                            else if (Applications.Status == "Rejected")
+                            {
+                                <button class="btn btn-primary">Rejected</button>
+                            }
+
+                        </td>
+                        break;
+                    }
+                }
+            </tr>
+        }
+    </tbody>
+</table>

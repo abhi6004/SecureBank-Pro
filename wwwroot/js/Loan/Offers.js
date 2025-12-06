@@ -35,15 +35,9 @@
             $("#loan-applications").hide();
         }
         else if (id === "loan-History") {
-            $.ajax({
-                url: "/Loan/UpdateHistory",
-                type: "POST",
-                success: function (res) {
-                    $("#loan-applications-content").load(location.href + " #loan-applications-content > *");
-                    $("#loan-applications").show();
-                    $("#loan-offers").hide();
-                }
-            });
+            $("#loan-applications").load("/Loan/UpdateHistory");
+            $("#loan-applications").show();
+            $("#loan-offers").hide();
         }
     });
 });

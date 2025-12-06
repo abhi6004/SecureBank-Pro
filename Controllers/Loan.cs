@@ -70,7 +70,7 @@ namespace SecureBank_Pro.Controllers
             }
         }
 
-        [HttpPost]
+        //[HttpPost]
         public async Task<IActionResult> UpdateHistory()   
         {
             try
@@ -97,7 +97,7 @@ namespace SecureBank_Pro.Controllers
                     {
                         HttpContext.Session.SetString("LoanData", Newtonsoft.Json.JsonConvert.SerializeObject(newloanData, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore }));
                     }
-                    return Ok();
+                    return PartialView("LoanHistory");
                 }
 
                 return BadRequest("");
