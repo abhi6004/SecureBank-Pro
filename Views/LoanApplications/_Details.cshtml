@@ -1,0 +1,85 @@
+﻿@model SecureBank_Pro.Models.NewApplications
+
+<div class="card shadow p-4" style="border-radius: 12px;">
+
+    <h2 class="mb-3">Application Details</h2>
+
+    <!-- APPLICATION INFO -->
+    <div class="mb-4">
+        <h4 class="text-primary">Application Info</h4>
+        <hr />
+        <p><strong>Application ID:</strong> @Model.ApplicationId</p>
+        <p><strong>Applied On:</strong> @Model.ApplicationData</p>
+        <p><strong>Notes:</strong> @Model.Nots</p>
+    </div>
+
+    <!-- USER INFO -->
+    <div class="mb-4">
+        <h4 class="text-primary">Customer Details</h4>
+        <hr />
+        <p><strong>Name:</strong> @Model.User.full_name</p>
+        <p><strong>Email:</strong> @Model.User.email</p>
+        <p><strong>Phone:</strong> @Model.User.phone_number</p>
+        <p><strong>Address:</strong> @Model.User.address</p>
+        <p><strong>Date of Birth:</strong> @Model.User.date_of_birth</p>
+        <p><strong>KYC Status:</strong> @Model.User.kyc_status</p>
+    </div>
+
+    <!-- OFFER INFO -->
+    <div class="mb-4">
+        <h4 class="text-primary">Loan Offer</h4>
+        <hr />
+        <p><strong>Title:</strong> @Model.Offers.Title</p>
+        <p><strong>Loan Amount:</strong> @Model.Offers.LoanAmount</p>
+        <p><strong>Interest Rate:</strong> @Model.Offers.InterestRate %</p>
+        <p><strong>Valid Till:</strong> @Model.Offers.ValidTill</p>
+        <p><strong>Description:</strong> @Model.Offers.Description</p>
+    </div>
+
+    <!-- BALANCE INFO -->
+    <div class="mb-4">
+        <h4 class="text-primary">Balance</h4>
+        <hr />
+        <p><strong>Current Amount:</strong> @Model.balance.Amount</p>
+        <p><strong>Currency:</strong> @Model.balance.CurrencyCode</p>
+        <p><strong>Last Updated:</strong> @Model.balance.LastUpdated</p>
+        <p><strong>Frozen:</strong> @Model.balance.IsFrozen</p>
+    </div>
+
+    <!-- TRANSACTIONS -->
+    <div class="mb-4">
+        <h4 class="text-primary">Recent Transactions</h4>
+        <hr />
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Type</th>
+                    <th>Amount</th>
+                    <th>Balance After</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var t in Model.Transactions)
+                {
+                    <tr>
+                        <td>@t.Trasactionsid</td>
+                        <td>@t.TransactionType</td>
+                        <td>@t.Amount</td>
+                        <td>@t.BalanceAfter</td>
+                        <td>@t.CreatedAt</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ACTION BUTTONS -->
+    <div class="mt-4">
+        <button class="btn btn-success btn-lg">Accept</button>
+        <button class="btn btn-danger btn-lg ms-3">Reject</button>
+    </div>
+
+</div>

@@ -1,6 +1,46 @@
-﻿@model SecureBank_Pro.Models.NewApplications
-@{
+﻿@{
     @inject IHttpContextAccessor HttpContextAccessor
     var value = HttpContextAccessor.HttpContext.Session.GetString("NewApplications");
     var newApplications = System.Text.Json.JsonSerializer.Deserialize<List<NewApplications>>(value);
 }
+
+
+<div id="applications-list">
+    <h2>New Applications</h2>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Date</th>
+                <th>User</th>
+                <th>Loan Amount</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var item in newApplications)
+            {
+                <tr>
+                    <td>@item.ApplicationId</td>
+                    <td>@item.ApplicationData.ToShortDateString()</td>
+                    <td>@item.User.full_name</td>
+                    <td>@item.Offers.LoanAmount</td>
+
+                    <td>
+                        <button id="@item.ApplicationId" class="btn btn-info more-info">
+                            More Info
+                        </button>
+
+                        <button class="btn btn-success">Accept</button>
+                        <button class="btn btn-danger">Reject</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div id="details-area" style="display:none"></div>
+
+<script src="~/js/Loan/NewApplications.js"></script>
