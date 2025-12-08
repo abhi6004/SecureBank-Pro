@@ -75,10 +75,17 @@
                                     </li>
                                 }
 
-                                if (_userData.role == "Customer")
+                                if (_userData.role == "Customer")   
                                 {
                                     <li class="nav-item">
                                         <a class="nav-link text-dark" asp-area="" asp-controller="Loan" asp-action="Offers">Offers</a>
+                                    </li>
+                                }
+
+                                if (_userData.role == "Manager")
+                                {
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="LoanApplications" asp-action="GetNewApplications">NewApplications</a>
                                     </li>
                                 }
                             }

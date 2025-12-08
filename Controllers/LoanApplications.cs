@@ -12,6 +12,8 @@ namespace SecureBank_Pro.Controllers
 
         public async Task<IActionResult> NewApplications()
         {
+            var newApplications = await Services.LoanApplications.GetNewApplications(_context);
+            HttpContext.Session.SetString("NewApplications", System.Text.Json.JsonSerializer.Serialize(newApplications));
             return View();
         }
 

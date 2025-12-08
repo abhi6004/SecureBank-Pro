@@ -1,1 +1,6 @@
-﻿
+﻿@model SecureBank_Pro.Models.NewApplications
+@{
+    @inject IHttpContextAccessor HttpContextAccessor
+    var value = HttpContextAccessor.HttpContext.Session.GetString("NewApplications");
+    var newApplications = System.Text.Json.JsonSerializer.Deserialize<List<NewApplications>>(value);
+}
