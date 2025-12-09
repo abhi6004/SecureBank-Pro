@@ -1,26 +1,17 @@
-﻿$(function () {
-    $(".btn.btn-info.more-info").on("click", function () {
-
-        let id = $(this).attr("id");
-
-        $("#details-area").load("/LoanApplications/Details/" + id);
-        $("#applications-list").hide();
-        $("#details-area").show();
-    });
-
-})
-
-$(function () {
+﻿$(function ()
+{
     $('.ApplicationButton').on('click', function (e) {
         e.preventDefault();
         var form = $(this);
         var _class = form.attr('class');
         var status = ""
 
-        if (_class.includes('btn-success')) {
+        if (_class.includes('btn-success'))
+        {
             status = "Approved"
         }
-        else if (_class.includes('btn-danger')) {
+        else if (_class.includes('btn-danger'))
+        {
             status = "Denied"
         }
 

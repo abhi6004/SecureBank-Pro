@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using SecureBank_Pro.BankEntities;
 using SecureBank_Pro.Data;
 using SecureBank_Pro.Models;
@@ -38,6 +39,7 @@ namespace SecureBank_Pro.Services
                         ApplicationId = application.ApplicationId,
                         ApplicationData = application.ApplicationDate,
                         Nots = application.Notes ?? "",
+                        Status = application.Status,
                         Offers = _offer,
                         User = _user,
                         balance = _balance,
@@ -49,8 +51,49 @@ namespace SecureBank_Pro.Services
 
                 return newApplicationsList.Count > 0 ? newApplicationsList : null;
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 throw new Exception("Error in GetNewApplications: " + ex.Message);
+            }
+        }
+
+        public static async Task<bool> ApplicationUpdate(int id, string status, BankDbContext _context, int LoanApproverId)
+        {
+            try
+            {
+                Applications application = await _context.Applications.FirstOrDefaultAsync(a => a.ApplicationId == id);
+
+                if (application != null)
+                {
+                    Offers offer = await _context.Offers.FirstOrDefaultAsync(o => o.OfferId == application.OfferId);
+
+                    if (offer != null)
+                    {
+                        var totalLoanAmount = offer.LoanAmount + (offer.LoanAmount * offer.InterestRate / 100);
+                        ActiveLoans newLoan = new ActiveLoans
+                        {
+                            CustomerId = application.CustomerId,
+                            LoanStartDate = DateTime.Now,
+                            LoanAmount = offer.LoanAmount,
+                            InterestRate = offer.InterestRate,
+                            TotalInstallments = 12,
+                            InstallmentAmount = totalLoanAmount / 12,
+                            PenaltyPercent = 10,
+                            LoanStatus = status,
+                            DueDate = DateTime.Now.AddMonths(1),
+                            LoanApproverId = LoanApproverId
+                        };
+
+                        application.Status = status;
+                        await _context.ActiveLoans.AddAsync(newLoan);
+                        await _context.SaveChangesAsync();
+                    }
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error in ApplicationUpdate: " + ex.Message);
             }
         }
     }

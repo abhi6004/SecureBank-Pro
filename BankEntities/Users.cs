@@ -186,6 +186,7 @@ namespace SecureBank_Pro.BankEntities
 
         public string LoanStatus { get; set; } = string.Empty;
         public DateTime? DueDate { get; set; }
+        public int LoanApproverId { get; set; }
 
         public ActiveLoans() { }
 
@@ -201,6 +202,7 @@ namespace SecureBank_Pro.BankEntities
             this.PenaltyPercent = other.PenaltyPercent;
             this.LoanStatus = other.LoanStatus;
             this.DueDate = other.DueDate;
+            this.LoanApproverId = other.LoanApproverId;
         }
 
     }
@@ -242,7 +244,7 @@ namespace SecureBank_Pro.BankEntities
 
         public string? Description { get; set; }
 
-        public decimal? InterestRate { get; set; }
+        public decimal InterestRate { get; set; }
 
         public DateTime? ValidTill { get; set; }
 

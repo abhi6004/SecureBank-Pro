@@ -30,6 +30,7 @@ namespace SecureBank_Pro.Models
         public int ApplicationId { get; set; }
         public DateTime ApplicationData { get; set; } = DateTime.Now;
         public string Nots { get; set; } = string.Empty;
+        public string Status { get; set; } = string.Empty;
         public Offers Offers { get; set; } = new();
         public Users User  { get; set; } = new();
         public List<Transaction> Transactions { get; set; } = new();
