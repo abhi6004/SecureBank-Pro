@@ -1,0 +1,31 @@
+﻿@model List<SecureBank_Pro.BankEntities.Applications>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>ApplicationId</th>
+            <th>CustomerId</th>
+            <th>OfferId</th>
+            <th>ApplicationDate</th>
+            <th>Status</th>
+            <th>Notes</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var app in Model)
+        {
+            if (app.Status != "Pending")
+            {
+                <tr>
+                    <td>@app.ApplicationId</td>
+                    <td>@app.CustomerId</td>
+                    <td>@app.OfferId</td>
+                    <td>@app.ApplicationDate.ToShortDateString()</td>
+                    <td>@app.Status</td>
+                    <td>@app.Notes</td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

@@ -96,5 +96,20 @@ namespace SecureBank_Pro.Services
                 throw new Exception("Error in ApplicationUpdate: " + ex.Message);
             }
         }
+
+        public static async Task<List<Applications>> GetApplicationsList(BankDbContext _context)
+        {
+            try
+            {
+                List<Applications> applications = new List<Applications>();
+                applications = await _context.Applications.ToListAsync();
+
+                return applications;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }

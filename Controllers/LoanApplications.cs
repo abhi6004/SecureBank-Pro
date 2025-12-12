@@ -29,9 +29,10 @@ namespace SecureBank_Pro.Controllers
             return View();
         }
 
-        public async Task<IActionResult> HistoryOfApplications()
+        public async Task<IActionResult> HistoryOfApplication()
         {
-            return View();
+            List<Applications> applications = await SecureBank_Pro.Services.LoanApplications.GetApplicationsList(_context);
+            return PartialView("_HistoryOfApplications" , applications);
         }
 
         public async Task<IActionResult> LoanInfo()
