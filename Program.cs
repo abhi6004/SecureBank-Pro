@@ -24,8 +24,8 @@ builder.Services.AddDbContext<BankDbContext>(options =>
     ServiceLifetime.Scoped);
 
 builder.Services.AddControllersWithViews().AddNewtonsoftJson();
-
-
+builder.Services.AddSingleton<AutoBackgroundService>();
+builder.Services.AddHostedService(provider => provider.GetRequiredService<AutoBackgroundService>());
 
 builder.Services.AddAuthentication("UserCookies")
     .AddCookie("UserCookies", options =>

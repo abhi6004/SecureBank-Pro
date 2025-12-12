@@ -28,15 +28,15 @@
                         <td>
                             @if (Applications.Status == "Approved")
                             {
-                                <button disabled class="btn btn-danger">Approved</button>
+                                <button disabled class="btn btn-primary">Approved</button>
                             }
                             else if (Applications.Status == "Pending")
                             {
                                 <button disabled class="btn btn-warning">Pending</button>
                             }
-                            else if (Applications.Status == "Rejected")
+                            else if (Applications.Status == "Denied")
                             {
-                                <button class="btn btn-primary">Rejected</button>
+                                <button class="btn btn-danger">Rejected</button>
                             }
 
                         </td>

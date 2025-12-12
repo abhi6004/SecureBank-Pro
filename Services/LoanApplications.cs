@@ -57,7 +57,7 @@ namespace SecureBank_Pro.Services
             }
         }
 
-        public static async Task<bool> ApplicationUpdate(int id, string status, BankDbContext _context, int LoanApproverId)
+        public static async Task<ActiveLoans> ApplicationUpdate(int id, string status, BankDbContext _context, int LoanApproverId)
         {
             try
             {
@@ -84,12 +84,17 @@ namespace SecureBank_Pro.Services
                             LoanApproverId = LoanApproverId
                         };
 
+                        await _context.Balances.Where(b => b.UserId == application.CustomerId).ForEachAsync(b => b.Amount += offer.LoanAmount);
+
                         application.Status = status;
                         await _context.ActiveLoans.AddAsync(newLoan);
                         await _context.SaveChangesAsync();
+
+                        return newLoan;
                     }
                 }
-                return true;
+
+                return null;
             }
             catch (Exception ex)
             {

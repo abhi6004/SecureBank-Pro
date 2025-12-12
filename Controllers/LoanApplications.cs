@@ -5,6 +5,7 @@ using Newtonsoft.Json.Linq;
 using SecureBank_Pro.BankEntities;
 using SecureBank_Pro.Data;
 using SecureBank_Pro.Models;
+using SecureBank_Pro.Services;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using SystemTextJson = System.Text.Json.JsonSerializer;
@@ -15,7 +16,14 @@ namespace SecureBank_Pro.Controllers
     public class LoanApplicationsController : Controller
     {
         private readonly BankDbContext _context;
-        public LoanApplicationsController(BankDbContext context) => _context = context;
+        private readonly AutoBackgroundService _service;
+
+        public LoanApplicationsController(BankDbContext context, IServiceProvider provider)
+        {
+            _context = context;
+            _service = provider.GetRequiredService<AutoBackgroundService>();
+        }
+
 
         public async Task<IActionResult> NewApplications()
         {
@@ -70,8 +78,13 @@ namespace SecureBank_Pro.Controllers
                     var _userObj = HttpContext.Session.GetString("UserData");
                     var user = JsonConvert.DeserializeObject<Users>(_userObj);
 
-                    bool isSuccess = await SecureBank_Pro.Services.LoanApplications.ApplicationUpdate(id, status , _context, user.id);
+                    ActiveLoans newLoan = await SecureBank_Pro.Services.LoanApplications.ApplicationUpdate(id, status , _context, user.id);
 
+                    if(newLoan.LoanStatus == "Approved")
+                    {
+                        _service.LoanProcessing(newLoan);
+                    }
+                    
                     var newApplications = await Services.LoanApplications.GetNewApplications(_context);
                     HttpContext.Session.SetString("NewApplications", SystemTextJson.Serialize(newApplications, new JsonSerializerOptions
                     {
@@ -79,7 +92,7 @@ namespace SecureBank_Pro.Controllers
                     })
                     );
 
-                    return Json(new { success = isSuccess });
+                    return Json(new { success = "true" });
                 }
                 else
                 {
