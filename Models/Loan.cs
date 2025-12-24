@@ -36,4 +36,5 @@ namespace SecureBank_Pro.Models
         public List<Transaction> Transactions { get; set; } = new();
         public Balance balance { get; set; } = new();
     }
+
 }
