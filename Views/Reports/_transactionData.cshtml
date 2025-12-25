@@ -1,0 +1,30 @@
+﻿@using SecureBank_Pro.BankEntities;
+@model List<Transaction>;
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Transaction Id</th>
+            <th>User Id</th>
+            <th>Type</th>
+            <th>Amount</th>
+            <th>Balance After</th>
+            <th>Description</th>
+            <th>Created At</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var t in Model)
+        {
+            <tr>
+                <td>@t.Trasactionsid</td>
+                <td>@t.UserId</td>
+                <td>@t.TransactionType</td>
+                <td>@t.Amount</td>
+                <td>@t.BalanceAfter</td>
+                <td>@t.Description</td>
+                <td>@t.CreatedAt</td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,5 +1,40 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@{
+    ViewBag.Title = "Transactions";
+    int PageSize = 3;
+    int PageNumber = 1;
+
+    int TotalPages = Context.Session.GetInt32("TotalPages") ?? 0;
+
+    var data = new
+    {
+        PageSize = PageSize,
+        PageNumber = PageNumber
+    };
 }
+
+<h2>Transactions</h2>
+
+<form method="get">
+    Page Size:
+    <select id="pageSize" name="pageSize">
+        <option value="3" selected>3</option>
+        <option value="5">5</option>
+        <option value="10">10</option>
+    </select>
+    <input type="hidden" name="pageNumber" value="@PageSize" />
+</form>
+
+<div id="transaction-data"></div>
+
+<div>
+    <button id="prev" type="submit" @(PageNumber <= 1 ? "disabled" : "")>Prev</button>
+
+    <input type="hidden" id="total-pages" value="@TotalPages" />
+    <input id="page-number" type="hidden" value="@PageNumber" />
+    <span id="page-info">Page @PageNumber of @TotalPages</span>
+
+    <button id="next" type="submit" @(PageNumber >= TotalPages ? "disabled" : "")>Next</button>
+
+</div>
+
+<script src="/js/Reports/Transaction.js"></script>

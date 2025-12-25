@@ -88,6 +88,13 @@
                                         <a class="nav-link text-dark" asp-area="" asp-controller="LoanApplications" asp-action="NewApplications">NewApplications</a>
                                     </li>
                                 }
+
+                                if (_userData.role == "Auditor")
+                                {
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Reports" asp-action="Transaction">Transaction</a>
+                                    </li>
+                                }
                             }
                         </ul>
 
