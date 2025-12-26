@@ -20,6 +20,7 @@
             success: function (html) {
                 $("#transaction-data").html(html);
                 updateButtons();
+                getTotalPage();
             }
         });
     }
@@ -29,12 +30,18 @@
             url: "/Reports/GetTotalPage",
             type: "GET",
             data: data,
-            success: function (data) {
-                $("#page-number").val(data.totalPage);
+            success: function (_page) {
+
+                data.totalPages = _page.totalPage;             
+                $("#total-pages").val(_page.totalPage);         
+
+                $("#page-info").text("Page 1 of " + _page.totalPage);
+
                 updateButtons();
             }
         });
     }
+
 
     loadTable();
 
@@ -45,13 +52,11 @@
         if (btnid === "next") data.pageNumber++;
 
         loadTable();
-        getTotalPage();
     });
 
     $("#pageSize").on("change", function () {
         data.pageSize = $("#pageSize").val();
-        data.pageNumber = 1;                 // reset to first page on size change
+        data.pageNumber = 1;
         loadTable();
-        getTotalPage();
     });
 });

@@ -6,7 +6,7 @@ namespace SecureBank_Pro.Services
 {
     public class Reports
     {
-        public static List<Transaction> GenerateTransactionReport(int pageSize, int pageNumber, BankDbContext context , IHttpContextAccessor _http)
+        public async static Task<List<Transaction>> GenerateTransactionReport(int pageSize, int pageNumber, BankDbContext context , IHttpContextAccessor _http)
         {
             try
             {

@@ -27,12 +27,12 @@ namespace SecureBank_Pro.Controllers
         }
 
         [HttpGet]
-        public IActionResult TransactionReportTable(int pageSize, int pageNumber)
+        public async Task<IActionResult> TransactionReportTable(int pageSize, int pageNumber)
         {
             try
             {
                 var transactions =
-                    SecureBank_Pro.Services.Reports.GenerateTransactionReport(
+                    await SecureBank_Pro.Services.Reports.GenerateTransactionReport(
                         pageSize,
                         pageNumber,
                         _context,
@@ -54,7 +54,7 @@ namespace SecureBank_Pro.Controllers
             try
             {
                 int? totalPage = _http.HttpContext.Session.GetInt32("TotalPages");
-                return Ok(new { totalPage = totalPage }); // wrap in Ok() and use proper object syntax
+                return Ok(new { totalPage = totalPage });
             }
             catch (Exception ex)
             {
