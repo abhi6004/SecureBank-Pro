@@ -4,10 +4,13 @@ using SecureBank_Pro.Data;
 using SecureBank_Pro.Models;
 using SecureBank_Pro.Services;
 using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
+using QuestPDF.Fluent;
+using QuestPDF.Infrastructure;
 
 
 var builder = WebApplication.CreateBuilder(args);
 
+QuestPDF.Settings.License = LicenseType.Community;
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddHttpContextAccessor();  

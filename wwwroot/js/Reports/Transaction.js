@@ -12,6 +12,13 @@
         $("#page-info").text("Page " + data.pageNumber + " of " + data.totalPages);
     }
 
+    function updateURL() {
+        let pageSize = $("#pageSize").val();
+        let PageNumber = $("#page-number").val();
+        let newUrl = '/Report/Download?pageSize=' + pageSize + '%pageNumber=' + PageNumber;
+        $("#download-pdf").attr("href", newUrl);
+    }
+
     function loadTable() {
         $.ajax({
             url: "/Reports/TransactionReportTable",
@@ -21,6 +28,7 @@
                 $("#transaction-data").html(html);
                 updateButtons();
                 getTotalPage();
+                updateURL();
             }
         });
     }
@@ -32,8 +40,8 @@
             data: data,
             success: function (_page) {
 
-                data.totalPages = _page.totalPage;             
-                $("#total-pages").val(_page.totalPage);         
+                data.totalPages = _page.totalPage;
+                $("#total-pages").val(_page.totalPage);
 
                 $("#page-info").text("Page 1 of " + _page.totalPage);
 
@@ -50,7 +58,7 @@
 
         if (btnid === "prev") data.pageNumber--;
         if (btnid === "next") data.pageNumber++;
-
+        $("#page-number").val(data.pageNumber);
         loadTable();
     });
 
