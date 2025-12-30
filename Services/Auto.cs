@@ -26,7 +26,7 @@ namespace SecureBank_Pro.Services
             {
                 if (_loan.TryDequeue(out ActiveLoans application))
                 {
-                    await ProcessApplication(application, stoppingToken);
+                    ProcessApplication(application, stoppingToken);
                 }
 
                 await Task.Delay(1000, stoppingToken);
@@ -48,9 +48,24 @@ namespace SecureBank_Pro.Services
                     if (balance != null)
                     {
                         balance.Amount -= installmentAmount;
+
+                        var transaction = new Transaction
+                        {
+                            UserId = application.CustomerId,
+                            Amount = installmentAmount,
+                            TransactionType = "Debit",
+                            Description = $"Loan Installment Payment for Loan ID {application.LoanId}",
+                            CreatedAt = DateTime.UtcNow,
+                            BalanceAfter = balance.Amount,
+                            IsEmi = true
+                        };
+
+                        await context.Transactions.AddAsync(transaction);
                         await context.SaveChangesAsync(stoppingToken);
                         totalInstallments--;
                     }
+
+                    await Task.Delay(5000);
                 }
 
                 await Task.Delay(5000, stoppingToken);

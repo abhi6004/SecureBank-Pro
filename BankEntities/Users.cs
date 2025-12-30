@@ -97,6 +97,7 @@ namespace SecureBank_Pro.BankEntities
         public decimal BalanceAfter { get; set; }
         public string Description { get; set; }
         public DateTime CreatedAt { get; set; }
+        public bool IsEmi { get; set; } = false;
 
         public Transaction(Transaction other)
         {
@@ -107,6 +108,7 @@ namespace SecureBank_Pro.BankEntities
             this.BalanceAfter = other.BalanceAfter;
             this.Description = other.Description;
             this.CreatedAt = other.CreatedAt;
+            this.IsEmi = other.IsEmi;
         }
 
         public Transaction() { }

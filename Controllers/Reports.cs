@@ -25,13 +25,8 @@ namespace SecureBank_Pro.Controllers
             return View();
         }
 
-        public IActionResult EMI()
-        {
-            return View();
-        }
-
         [HttpGet]
-        public async Task<IActionResult> TransactionReportTable(int pageSize, int pageNumber)
+        public async Task<IActionResult> TransactionReportTable(int pageSize, int pageNumber , string Category)
         {
             try
             {
@@ -39,6 +34,7 @@ namespace SecureBank_Pro.Controllers
                     await SecureBank_Pro.Services.Reports.GenerateTransactionReport(
                         pageSize,
                         pageNumber,
+                        Category,
                         _context,
                         _http
                     );
@@ -67,7 +63,8 @@ namespace SecureBank_Pro.Controllers
             }
         }
 
-        public async Task<IActionResult> DownloadPdf(int pageSize, int pageNumber)
+        [HttpGet]
+        public async Task<IActionResult> DownloadPdf(int pageSize, int pageNumber , string Category)
         {
             try
             {
@@ -75,74 +72,113 @@ namespace SecureBank_Pro.Controllers
                     await SecureBank_Pro.Services.Reports.GenerateTransactionReport(
                         pageSize,
                         pageNumber,
+                        Category,
                         _context,
                         _http
                     );
 
-                var doucment = Document.Create(container =>
+                var document = Document.Create(container =>
                 {
                     container.Page(page =>
                     {
-                        page.Margin(50);
+                        page.Margin(40);
                         page.Size(PageSizes.A4);
                         page.PageColor(Colors.White);
-                        page.DefaultTextStyle(x => x.FontSize(12).FontColor(Colors.Black));
+                        page.DefaultTextStyle(x => x.FontSize(11));
+
                         page.Header()
-                            .Text("Transaction Report")
-                            .SemiBold().FontSize(20).FontColor(Colors.Blue.Medium);
-                        page.Content()
-                            .Table(table =>
+                            .Row(row =>
                             {
-                                // Define columns
-                                table.ColumnsDefinition(columns =>
+                                row.RelativeItem().Column(col =>
                                 {
-                                    columns.ConstantColumn(50); // ID
-                                    columns.RelativeColumn();   // From Account
-                                    columns.RelativeColumn();   // To Account
-                                    columns.RelativeColumn();   // Amount
-                                    columns.RelativeColumn();   // Date
-                                    columns.RelativeColumn();   // Type
+                                    col.Item().Text("Transaction Report")
+                                        .SemiBold().FontSize(20).FontColor(Colors.Blue.Medium);
+
+                                    col.Item().Text($"Generated: {DateTime.Now:dd MMM yyyy, hh:mm tt}")
+                                        .FontSize(9).FontColor(Colors.Grey.Medium);
                                 });
-                                // Header row
-                                table.Header(header =>
-                                {
-                                    header.Cell().Element(CellStyle).Text("Trasactionsid");
-                                    header.Cell().Element(CellStyle).Text("UserId");
-                                    header.Cell().Element(CellStyle).Text("TransactionType");
-                                    header.Cell().Element(CellStyle).Text("Amount");
-                                    header.Cell().Element(CellStyle).Text("Amount");
-                                    header.Cell().Element(CellStyle).Text("BalanceAfter");
-                                    header.Cell().Element(CellStyle).Text("Description");
-                                    header.Cell().Element(CellStyle).Text("CreatedAt");
-                                });
-                                // Data rows
-                                foreach (var tx in transactions)
-                                {
-                                    table.Cell().Element(CellStyle).Text(tx.Trasactionsid.ToString());
-                                    table.Cell().Element(CellStyle).Text(tx.UserId.ToString());
-                                    table.Cell().Element(CellStyle).Text(tx.TransactionType);
-                                    table.Cell().Element(CellStyle).Text(tx.Amount.ToString("C"));
-                                    table.Cell().Element(CellStyle).Text(tx.BalanceAfter.ToString("C"));
-                                    table.Cell().Element(CellStyle).Text(tx?.Description ?? "");
-                                    table.Cell().Element(CellStyle).Text(tx.CreatedAt.ToString("yyyy-MM-dd"));
-                                }
-                                // Cell styling
-                                IContainer CellStyle(IContainer cell)
-                                {
-                                    return cell.Padding(5).BorderBottom(1).BorderColor(Colors.Grey.Lighten2);
-                                }
                             });
+
+                        page.Content().PaddingVertical(10).Table(table =>
+                        {
+                            // ---------- Column Layout ----------
+                            table.ColumnsDefinition(columns =>
+                            {
+                                columns.ConstantColumn(40);  // #
+                                columns.RelativeColumn();    // User Id
+                                columns.RelativeColumn(2);   // Type
+                                columns.RelativeColumn(2);   // Description
+                                columns.RelativeColumn();    // Amount
+                                columns.RelativeColumn();    // Balance
+                                columns.RelativeColumn(2);   // Date
+                            });
+
+                            // ---------- Header ----------
+                            table.Header(header =>
+                            {
+                                header.Cell().Element(HeaderCell).Text("#");
+                                header.Cell().Element(HeaderCell).Text("User Id");
+                                header.Cell().Element(HeaderCell).Text("Transaction Type");
+                                header.Cell().Element(HeaderCell).Text("Description");
+                                header.Cell().Element(HeaderCell).Text("Amount");
+                                header.Cell().Element(HeaderCell).Text("Balance After");
+                                header.Cell().Element(HeaderCell).Text("Date");
+                            });
+
+                            // ---------- Rows ----------
+                            int index = 1;
+                            foreach (var tx in transactions)
+                            {
+                                bool isEven = index % 2 == 0;
+
+                                table.Cell().Element(c => DataCell(c, isEven)).Text(index.ToString());
+                                table.Cell().Element(c => DataCell(c, isEven)).Text(tx.UserId.ToString());
+                                table.Cell().Element(c => DataCell(c, isEven)).Text(tx.TransactionType);
+                                table.Cell().Element(c => DataCell(c, isEven)).Text(tx?.Description ?? "-");
+
+                                table.Cell().Element(c => DataCellRight(c, isEven))
+                                    .Text(tx.Amount.ToString("C"));
+
+                                table.Cell().Element(c => DataCellRight(c, isEven))
+                                    .Text(tx.BalanceAfter.ToString("C"));
+
+                                table.Cell().Element(c => DataCell(c, isEven))
+                                    .Text(tx.CreatedAt.ToString("dd MMM yyyy"));
+
+                                index++;
+                            }
+
+                            // ---------- Styles ----------
+                            IContainer HeaderCell(IContainer container) =>
+                                container
+                                    .Padding(6)
+                                    .BorderBottom(1)
+                                    .BorderColor(Colors.Grey.Medium)
+                                    .Background(Colors.Grey.Lighten3)
+                                    .DefaultTextStyle(x => x.SemiBold());
+
+                            IContainer DataCell(IContainer container, bool even) =>
+                                container
+                                    .Padding(6)
+                                    .Background(even ? Colors.Grey.Lighten4 : Colors.White);
+
+                            IContainer DataCellRight(IContainer container, bool even) =>
+                                DataCell(container, even).AlignRight();
+                        });
+
                         page.Footer()
                             .AlignCenter()
                             .Text(x =>
                             {
                                 x.Span("Page ");
                                 x.CurrentPageNumber();
+                                x.Span(" of ");
+                                x.TotalPages();
                             });
                     });
                 });
 
-                return File(doucment.GeneratePdf(), "application/pdf", "TransactionReport.pdf");
+                return File(document.GeneratePdf(), "application/pdf", "TransactionReport.pdf");
             }
             catch (Exception ex)
             {

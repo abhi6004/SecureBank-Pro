@@ -6,19 +6,24 @@ namespace SecureBank_Pro.Services
 {
     public class Reports
     {
-        public async static Task<List<Transaction>> GenerateTransactionReport(int pageSize, int pageNumber, BankDbContext context , IHttpContextAccessor _http)
+        public async static Task<List<Transaction>> GenerateTransactionReport(int pageSize, int pageNumber, string Category, BankDbContext context, IHttpContextAccessor _http)
         {
             try
             {
-                List<Transaction> _transaction = context.Transactions
-                     .Skip((pageNumber - 1) * pageSize)
-                     .Take(pageSize)
-                     .ToList();
+                List<Transaction> transactions = context.Transactions
+                .Where(t =>
+                    Category == "All" ||                        
+                    (Category == "EMI" && t.IsEmi) ||            
+                    (Category == "Bank_Transfer" && !t.IsEmi))          
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
 
                 int totalRecords = context.Transactions.Count();
                 int totalPages = (int)Math.Ceiling(totalRecords / (double)pageSize);
                 _http.HttpContext.Session.SetInt32("TotalPages", totalPages);
-                return _transaction;
+                return transactions;
             }
             catch (Exception ex)
             {

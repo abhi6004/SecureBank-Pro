@@ -21,7 +21,15 @@
         <option value="5">5</option>
         <option value="10">10</option>
     </select>
-    <input type="hidden" name="pageNumber" value="@PageSize" />
+</form>
+
+<form method="get">
+    Category:
+    <select id="Catogory" name="Catogory">
+        <option value="All" selected>All</option>
+        <option value="Bank_Transfer">Bank Transfer</option>
+        <option value="EMI">EMI</option>
+    </select>
 </form>
 
 <div id="transaction-data"></div>
@@ -37,6 +45,7 @@
 
 </div>
 
-<a id="download-pdf" href="/Report/Download?pageSize=3%pageNumber=1">Download PDF</a>
+<a id="download-pdf" href="/Reports/DownloadPdf?pageSize=3&pageNumber=1&Category=ALL">Download PDF</a>
+
 
 <script src="/js/Reports/Transaction.js"></script>

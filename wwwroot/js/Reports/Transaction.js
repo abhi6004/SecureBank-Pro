@@ -3,7 +3,8 @@
     var data = {
         pageSize: 3,
         pageNumber: 1,
-        totalPages: Number($("#total-pages").val())
+        totalPages: Number($("#total-pages").val()),
+        Category: "All"
     };
 
     function updateButtons() {
@@ -15,7 +16,7 @@
     function updateURL() {
         let pageSize = $("#pageSize").val();
         let PageNumber = $("#page-number").val();
-        let newUrl = '/Report/Download?pageSize=' + pageSize + '%pageNumber=' + PageNumber;
+        let newUrl = '/Reports/DownloadPdf?pageSize=' + pageSize + '&pageNumber=' + PageNumber + "&Category=" + Category;
         $("#download-pdf").attr("href", newUrl);
     }
 
@@ -67,4 +68,10 @@
         data.pageNumber = 1;
         loadTable();
     });
+
+    $("#Catogory").on("change", function () {
+        data.Category = $("#Catogory").val();
+        loadTable();
+    });
+
 });
