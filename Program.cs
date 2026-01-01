@@ -1,11 +1,12 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
 using Microsoft.EntityFrameworkCore;
+using QuestPDF.Fluent;
+using QuestPDF.Infrastructure;
 using SecureBank_Pro.Data;
 using SecureBank_Pro.Models;
 using SecureBank_Pro.Services;
-using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
-using QuestPDF.Fluent;
-using QuestPDF.Infrastructure;
+using StackExchange.Redis;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,6 +21,9 @@ builder.Services.AddHttpClient();
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 builder.Logging.SetMinimumLevel(LogLevel.Information);
+var redis = ConnectionMultiplexer.Connect("localhost:6379");
+builder.Services.AddSingleton<IConnectionMultiplexer>(redis);
+
 
 
 builder.Services.AddDbContext<BankDbContext>(options =>
