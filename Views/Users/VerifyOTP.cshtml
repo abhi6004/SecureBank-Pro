@@ -1,0 +1,14 @@
+﻿@{
+    string role = ViewBag.role;
+    string email = ViewBag.email;
+    string full_name = ViewBag.full_name;
+}
+
+<form asp-action="CheckOTP" method="post">
+    <label for="otp-id">Enter your OTP</label>
+    <input name="otp" id="otp-id" type="number"/>
+
+    <input name="role" type="hidden" value="@role" />
+    <input name="email" type="hidden" value="@email" />
+    <input name="full_name" type="hidden" value="@full_name" />
+</form>

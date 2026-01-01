@@ -116,5 +116,23 @@ namespace SecureBank_Pro.Services
                 throw;
             }
         }
+
+        public static async Task<Users> GetuserFromEmail(BankDbContext _context, string email)
+        {
+            try
+            {
+                Users _user = await _context.Users.FirstOrDefaultAsync(u => u.email == email);
+                if (_user == null)
+                {
+                    return null;
+                }
+                return _user;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw;
+            }
+        }
     }
 }

@@ -9,14 +9,8 @@ namespace SecureBank_Pro.Services
 {
     public class OTP
     {
-        private readonly IDatabase _redis;
-
-        public OTP(IConnectionMultiplexer connection)
-        {
-            _redis = connection.GetDatabase();
-        }
-
-        public async Task<bool> SendOTP(string userId, string email)
+        
+        public static async Task<bool> SendOTP(IDatabase _redis, string email)
         {
             try
             {
@@ -27,10 +21,11 @@ namespace SecureBank_Pro.Services
                 using var sha = SHA256.Create();
                 var hash = Convert.ToHexString(sha.ComputeHash(Encoding.UTF8.GetBytes(otp)));
 
-                await _redis.StringSetAsync($"OTP:{userId}", hash, TimeSpan.FromMinutes(2));
+                await _redis.StringSetAsync($"OTP:{email}", hash, TimeSpan.FromMinutes(2));
 
                 var message = new MailMessage();
                 message.To.Add(email);
+                message.From = new MailAddress("abhiradadiya30012004@gmail.com");
                 message.Subject = "Your OTP Code";
                 message.Body = $"Your OTP is: {otp}\nIt will expire in 2 minutes.";
 
@@ -39,7 +34,7 @@ namespace SecureBank_Pro.Services
 
                 smtp.Credentials = new NetworkCredential(
                     "abhiradadiya30012004@gmail.com",
-                    "Abhi30@1040"
+                    "lwkc upxi yzpm idvh"
                 );
 
                 await smtp.SendMailAsync(message);
@@ -52,14 +47,14 @@ namespace SecureBank_Pro.Services
             }
         }
 
-        public async Task<bool> VerifyOTP(string userId, string OTP)
+        public static async Task<bool> VerifyOTP(IDatabase _redis , string email, string OTP)
         {
             try
             {
                 using var sha = SHA256.Create();
                 var hashInput = Convert.ToHexString(sha.ComputeHash(Encoding.UTF8.GetBytes(OTP)));
 
-                var storedHash = await _redis.StringGetAsync($"OTP:{userId}");
+                var storedHash = await _redis.StringGetAsync($"OTP:{email}");
 
                 if (storedHash.IsNullOrEmpty) return false;
 

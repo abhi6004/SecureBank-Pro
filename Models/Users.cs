@@ -27,6 +27,7 @@
         // Common fields
         public bool IsActive { get; set; } = true;
         public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public bool otp_active { get; set; }
 
         // Empty constructor (optional but explicit)
         public User() { }
@@ -53,6 +54,7 @@
             LastLoginTime = other.LastLoginTime;
             IsActive = other.IsActive;
             CreatedAt = other.CreatedAt;
+            otp_active = other.otp_active;
         }
     }
 }

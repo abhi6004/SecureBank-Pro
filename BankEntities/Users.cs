@@ -29,7 +29,7 @@ namespace SecureBank_Pro.BankEntities
 
         public bool is_active { get; set; } = false;
         public DateTime? created_at { get; set; }
-
+        public bool otp_active { get; set; }
         public Balance? Balance { get; set; }
         public ICollection<Transaction> Transactions { get; set; } = new HashSet<Transaction>();
         public ICollection<Applications> Applications { get; set; } = new HashSet<Applications>();
@@ -54,6 +54,7 @@ namespace SecureBank_Pro.BankEntities
             this.last_login_time = other.last_login_time;
             this.is_active = other.is_active;
             this.created_at = other.created_at;
+            this.otp_active = other.otp_active;
         }
 
         public Users() { }
