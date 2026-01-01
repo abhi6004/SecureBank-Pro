@@ -31,3 +31,10 @@ $(function () {
         });
     });
 });
+
+$(function () {
+    $("#Upload").on("click", function () {
+        let id = $("#Upload-id-customer").val();
+        window.location.href = "/Dashboard/UploadDocuments?id=" + id;
+    });
+})

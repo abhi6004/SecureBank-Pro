@@ -15,6 +15,7 @@ namespace SecureBank_Pro.Data
         public DbSet<ActiveLoans> ActiveLoans { get; set; }
         public DbSet<CustomerOffers> CustomerOffers { get; set; }
         public DbSet<Offers> Offers { get; set; }
+        public DbSet<UserFiles> UserFiles { get; set; }
 
         public BankDbContext(DbContextOptions<BankDbContext> options) : base(options) { }
     }

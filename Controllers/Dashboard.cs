@@ -184,5 +184,43 @@ namespace SecureBank_Pro.Controllers
                 throw;
             }
         }
+
+        public async Task<IActionResult> UploadDocuments(int id)
+        {
+            try
+            {
+                UserFiles _UserFile = await SecureBank_Pro.Services.Upload.GetUserFile(id , _context);
+                ViewBag.userId = id;
+                return View(_UserFile);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw;
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Upload(IFormFile signatureFile, IFormFile profileFile, int userId)
+        {
+            try
+            {
+                if (signatureFile != null)
+                {
+                    await SecureBank_Pro.Services.Upload.UploadFiles(signatureFile, userId, "Signature", _context);
+                }
+                if (profileFile != null)
+                {
+                    await SecureBank_Pro.Services.Upload.UploadFiles(profileFile, userId, "ProfilePicture", _context);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw;
+            }
+            return Redirect(Request.Path);
+
+        }
     }
 }

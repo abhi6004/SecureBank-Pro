@@ -265,5 +265,32 @@ namespace SecureBank_Pro.BankEntities
         }
     }
 
+    public class UserFiles
+    {
+        [Key]
+        public int user_file_id { get; set; }
+
+        public int user_id { get; set; }
+
+        public string? signature_path { get; set; }
+
+        public string? profile_photo_path { get; set; }
+
+        // Parameterless Constructor (Empty Constructor)
+        public UserFiles() { }
+
+        // Copy Constructor
+        public UserFiles(UserFiles other)
+        {
+            if (other != null)
+            {
+                this.user_file_id = other.user_file_id;
+                this.user_id = other.user_id;
+                this.signature_path = other.signature_path;
+                this.profile_photo_path = other.profile_photo_path;
+            }
+        }
+    }
+
 
 }

@@ -1,0 +1,40 @@
+﻿@model SecureBank_Pro.BankEntities.UserFiles
+@{
+    string id = ViewBag.userId?.ToString() ?? "";
+}
+
+
+<form asp-action="Upload" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="userId" value="@id" />
+
+    <div>
+        @{
+            if(Model.signature_path != null)
+            {
+                <img src="@Model.signature_path"/>
+            }
+        }
+    </div>
+
+    <div>
+        <label for="signature-id">Signature</label>
+        <input id="signature-id" name="signatureFile" type="file">
+    </div>
+
+    <div>
+        @{
+            if (Model.profile_photo_path != null)
+            {
+                <img src="@Model.profile_photo_path" />
+            }
+        }
+    </div>
+
+    <div>
+        <label for="profile-id">Profile Photo</label>
+        <input id="profile-id" name="profileFile" type="file">
+    </div>
+
+    <hr />
+    <button type="submit">Submit All</button>
+</form>
