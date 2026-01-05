@@ -124,6 +124,8 @@ namespace SecureBank_Pro.BankEntities
         public DateTime SentAt { get; set; }
         public string Section { get; set; }
         public string? Room { get; set; }
+        public string SenderName { get; set; }
+        public string Department { get; set; }
 
         public ChatHistory(ChatHistory other)
         {
@@ -134,6 +136,8 @@ namespace SecureBank_Pro.BankEntities
             this.SentAt = other.SentAt;
             this.Section = other.Section;
             this.Room = other.Room;
+            this.SenderName = other.SenderName;
+            this.Department = other.Department;
         }
 
         public ChatHistory() { }

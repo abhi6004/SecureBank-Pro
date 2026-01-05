@@ -1,97 +1,87 @@
 ﻿@using Newtonsoft.Json
-@* <link rel="stylesheet" href="~/css/Chat/chat.css" /> *@
+@model List<SecureBank_Pro.BankEntities.Users>
 
 @{
-    @model dynamic
-    var newUser = JsonConvert.DeserializeObject<dynamic>(Context.Session.GetString("UserData"));
-
+    var newUser = JsonConvert.DeserializeObject<SecureBank_Pro.BankEntities.Users>(Context.Session.GetString("UserData"));
     string Current = ViewBag.Current;
     string username = newUser.full_name;
+    string userRole = newUser.role; // lowercase
 }
 
-<div class="chat-container">
+@functions {
+    // Helper function for department
+    public string GetDepartment(SecureBank_Pro.BankEntities.Users u)
+    {
+        if (u.role == "Manager" || u.role == "Employee") return u.branch_assigned ?? "";
+        if (u.role == "Auditor") return u.assigned_region ?? "";
+        return "";
+    }
+}
 
-    <!-- General Section -->
-    <section id="general-section" class="chat-section general-chat">
-        <h2 onclick="GetAllUsers('MainChat')">General Chat</h2>
-        @if (Current != "rooms-section" && Current != "private-messages")
+@section Styles {
+    <link rel="stylesheet" href="~/css/Chat/chat.css" />
+}
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+    <script src="~/js/Chat/ChatRoom.js"></script>
+    <script>
+        var userRole = '@userRole'; // for JS room restriction
+    </script>
+}
+
+<div class="chat-wrapper">
+
+    <!-- LEFT SIDEBAR -->
+    <div class="chat-list">
+
+        <h2>General Chat</h2>
+        <div onclick="OpenChat('','general')" class="chat-item">
+            General Room
+        </div>
+
+        <h2>Room Chats</h2>
+        @if (newUser.role == "Manager")
         {
-            <div onclick="GetUserChat('' , 'general')" class="chat-messages" id="general-messages">
-                <h3>General Room</h3>
-                <div class="chat-messages" id="general"></div>
-            </div>
-
-            <div>
-                <input id="general-chatbox" type="text" name="chat" value="" />
-                <button onclick="SendChat(document.getElementById('general-chatbox').value, 'general-chatbox' , 'general' , ''); document.getElementById('general-chatbox').value=''">Send</button>
-            </div>
-            
+            <div onclick="OpenChat('manager','room','Manager')" class="chat-item">Manager Room</div>
         }
-    </section>
-
-
-
-    <!-- Room Sections -->
-    <section id="rooms-section" class="chat-section rooms-chat">
-        <h2 onclick="GetAllUsers('rooms-section')" id="rooms-section">Room Chats</h2>
-        @if (Current == "rooms-section")
+        @if (newUser.role == "Employee")
         {
-            <div onclick="GetUserChat('manager' , 'room')" class="room-chat" id="manager-messages">
-                <h3>Manager Room</h3>
-                <div class="chat-messages" id="manager"></div>
-            </div>
-
-            <div>
-                <input id="manager-chatbox" type="text" name="chat" value="" />
-                <button onclick="SendChat(document.getElementById('manager-chatbox').value, 'manager-chatbox' , 'room' , 'manager'); document.getElementById('manager-chatbox').value=''">Send</button>
-            </div>
-            
-            <div onclick="GetUserChat('employee' , 'room')" class="room-chat" id="employee-messages">
-                <h3>Employee Room</h3>
-                <div class="chat-messages" id="employee"></div>
-            </div>
-
-            <div>
-                <input id="employee-chatbox" type="text" name="chat" value="" />
-                <button onclick="SendChat(document.getElementById('employee-chatbox').value, 'employee-chatbox' , 'room' , 'employee'); document.getElementById('employee-chatbox').value='')">Send</button>
-            </div>
-
-
-            <div onclick="GetUserChat('auditor' , 'room')" class="room-chat" id="auditor-messages">
-                <h3>Auditor Room</h3>
-                <div class="chat-messages" id="auditor"></div>
-            </div>
-
-            <div>
-                <input id="auditor-chatbox" onclick="SendChat(this.value , 'auditor')" type="text" name="chat" value="" />
-                <button onclick="SendChat(document.getElementById('auditor-chatbox').value, 'auditor-chatbox' , 'room' ,'auditor'); document.getElementById('auditor-chatbox').value=''">Send</button>
-            </div>
-
+            <div onclick="OpenChat('employee','room','Employee')" class="chat-item">Employee Room</div>
+        }
+        @if (newUser.role == "Auditor")
+        {
+            <div onclick="OpenChat('auditor','room','Auditor')" class="chat-item">Auditor Room</div>
         }
 
-    </section>
-
-    <!-- Private Section -->
-    <section id="private-section" class="chat-section private-chat">
-        <h2 onclick="GetAllUsers('private-messages')">Private Chats</h2>
-        <div class="private-messages" id="private-messages"></div>
-
-        @if (Current == "private-messages")
+        <h2>Private Chats</h2>
+        @foreach (var user in Model)
         {
-            foreach (var user in Model)
+            if (user.id != newUser.id)
             {
-                <div onclick="GetUserChat('@user' , 'private')" class="@user" @(user == username ? "hidden" : "")>
-                    <p>@user</p>
-                    <div id="@user"></div>
-                </div>
-
-                <div @(user == username ? "hidden" : "")>
-                    <input id="@user-chatbox" type="text" name="chat" value="" />
-                    <button onclick="SendChat(document.getElementById('@user-chatbox').value, '@user-chatbox' , 'private' , ''); document.getElementById('@user-chatbox').value=''">Send</button>
+                <div onclick="OpenChat('@user.id','private')" class="chat-item">
+                    @user.full_name (@GetDepartment(user))
                 </div>
             }
         }
-    </section>
-</div>
+    </div>
 
-<script src="~/js/Chat/ChatRoom.js"></script>
+    <!-- RIGHT CHAT PANEL -->
+    <div class="chat-window">
+
+        <div id="chat-title" class="chat-title">
+            Select chat to start messaging
+        </div>
+
+        <div id="chat-content" class="chat-content">
+            <!-- Chat messages will load here -->
+        </div>
+
+        <div class="chat-input-box">
+            <input id="main-message-box" type="text" placeholder="Type message..." />
+            <button onclick="SendActiveChat()">Send</button>
+        </div>
+
+    </div>
+
+</div>

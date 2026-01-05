@@ -13,14 +13,14 @@ namespace SecureBank_Pro.Services
 {
     public class Chat
     {
-        public static async Task<List<string>> GetAllUsers(string section, BankDbContext _context, string userName)
+        public static async Task<List<string>> GetAllUsers(string section, BankDbContext _context, int id)
         {
             try
             {
                 List<string> users = new List<string>();
                 if (section == "private-messages")
                 {
-                    users = await _context.Users.Select(u => u.full_name).ToListAsync();
+                    users = await _context.Users.Where(e => e.id != id).Select(u => u.full_name).ToListAsync();
                     if (users.Count != 0)
                     {
                         return users;

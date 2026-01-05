@@ -1,61 +1,60 @@
-﻿$(function () {
-    // Build and start SignalR connection
-    const connection = new signalR.HubConnectionBuilder()
-        .withUrl("/chatHub")
-        .build();
+﻿let activeUserId = "";
+let activeSection = "";
+let activeRoom = "";
 
-    connection.start()
-        .then(() => console.log("SignalR connected"))
-        .catch(err => console.error("Connection failed:", err));
+const connection = new signalR.HubConnectionBuilder()
+    .withUrl("/chatHub")
+    .build();
 
-    // Register ReceiveMessage handler ONCE
-    connection.on("ReceiveMessage", (chat) => {
-        console.log("Message received:", chat);
+connection.start();
 
-        const appendMessage = (containerId, messageText, align) => {
-            const container = document.getElementById(containerId);
-            if (!container) return;
-            const p = document.createElement("p");
-            p.innerText = messageText;
-            p.style.textAlign = align;
-            container.appendChild(p);
-            container.scrollTop = container.scrollHeight; // auto-scroll
-        };
+// Receive messages
+connection.on("ReceiveMessage", function (chat) {
+    if (chat.section !== activeSection) return;
 
-        if (chat.section === 'private') {
-            const [id, fullName] = chat.room.split("-");
-            appendMessage(id, chat.messageText, "right");
-            appendMessage(fullName, chat.messageText, "left");
-        }
-        else if (chat.section === 'room') {
-            appendMessage(chat.room, chat.messageText, "right");
-        }
-        else if (chat.section === 'general') {
-            appendMessage("general", chat.messageText, "right");
-        }
-    });
+    let content = $("#chat-content");
+    let msgText = chat.section === "general"
+        ? `${chat.SenderName} (${chat.Department}): ${chat.messageText}`
+        : `${chat.SenderName}: ${chat.messageText}`;
 
-    // Navigate to all users
-    window.GetAllUsers = function (section) {
-        window.location.href = "/Chat/ChatRoom?section=" + encodeURIComponent(section);
-    }
-
-    // Load chat history for a user or room
-    window.GetUserChat = function (userId, section) {
-        fetch(`/Chat/UserChat?Reciver=${encodeURIComponent(userId)}&Section=${encodeURIComponent(section)}`)
-            .then(response => response.text())
-            .then(html => {
-                let containerId = (section === 'general') ? 'general' : userId;
-                const container = document.getElementById(containerId);
-                if (container) container.innerHTML = html;
-            })
-            .catch(err => console.error(err));
-    }
-
-    // Send chat message
-    window.SendChat = function (message, id, section, room) {
-        if (!message.trim()) return;
-        connection.invoke("SendChat", message, id, section, room)
-            .catch(err => console.error("Invoke failed:", err));
-    }
+    content.append(`<p style="text-align:${chat.SenderId === activeUserId ? 'right' : 'left'}">${msgText}</p>`);
 });
+
+// Open a chat
+window.OpenChat = function (id, section, roleAllowed = "") {
+    // Restrict room chat by role
+    if (section === "room" && roleAllowed && roleAllowed !== userRole) {
+        alert("You don't have permission to access this room.");
+        return;
+    }
+
+    activeUserId = id;
+    activeSection = section;
+    activeRoom = id;
+
+    $("#chat-title").text(section === "general" ? "General Room" : id);
+
+    GetUserChat(id, section);
+};
+
+// Get chat messages
+window.GetUserChat = function (userId, section) {
+    $.get("/Chat/UserChat", { Reciver: userId, Section: section }, function (html) {
+        $("#chat-content").html(html);
+    });
+};
+
+// Send chat from input box
+window.SendActiveChat = function () {
+    let box = $("#main-message-box");
+    let message = box.val().trim();
+    if (!message) return;
+
+    SendChat(message, activeUserId, activeSection, activeRoom);
+    box.val("");
+};
+
+// Send chat to server
+window.SendChat = function (message, id, section, room) {
+    connection.invoke("SendChat", message, id, section, room);
+};

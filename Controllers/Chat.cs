@@ -1,12 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using SecureBank_Pro.BankEntities;
 using SecureBank_Pro.Data;
 using SecureBank_Pro.Models;
 using SecureBank_Pro.Services;
 using System.Text.Json;
-
 
 namespace SecureBank_Pro.Controllers
 {
@@ -21,22 +21,18 @@ namespace SecureBank_Pro.Controllers
         {
             try
             {
-                List<string> users = new List<string>();
-                ViewBag.Current = "MainChat";
                 var userJson = HttpContext.Session.GetString("UserData");
                 Users currentUser = JsonConvert.DeserializeObject<Users>(userJson);
 
-                if (section == "private-messages")
-                {
-                    users = await Chat.GetAllUsers(section, _context, currentUser.full_name);
-                    ViewBag.Current = "private-messages";
-                }
-                else if (section == "rooms-section")
-                {
-                    ViewBag.Current = "rooms-section";
-                }
+                // Load all users excluding current user
+                var users = await _context.Users
+                                .Where(u => u.id != currentUser.id)
+                                .ToListAsync();
 
-                return View(users);
+                ViewBag.Current = "MainChat";
+                ViewBag.UserRole = currentUser.role;
+
+                return View(users); // now matches List<Users>
             }
             catch (Exception ex)
             {
@@ -44,6 +40,7 @@ namespace SecureBank_Pro.Controllers
                 throw;
             }
         }
+
 
         [HttpGet]
         public async Task<string> UserChat(string Reciver, string Section)
@@ -54,41 +51,27 @@ namespace SecureBank_Pro.Controllers
                 var userJson = HttpContext.Session.GetString("UserData");
                 Users currentUser = JsonConvert.DeserializeObject<Users>(userJson);
 
-                chatHistory = await Chat.GetUserChat(Reciver, Section, _context , currentUser);
+                chatHistory = await Chat.GetUserChat(Reciver, Section, _context, currentUser);
+                if (chatHistory.Count == 0) return "<p>No Chat </p>";
+
                 string chatResponse = string.Empty;
-
-                if(chatHistory.Count == 0)
-                {
-                    chatResponse = "<p>No Chat </p>";
-                    return chatResponse;
-                }
-
                 foreach (var chat in chatHistory)
                 {
-                    string style = chat.SenderId == currentUser.id
-                        ? "text-align:right;"
-                        : "text-align:left;";
+                    string style = chat.SenderId == currentUser.id ? "text-align:right;" : "text-align:left;";
+                    string senderName = chat.SenderName;
+                    string department = chat.Department;
 
-                    chatResponse += $"<p style='{style}'>{chat.SentAt.ToShortTimeString()} - {chat.MessageText}</p>\n";
+                    chatResponse += $"<p style='{style}' data-sender='{senderName}' data-department='{department}'>" +
+                                    $"{chat.SentAt.ToShortTimeString()} - {chat.MessageText}</p>\n";
                 }
-
-                //foreach (var chat in chatHistory)
-                //{
-                //    chatResponse += "<p>";
-                //    chatResponse += $"{chat.SentAt.ToShortTimeString()} - {chat.MessageText}";
-                //    chatResponse += "</p>\n";
-                //}
 
                 return chatResponse;
             }
             catch (Exception ex)
             {
-                // Handle exceptions, log errors, etc.
-                Console.WriteLine($"An error occurred while getting user chat: {ex.Message}");
+                Console.WriteLine($"Error fetching chat: {ex.Message}");
                 throw;
             }
         }
-
-        
     }
 }
