@@ -5,6 +5,7 @@ using SecureBank_Pro.BankEntities;
 using SecureBank_Pro.Data;
 using SecureBank_Pro.Models;
 using SecureBank_Pro.Services;
+using StackExchange.Redis;
 using System.Security.Claims;
 
 namespace SecureBank_Pro.Controllers
@@ -31,7 +32,7 @@ namespace SecureBank_Pro.Controllers
             }
         }
 
-        [Authorize(Roles = "Employee , Manager")]
+        [Authorize(Roles = "Employee , Manager , Auditor")]
         public async Task<IActionResult> Customers()
         {
             try
@@ -205,6 +206,7 @@ namespace SecureBank_Pro.Controllers
         {
             try
             {
+                string role = string.Empty;
                 if (signatureFile != null)
                 {
                     await SecureBank_Pro.Services.Upload.UploadFiles(signatureFile, userId, "Signature", _context);
@@ -213,13 +215,24 @@ namespace SecureBank_Pro.Controllers
                 {
                     await SecureBank_Pro.Services.Upload.UploadFiles(profileFile, userId, "ProfilePicture", _context);
                 }
+
+                role = await SecureBank_Pro.Services.Upload.GetUserRole(userId, _context);
+
+                if (role == "Manager")
+                {
+                    role = "Managers";
+                }
+                else if (role == "Customer")
+                {
+                    role = "Customers";
+                }
+                return RedirectToAction(role , "Dashboard");
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
                 throw;
             }
-            return Redirect(Request.Path);
 
         }
     }

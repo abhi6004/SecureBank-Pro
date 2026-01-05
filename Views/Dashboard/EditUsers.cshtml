@@ -1,50 +1,55 @@
-﻿@model SecureBank_Pro.BankEntities.Users;
+﻿@model SecureBank_Pro.BankEntities.Users
 
 @{
-    string Role = Model.role;
-    string userRole = ViewBag.Role;
+    ViewData["Title"] = "Edit User";
 }
 
 <div>
-    @if (!string.IsNullOrEmpty(Role))
+    @if (!string.IsNullOrEmpty(Model.role))
     {
-        <h3>User Registration From</h3>
+        <h3>User Registration Form</h3>
+
         <form asp-action="EditUsers" method="post">
 
-            <!-- Common for All Roles -->
+            <!-- Full Name -->
             <div>
                 <label>Full Name</label>
-                <input asp-for="full_name" type="text"/>
+                <input asp-for="full_name"
+                       pattern="^[A-Za-z\s]+$"
+                       title="Only alphabets are allowed" />
             </div>
 
-            @* <div>
-                <label >Password</label>
-                <div style="display : flex">
-                    <input id="password" asp-for="password_hash" type="password" />
-                    <img id="toggleButton" src="~/images/hide.png" />
-                </div>
-            </div> *@
-
+            <!-- Phone -->
             <div>
                 <label>Phone Number</label>
-                <input asp-for="phone_number" type="number"/>
+                <input asp-for="phone_number"
+                       maxlength="10"
+                       inputmode="numeric"
+                       pattern="\d*" />
             </div>
 
-            <div>
-                <input asp-for="role" type="hidden" value="@Model.role" />
-            </div>
+            <!-- Hidden Role -->
+            <input asp-for="role" type="hidden" value="@Model.role" />
 
+            <!-- Email -->
             <div>
                 <label>Email</label>
-                <input asp-for="email" type="email" readonly/>
+                <input asp-for="email" type="email" readonly />
             </div>
 
-            <!-- Customer Fields -->
+            <!-- PASSWORD toggle example -->
+            <div>
+                <label>Password</label>
+                <input id="password" name="password" type="password" />
+                <img id="toggleButton" src="/images/hide.png" style="width:22px;cursor:pointer;" />
+            </div>
+
+            <!-- Customer -->
             @if (Model.role == "Customer")
             {
                 <div>
                     <label>Address</label>
-                    <input asp-for="address" />
+                    <input asp-for="address" maxlength="80" />
                 </div>
 
                 <div>
@@ -55,19 +60,19 @@
                 <div>
                     <label>KYC Status</label>
                     <select asp-for="kyc_status">
-                        <option value="Pending">Pending</option>
-                        <option value="Verified">Verified</option>
-                        <option value="Rejected">Rejected</option>
+                        <option>Pending</option>
+                        <option>Verified</option>
+                        <option>Rejected</option>
                     </select>
                 </div>
             }
 
-            <!-- Manager & Employee Fields -->
+            <!-- Manager + Employee -->
             @if (Model.role == "Manager" || Model.role == "Employee")
             {
                 <div>
                     <label>Branch Assigned</label>
-                    <input asp-for="branch_assigned" type="text"/>
+                    <input asp-for="branch_assigned" />
                 </div>
 
                 <div>
@@ -76,39 +81,37 @@
                 </div>
             }
 
-            <!-- Employee Specific Field -->
+            <!-- Employee specific -->
             @if (Model.role == "Employee")
             {
                 <div>
                     <label>Role Title</label>
-                    <input asp-for="role_title" type="text"/>
+                    <input asp-for="role_title" />
                 </div>
             }
 
-            <!-- Auditor Specific Fields -->
+            <!-- Auditor -->
             @if (Model.role == "Auditor")
             {
                 <div>
                     <label>Assigned Region</label>
-                    <input asp-for="assigned_region" type="text"/>
+                    <input asp-for="assigned_region" />
                 </div>
 
                 <div>
                     <label>Can Export Reports</label>
-                    <select asp-for="can_export_reports" class="form-control">
-                        <option value="Yes">Yes</option>
-                        <option value="No">No</option>
+                    <select asp-for="can_export_reports">
+                        <option>Yes</option>
+                        <option>No</option>
                     </select>
                 </div>
 
-
                 <div>
                     <label>Last Login Time</label>
-                    <input asp-for="last_login_time" type="datetime-local" readonly/>
+                    <input asp-for="last_login_time" type="datetime-local" readonly />
                 </div>
             }
 
-            <!-- Active Status -->
             <div>
                 <label>Is Active</label>
                 <input asp-for="is_active" type="checkbox" />

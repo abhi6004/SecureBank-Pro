@@ -6,7 +6,6 @@
 
 <h1>Customer Profile</h1>
 
-<!-- User Details -->
 <section>
     <h2>User Information</h2>
     <table>
@@ -23,9 +22,9 @@
 
 <hr />
 
-<!-- Balance -->
 <section>
     <h2>Balance</h2>
+
     @if (Model.Balance != null)
     {
         <table>
@@ -43,39 +42,28 @@
 
 <hr />
 
-<!-- Transactions -->
-<section>
-    <h2>Transactions</h2>
-    @if (Model.Transactions != null && Model.Transactions.Any())
-    {
-        <table border="1" cellpadding="5" cellspacing="0">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Type</th>
-                    <th>Amount</th>
-                    <th>Balance After</th>
-                    <th>Description</th>
-                    <th>Created At</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var txn in Model.Transactions)
-                {
-                    <tr>
-                        <td>@txn.Trasactionsid</td>
-                        <td>@txn.TransactionType</td>
-                        <td>@txn.Amount</td>
-                        <td>@txn.BalanceAfter</td>
-                        <td>@txn.Description</td>
-                        <td>@txn.CreatedAt.ToString("dd-MM-yyyy HH:mm")</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    }
-    else
-    {
-        <p>No transactions available.</p>
-    }
-</section>
+<div>
+    Page Size:
+    <select id="pageSize">
+        <option value="5" selected>5</option>
+        <option value="10">10</option>
+        <option value="15">15</option>
+    </select>
+
+    <div id="transaction-data"></div>
+
+    <div>
+        <input id="transaction-id" type="hidden" value="@Model.Users.id" />
+
+        <button id="prev" type="button">Prev</button>
+
+        <input id="page-number" type="hidden" value="1" />
+        <input id="total-pages" type="hidden" value="0" />
+
+        <span id="page-info">Page 1 of 0</span>
+
+        <button id="next" type="button">Next</button>
+    </div>
+</div>
+
+<script src="~/js/Dashboard/CustomerProfile.js"></script>

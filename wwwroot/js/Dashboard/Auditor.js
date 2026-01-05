@@ -2,14 +2,14 @@
     window.location.href = "/Dashboard/EditUsers?email=" + encodeURIComponent(email);
 }
 
-
 function DeletedUser() {
-
+    alert("Add delete API call here");
 }
 
-$(function () {
-    $("#Upload").on("click", function () {
-        let id = $("#Upload-id-Auditor").val();
-        window.location.href = "/Dashboard/UploadDocuments?id=" + id;
-    });
+// ---- Upload button ----
+$(document).on("click", ".Upload", function () {
+
+    const id = $(this).data("id");
+
+    window.location.href = "/Dashboard/UploadDocuments?id=" + id;
 });

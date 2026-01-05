@@ -4,7 +4,8 @@
         pageSize: 3,
         pageNumber: 1,
         totalPages: Number($("#total-pages").val()),
-        Category: "All"
+        Category: "All",
+        UserId : -1
     };
 
     function updateButtons() {

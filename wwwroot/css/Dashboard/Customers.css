@@ -1,0 +1,59 @@
+﻿/* ==== PAGE WRAPPER (ONLY THIS FILE) ==== */
+.customers-list {
+    width: 100%;
+    padding: 10px 25px;
+    box-sizing: border-box;
+}
+
+/* Each row container */
+.customers {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+/* ==== CARD FULL WIDTH STYLE ==== */
+.customers .customers_data {
+    width: 100%;
+    max-width: 1100px;
+
+    background: #ffffff;
+    border-radius: 14px;
+    border: 1px solid #e5e7eb;
+
+    padding: 20px 26px;
+    margin: 14px 0;
+
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+    transition: .25s ease-in-out;
+}
+
+/* hover */
+.customers .customers_data:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 16px 32px rgba(0,0,0,.12);
+}
+
+/* ==== TEXT ==== */
+.customers .customers_data p {
+    margin-bottom: 6px;
+    font-size: 15px;
+}
+
+/* ==== BUTTON GROUP ==== */
+.customers .customers_data button {
+    padding: 7px 15px;
+    border-radius: 8px;
+    border: none;
+    margin-top: 10px;
+    margin-right: 6px;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+/* button colors */
+.customers .customers_data button:nth-of-type(1){background:#4f46e5;color:#fff;}
+.customers .customers_data button:nth-of-type(2){background:#0284c7;color:#fff;}
+.customers .customers_data button:nth-of-type(3){background:#dc2626;color:#fff;}
+.customers .customers_data .Transaction{background:#059669;color:#fff;}
+.customers .customers_data .Upload{background:#f59e0b;color:#fff;}

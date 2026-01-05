@@ -1,0 +1,42 @@
+﻿@{
+    ViewBag.Title = "Transactions";
+    int pageSize = 3;
+    int pageNumber = 1;
+    int totalPages = Context.Session.GetInt32("TotalPages") ?? 0;
+
+    // Define the options
+    var pageSizes = new List<int> { 3, 5, 10 };
+}
+
+<h2>Transactions</h2>
+
+<form method="get">
+    <label for="pageSize">Page Size:</label>
+    <select id="pageSize" name="pageSize">
+        @foreach (var size in pageSizes)
+        {
+            <option value="@size" selected="@(size == pageSize ? "selected" : null)">
+                @size
+            </option>
+        }
+    </select>
+</form>
+
+<div id="transaction-data"></div>
+
+<div>
+    <button id="prev" type="submit" disabled="@(pageNumber <= 1 ? "disabled" : null)">
+        Prev
+    </button>
+
+    <input type="hidden" id="total-pages" value="@totalPages" />
+    <input type="hidden" id="page-number" value="@pageNumber" />
+
+    <span id="page-info">Page @pageNumber of @totalPages</span>
+
+    <button id="next" type="submit" disabled="@(pageNumber >= totalPages ? "disabled" : null)">
+        Next
+    </button>
+</div>
+
+<a id="download-pdf" href="/Reports/DownloadPdf?pageSize=@pageSize&pageNumber=@pageNumber&Category=ALL">Download PDF</a>

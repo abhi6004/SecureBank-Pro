@@ -26,7 +26,7 @@ namespace SecureBank_Pro.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> TransactionReportTable(int pageSize, int pageNumber , string Category)
+        public async Task<IActionResult> TransactionReportTable(int pageSize, int pageNumber , string Category , int UserId)
         {
             try
             {
@@ -35,6 +35,7 @@ namespace SecureBank_Pro.Controllers
                         pageSize,
                         pageNumber,
                         Category,
+                        UserId,
                         _context,
                         _http
                     );
@@ -64,7 +65,7 @@ namespace SecureBank_Pro.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> DownloadPdf(int pageSize, int pageNumber , string Category)
+        public async Task<IActionResult> DownloadPdf(int pageSize, int pageNumber , string Category, int UserId)
         {
             try
             {
@@ -73,6 +74,7 @@ namespace SecureBank_Pro.Controllers
                         pageSize,
                         pageNumber,
                         Category,
+                        UserId,
                         _context,
                         _http
                     );

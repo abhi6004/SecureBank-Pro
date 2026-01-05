@@ -1,20 +1,24 @@
 ﻿@{
     foreach (var user in Model)
     {
-        <div>
-            <p>Name: @user.full_name</p>
-            <p>Email: @user.email</p>
-            <p>Region: @user.assigned_region</p>
-            <p>Can Export: @(user.can_export_reports == "true" ? "Yes" : "No")</p>
-            <p>Last Login: @user.last_login_time</p>
+        <div class="auditor-card"
+             data-id="@user.id"
+             data-email="@user.email">
+
+            <p><strong>Name:</strong> @user.full_name</p>
+            <p><strong>Email:</strong> @user.email</p>
+            <p><strong>Region:</strong> @user.assigned_region</p>
+            <p><strong>Can Export:</strong> @(user.can_export_reports == "true" ? "Yes" : "No")</p>
+            <p><strong>Last Login:</strong> @user.last_login_time</p>
 
             <button onclick="EdituserForm('@user.email')">Edit</button>
-            <button onclick="DeletedUser()">Deleted</button>
-            <input id="Upload-id-Auditor" type="hidden" value="@user.id" />
-            <button id="Upload">Upload</button>
+            <button onclick="DeletedUser()">Delete</button>
+
+            <button class="Upload" data-id="@user.id">
+                Upload
+            </button>
         </div>
     }
 }
 
 <script src="~/js/Dashboard/Auditor.js"></script>
-

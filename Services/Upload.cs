@@ -1,4 +1,5 @@
-﻿using SecureBank_Pro.BankEntities;
+﻿using Microsoft.EntityFrameworkCore;
+using SecureBank_Pro.BankEntities;
 using SecureBank_Pro.Data;
 
 namespace SecureBank_Pro.Services
@@ -75,6 +76,19 @@ namespace SecureBank_Pro.Services
                 return userFile;
             }
             catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public static async Task<string> GetUserRole(int id , BankDbContext context)
+        {
+            try
+            {
+                string role = await context.Users.Where(e => e.id == id).Select(e => e.role).FirstOrDefaultAsync();
+                return role;
+            }
+            catch(Exception ex)
             {
                 throw;
             }

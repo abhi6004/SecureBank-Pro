@@ -1,5 +1,5 @@
 ﻿/* General Layout */
-body {
+/*body {
     background: #f4f6f9;
     font-family: 'Segoe UI', sans-serif;
     color: #2c3e50;
@@ -12,10 +12,10 @@ body {
     grid-template-columns: 1fr 1fr 1fr;
     gap: 20px;
     padding: 20px;
-}
+}*/
 
 /* Section Styling */
-.chat-section {
+/*.chat-section {
     background: #fff;
     border-radius: 12px;
     padding: 15px;
@@ -24,10 +24,10 @@ body {
     height: 80vh;
     box-shadow: 0 8px 20px rgba(0,0,0,0.08);
     border: 1px solid #e0e0e0;
-}
+}*/
 
     /* Section Titles */
-    .chat-section h2 {
+    /*.chat-section h2 {
         margin: 0 0 12px 0;
         padding: 12px;
         font-size: 18px;
@@ -42,17 +42,17 @@ body {
 
         .chat-section h2:hover {
             background: #1c5980;
-        }
+        }*/
 
     /* Sub Room / Chat Titles */
-    .chat-section h3 {
+    /*.chat-section h3 {
         margin: 6px 0;
         font-size: 16px;
         color: #2d3436;
-    }
+    }*/
 
 /* Chat Messages Area */
-.chat-messages, .private-messages {
+/*.chat-messages, .private-messages {
     flex: 1;
     overflow-y: auto;
     padding: 12px;
@@ -85,10 +85,10 @@ body {
             margin-right: auto;
             text-align: left;
             box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-        }
+        }*/
 
 /* Inputs & Buttons */
-.chat-section input[type="text"] {
+/*.chat-section input[type="text"] {
     width: 75%;
     padding: 10px 14px;
     font-size: 14px;
@@ -119,10 +119,10 @@ body {
 
     .chat-section button:hover {
         background: #1c5980;
-    }
+    }*/
 
 /* Room Chats */
-.room-chat {
+/*.room-chat {
     margin: 10px 0;
     padding: 10px;
     background: #f9fafb;
@@ -135,10 +135,10 @@ body {
     .room-chat:hover {
         background: #ecf0f1;
         transform: translateY(-2px);
-    }
+    }*/
 
 /* Private Chat Users */
-.private-chat .private-messages div {
+/*.private-chat .private-messages div {
     margin-bottom: 10px;
     padding: 10px;
     border-radius: 8px;
@@ -150,10 +150,10 @@ body {
 
     .private-chat .private-messages div:hover {
         background: #f1f1f1;
-    }
+    }*/
 
 /* Scrollbars */
-.chat-messages::-webkit-scrollbar,
+/*.chat-messages::-webkit-scrollbar,
 .private-messages::-webkit-scrollbar {
     width: 8px;
 }
@@ -167,4 +167,4 @@ body {
     .chat-messages::-webkit-scrollbar-thumb:hover,
     .private-messages::-webkit-scrollbar-thumb:hover {
         background: #888;
-    }
+    }*/

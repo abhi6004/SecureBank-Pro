@@ -1,18 +1,18 @@
-﻿@{
-    foreach (var user in Model)
-    {
-        <div>
-            <p>Name: @user.full_name</p>
-            <p>Email: @user.email</p>
-            <p>Branch: @user.branch_assigned</p>
-            <p>Hire Date: @user.hire_date</p>
+﻿@model IEnumerable<SecureBank_Pro.BankEntities.Users>
 
-            <button onclick="EdituserForm('@user.email')">Edit</button>
-            <button onclick="DeletedUser()">Deleted</button>
-            <input id="Upload-id-managers" type="hidden" value="@user.id" />
-            <button id="Upload">Upload</button>
-        </div>
-    }
+@foreach (var user in Model)
+{
+    <div class="manager-card" data-id="@user.id" data-email="@user.email">
+        <p><strong>Name:</strong> @user.full_name</p>
+        <p><strong>Email:</strong> @user.email</p>
+        <p><strong>Branch:</strong> @user.branch_assigned</p>
+        <p><strong>Hire Date:</strong> @user.hire_date</p>
+
+        <button class="btn-edit" onclick="EdituserForm('@user.email')">Edit</button>
+        <button class="btn-delete" onclick="DeletedUser()">Delete</button>
+
+        <button class="Upload" data-id="@user.id">Upload</button>
+    </div>
 }
 
 <script src="~/js/Dashboard/Managers.js"></script>

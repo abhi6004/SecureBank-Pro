@@ -1,28 +1,53 @@
-﻿@{
-    foreach (var user in Model)
+﻿<section class="customers-list">
+
+    @foreach (var user in Model)
     {
         <div class="customers">
-            <div class="customers_data" id="customer_@user.id">
-                <p>Name: @user.full_name</p>
-                <p>Email: @user.email</p>
-                <p>Address: @user.address</p>
-                <p>DOB: @user.date_of_birth</p>
-                <p>KYC: @user.kyc_status</p>
 
-                <button onclick="EdituserForm('@user.email')">Edit</button>
-                <button onclick="ViewUser('@user.email')">View</button>
-                <button onclick="DeletedUser()">Deleted</button>
-                <button class="Transaction">Transaction</button>
-                <input id="Upload-id-customer" type="hidden" value="@user.id" />
-                <button id="Upload">Upload</button>
+            <div class="customers_data"
+                 id="customer_@user.id"
+                 data-id="@user.id"
+                 data-email="@user.email">
+
+                <p><strong>Name:</strong> @user.full_name</p>
+                <p><strong>Email:</strong> @user.email</p>
+                <p><strong>Address:</strong> @user.address</p>
+                <p><strong>DOB:</strong> @user.date_of_birth</p>
+                <p><strong>KYC:</strong> @user.kyc_status</p>
+
+                <button class="btn-edit" onclick="EdituserForm('@user.email')">Edit</button>
+                <button class="btn-view" onclick="ViewUser('@user.email')">View</button>
+                <button class="btn-delete" onclick="DeletedUser()">Delete</button>
+
+                <button class="Transaction" data-email="@user.email">
+                    Transaction
+                </button>
+
+                <button class="Upload" data-id="@user.id">
+                    Upload
+                </button>
             </div>
 
-            <div class="Bank_transactions"></div>
         </div>
-        
     }
-}
+
+</section>
+
+<!-- Single reusable modal (important: OUTSIDE foreach) -->
+<div class="modal fade" id="transactionModal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h4>Bank Transaction</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body" id="transactionModalBody">
+            </div>
+
+        </div>
+    </div>
+</div>
 
 <script src="~/js/Dashboard/Customers.js"></script>
-
-
