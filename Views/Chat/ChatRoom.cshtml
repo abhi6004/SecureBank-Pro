@@ -59,8 +59,8 @@
         {
             if (user.id != newUser.id)
             {
-                <div onclick="OpenChat('@user.id','private')" class="chat-item">
-                    @user.full_name (@GetDepartment(user))
+                <div onclick="OpenChat('@user.full_name','private')" class="chat-item">
+                    @user.full_name (@user.role)
                 </div>
             }
         }
