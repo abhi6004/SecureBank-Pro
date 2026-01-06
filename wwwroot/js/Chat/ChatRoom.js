@@ -1,7 +1,7 @@
 ﻿let activeUserId = "";
 let activeSection = "";
 let activeRoom = "";
-
+let userId = "";
 const connection = new signalR.HubConnectionBuilder()
     .withUrl("/chatHub")
     .build();
@@ -9,19 +9,24 @@ const connection = new signalR.HubConnectionBuilder()
 connection.start();
 
 // Receive messages
-connection.on("ReceiveMessage", function (chat) {
-    if (chat.section !== activeSection) return;
+connection.on("ReceiveMessageHtml", function (html, section, id) {
 
-    let content = $("#chat-content");
-    let msgText = chat.section === "general"
-        ? `${chat.SenderName} (${chat.Department}): ${chat.messageText}`
-        : `${chat.SenderName}: ${chat.messageText}`;
+    if (section !== activeSection) return;
 
-    content.append(`<p style="text-align:${chat.SenderId === activeUserId ? 'right' : 'left'}">${msgText}</p>`);
+    // Remove "No Chat" placeholder if present
+    const firstText = $("#chat-content").text().trim();
+    if (firstText === "No Chat" || firstText === "Select chat to start messaging") {
+        $("#chat-content").empty();
+    }
+
+    let style = id == userId ? "text-align:right;" : "text-align:left;";
+    $("#chat-content").append(`<p style="${style}">${html}</p>`);
 });
 
+
+
 // Open a chat
-window.OpenChat = function (id, section, roleAllowed = "") {
+window.OpenChat = function (id, section, roleAllowed = "" , _userId) {
     // Restrict room chat by role
     if (section === "room" && roleAllowed && roleAllowed !== userRole) {
         alert("You don't have permission to access this room.");
@@ -31,6 +36,7 @@ window.OpenChat = function (id, section, roleAllowed = "") {
     activeUserId = id;
     activeSection = section;
     activeRoom = id;
+    userId = _userId;
 
     $("#chat-title").text(section === "general" ? "General Room" : id);
 
@@ -55,6 +61,6 @@ window.SendActiveChat = function () {
 };
 
 // Send chat to server
-window.SendChat = function (message, id, section, room) {
-    connection.invoke("SendChat", message, id, section, room);
+window.SendChat = function (message, receiver, section, room) {
+    connection.invoke("SendChat", message, receiver, section, room);
 };

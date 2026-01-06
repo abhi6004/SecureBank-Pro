@@ -6,6 +6,7 @@
     string Current = ViewBag.Current;
     string username = newUser.full_name;
     string userRole = newUser.role; // lowercase
+    int userId = newUser.id;
 }
 
 @functions {
@@ -36,22 +37,22 @@
     <div class="chat-list">
 
         <h2>General Chat</h2>
-        <div onclick="OpenChat('','general')" class="chat-item">
+        <div onclick="OpenChat('','general', '', @userId)" class="chat-item">
             General Room
         </div>
 
         <h2>Room Chats</h2>
         @if (newUser.role == "Manager")
         {
-            <div onclick="OpenChat('manager','room','Manager')" class="chat-item">Manager Room</div>
+            <div onclick="OpenChat('manager','room','Manager', @userId)" class="chat-item">Manager Room</div>
         }
         @if (newUser.role == "Employee")
         {
-            <div onclick="OpenChat('employee','room','Employee')" class="chat-item">Employee Room</div>
+            <div onclick="OpenChat('employee','room','Employee',@userId)" class="chat-item">Employee Room</div>
         }
         @if (newUser.role == "Auditor")
         {
-            <div onclick="OpenChat('auditor','room','Auditor')" class="chat-item">Auditor Room</div>
+            <div onclick="OpenChat('auditor','room','Auditor',@userId)" class="chat-item">Auditor Room</div>
         }
 
         <h2>Private Chats</h2>
@@ -59,7 +60,7 @@
         {
             if (user.id != newUser.id)
             {
-                <div onclick="OpenChat('@user.full_name','private')" class="chat-item">
+                <div onclick="OpenChat('@user.full_name','private', '',@userId)" class="chat-item">
                     @user.full_name (@user.role)
                 </div>
             }

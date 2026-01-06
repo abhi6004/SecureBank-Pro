@@ -15,9 +15,8 @@ namespace SecureBank_Pro.Services
                 int totalRecords;
                 if (UserId != -1)
                 {
-                    totalRecords = context.Transactions.Where(e => e.UserId == UserId).Count();
+                    totalRecords = context.Transactions.Count();
                     transactions = await context.Transactions
-                        .Where(e => e.UserId == UserId)
                         .Skip((pageNumber - 1) * pageSize)
                         .Take(pageSize)
                         .ToListAsync();

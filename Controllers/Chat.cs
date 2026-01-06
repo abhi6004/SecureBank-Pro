@@ -42,7 +42,6 @@ namespace SecureBank_Pro.Controllers
         }
 
 
-        [HttpGet]
         public async Task<string> UserChat(string Reciver, string Section)
         {
             List<ChatHistory> chatHistory = new List<ChatHistory>();
@@ -55,14 +54,35 @@ namespace SecureBank_Pro.Controllers
                 if (chatHistory.Count == 0) return "<p>No Chat </p>";
 
                 string chatResponse = string.Empty;
+
                 foreach (var chat in chatHistory)
                 {
                     string style = chat.SenderId == currentUser.id ? "text-align:right;" : "text-align:left;";
                     string senderName = chat.SenderName;
                     string department = chat.Department;
 
-                    chatResponse += $"<p style='{style}' data-sender='{senderName}' data-department='{department}'>" +
-                                    $"{chat.SentAt.ToShortTimeString()} - {chat.MessageText}</p>\n";
+                    // *** MAIN CHANGE HERE ***
+                    if (Section.Equals("general", StringComparison.OrdinalIgnoreCase))
+                    {
+                        // show section name + full name in text (no data-* attributes)
+                        chatResponse +=
+                        $"<p style='{style}'>" +
+                        $"<strong>{senderName}</strong> ({department}) - {chat.SentAt.ToShortTimeString()} : {chat.MessageText}</p>\n";
+
+                    }
+                    else if(Section.Equals("room", StringComparison.OrdinalIgnoreCase))
+                    {
+                        chatResponse +=
+                        $"<p style='{style}'>" +
+                        $"<strong>{senderName}</strong> - {chat.SentAt.ToShortTimeString()} : {chat.MessageText}</p>\n";
+                    }
+                    else
+                    {
+                        // original behavior
+                        chatResponse +=
+                            $"<p style='{style}' data-sender='{senderName}' data-department='{department}'>" +
+                            $"{chat.SentAt.ToShortTimeString()} - {chat.MessageText}</p>\n";
+                    }
                 }
 
                 return chatResponse;
@@ -73,5 +93,6 @@ namespace SecureBank_Pro.Controllers
                 throw;
             }
         }
+
     }
 }

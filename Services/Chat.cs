@@ -85,10 +85,11 @@ namespace SecureBank_Pro.Services
             _context = context;
         }
 
-        public async Task SendChat(string message, string id, string section, string room)
+        public async Task SendChat(string message, string receiver, string section, string room)
         {
             try
             {
+
                 // Get the current user's identity from the hub context
                 string email = Context.User.FindFirst(ClaimTypes.Email)?.Value;
 
@@ -102,8 +103,8 @@ namespace SecureBank_Pro.Services
                 int receiverId = 0;
                 if (section == "private")
                 {
-                    id = id.Replace("-chatbox", "");
-                    receiverId = await _context.Users.Where(u => u.full_name == id).Select(c => c.id).FirstOrDefaultAsync();
+                    receiver = receiver.Replace("-chatbox", "");
+                    receiverId = await _context.Users.Where(u => u.full_name == receiver).Select(c => c.id).FirstOrDefaultAsync();
                 }
 
                 ChatHistory newChat = new ChatHistory
@@ -113,21 +114,19 @@ namespace SecureBank_Pro.Services
                     MessageText = message,
                     SentAt = DateTime.Now,
                     Section = section,
-                    Room = room
+                    Room = room,
+                    Department = currentUser.role,
+                    SenderName = currentUser.full_name
                 };
 
                 _context.ChatHistory.Add(newChat);
                 await _context.SaveChangesAsync();
 
-                if (newChat.Section == "private")
-                {
-                    newChat.Room = id + "-" + currentUser.full_name;
-                }
-                // Send message to all connected clients
-                await Clients.All.SendAsync("ReceiveMessage", newChat);
+                // Build single formatted line
+                string formatted = ChatHelper.BuildChatLine(currentUser, message, section);
 
-                // Or, to send a message back to the sender
-                // await Clients.Caller.SendAsync("ReceiveMessage", newChat);
+                // broadcast formatted HTML
+                await Clients.All.SendAsync("ReceiveMessageHtml", formatted, section, currentUser.id);
             }
             catch (Exception ex)
             {
@@ -138,6 +137,33 @@ namespace SecureBank_Pro.Services
         }
     }
 }
+
+public static class ChatHelper
+{
+    public static string BuildChatLine(Users sender, string message, string section)
+    {
+        string time = DateTime.Now.ToShortTimeString();
+
+        // GENERAL → Name (bold) + Role + Time + Message
+        if (section.Equals("general", StringComparison.OrdinalIgnoreCase))
+        {
+            return $"<strong>{sender.full_name}</strong> ({sender.role}) - {time} : {message}";
+        }
+
+        // ROOM → Name (bold) + Time + Message
+        if (section.Equals("room", StringComparison.OrdinalIgnoreCase))
+        {
+            return $"<strong>{sender.full_name}</strong> - {time} : {message}";
+        }
+
+        // PRIVATE → Time + Message (no name)
+        return $"{time} - {message}";
+    }
+}
+
+
+
+
 
 
 
