@@ -1,5 +1,4 @@
-﻿@using SecureBank_Pro.BankEntities;
-@model List<Transaction>;
+﻿@model List<SecureBank_Pro.BankEntities.Transaction>
 
 <table class="table">
     <thead>
@@ -13,6 +12,7 @@
             <th>Created At</th>
         </tr>
     </thead>
+
     <tbody>
         @foreach (var t in Model)
         {

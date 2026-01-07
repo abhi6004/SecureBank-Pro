@@ -1,86 +1,101 @@
-﻿// Tab switching function
-function showSection(sectionClass) {
+﻿function showSection(section) {
     $(".withdraw, .deposit, .transfer").hide();
-    $("." + sectionClass).show();
+    $("." + section).show();
 }
 
 $(function () {
 
-    // Form submit handler (delegated)
-    $(document).on("submit", "form", function (e) {
+    $(document).off("submit", "form").on("submit", "form", function (e) {
         e.preventDefault();
-        const $form = $(this);
-        const type = $form.find("input[name='Type']").val() || null;
 
-        if (type === "deposit") {
-            let currencyVal = $form.find(".currency").val();
-            let amountVal = $form.find(".deposit-amount").val();
-            if (!currencyVal || !amountVal) return;
-        }
+        const f = $(this);
 
-        let postData = {
-            Amount: $form.find(".deposit-amount, input[name='Amount']").val() || null,
-            RecipientId: $form.find("input[name='RecipientId']").val() || null,
-            Type: type,
-            Email: $form.find("input[name='Email']").val() || null,
-            Description: $form.find("input[name='Description']").val() || null
+        let body = {
+            Amount: f.find(".amount").val(),
+            RecipientId: f.find(".recipient").val(),
+            Type: f.find("input[name='Type']").val(),
+            Email: f.find("input[name='Email']").val(),
+            Description: f.find(".desc").val()
         };
 
-        if (type === "deposit" && $form.find(".currency").val() !== "INR") {
-            postData.Amount = $form.find(".conversionAmount").val();
-        }
+        if (body.Type === "deposit" && f.find(".currency").val() !== "INR")
+            body.Amount = f.find(".conversionAmount").val();
 
         $.ajax({
             url: "/Account/Transaction",
             type: "POST",
             contentType: "application/json",
-            data: JSON.stringify(postData),
-            success: function (data) {
-                const $customerDiv = $(`#customer_${data}`).closest(".customers");
-                $customerDiv.find(".Bank_transactions").hide();
-                $customerDiv.find(`#customer_${data}`).show();
+            data: JSON.stringify(body),
+            success: function () {
+                alert("Transaction Success");
+                $("#transactionModal").modal("hide");
+                $("form")[0].reset();
             }
         });
+
     });
 
-    // Currency change
-    $(document).on("change", ".currency", function () {
-        const $form = $(this).closest("form");
+    $(document).off("change", ".currency").on("change", ".currency", function () {
+
+        const f = $(this).closest("form");
         const code = $(this).val();
-        const amount = $form.find(".deposit-amount").val();
+        const amount = f.find(".amount").val();
 
         if (code === "INR") {
-            $form.find(".conversionAmount").hide();
-        } else {
-            $.ajax({
-                url: "/Account/ConvertCurrency",
-                type: "POST",
-                contentType: "application/json",
-                data: JSON.stringify({ Amount: amount, CurrencyCode: code }),
-                success: function (data) {
-                    $form.find(".conversionAmount").val(data.conversionAmount).show();
-                }
-            });
+            f.find(".conversionAmountWrapper").hide();
+            return;
         }
-    });
 
-    // Deposit amount input
-    $(document).on("input", ".deposit-amount", function () {
-        const $form = $(this).closest("form");
-        if ($form.find(".currency").val() === "INR") return;
-
-        $.ajax({
+        $.post({
             url: "/Account/ConvertCurrencyLatest",
-            type: "POST",
             contentType: "application/json",
-            data: JSON.stringify({
-                Amount: $(this).val(),
-                CurrencyCode: $form.find(".currency").val()
-            }),
-            success: function (data) {
-                $form.find(".conversionAmount").val(data.conversionAmount).show();
+            data: JSON.stringify({ Amount: amount, CurrencyCode: code }),
+            success: function (res) {
+                f.find(".conversionAmount").val(res.conversionAmount);
+                f.find(".conversionAmountWrapper").show();
             }
         });
     });
+
+    $(document).off("input", ".amount").on("input", ".amount", function () {
+
+        const f = $(this).closest("form");
+        const amount = $(this).val();
+
+        // If this form doesn't have currency (withdraw / transfer) → STOP
+        if (f.find(".currency").length === 0) {
+            return;
+        }
+
+        // if blank, clear
+        if (!amount) {
+            f.find(".conversionAmount").val("");
+            f.find(".conversionAmountWrapper").hide();
+            return;
+        }
+
+        // if INR no API
+        if (f.find(".currency").val() === "INR") {
+            f.find(".conversionAmount").val(amount);
+            f.find(".conversionAmountWrapper").show();
+            return;
+        }
+
+        $.post({
+            url: "/Account/ConvertCurrencyLatest",
+            contentType: "application/json",
+            data: JSON.stringify({
+                Amount: amount,
+                CurrencyCode: f.find(".currency").val()
+            }),
+            success: function (res) {
+
+                f.find(".conversionAmount").val(res.conversionAmount);
+                f.find(".conversionAmountWrapper").show();
+            }
+        });
+
+    });
+
 
 });

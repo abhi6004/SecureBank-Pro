@@ -4,48 +4,80 @@
     int PageNumber = 1;
 
     int TotalPages = Context.Session.GetInt32("TotalPages") ?? 0;
-
-    var data = new
-    {
-        PageSize = PageSize,
-        PageNumber = PageNumber
-    };
 }
 
 <h2>Transactions</h2>
 
-<form method="get">
-    Page Size:
-    <select id="pageSize" name="pageSize">
-        <option value="3" selected>3</option>
-        <option value="5">5</option>
-        <option value="10">10</option>
-    </select>
-</form>
+<div style="display:flex;gap:25px;flex-wrap:wrap">
 
-<form method="get">
-    Category:
-    <select id="Catogory" name="Catogory">
-        <option value="All" selected>All</option>
-        <option value="Bank_Transfer">Bank Transfer</option>
-        <option value="EMI">EMI</option>
-    </select>
-</form>
+    <div>
+        Page Size:
+        <select id="pageSize">
+            <option value="3" selected>3</option>
+            <option value="5">5</option>
+            <option value="10">10</option>
+        </select>
+    </div>
 
-<div id="transaction-data"></div>
+    <div>
+        Category:
+        <select id="Catogory">
+            <option value="All" selected>All</option>
+            <option value="Bank_Transfer">Bank Transfer</option>
+            <option value="EMI">EMI</option>
+        </select>
+    </div>
 
-<div>
-    <button id="prev" type="submit" @(PageNumber <= 1 ? "disabled" : "")>Prev</button>
+    <div>
+        From:
+        <input type="date" id="fromDate" />
+    </div>
 
-    <input type="hidden" id="total-pages" value="@TotalPages" />
-    <input id="page-number" type="hidden" value="@PageNumber" />
-    <span id="page-info">Page @PageNumber of @TotalPages</span>
-
-    <button id="next" type="submit" @(PageNumber >= TotalPages ? "disabled" : "")>Next</button>
+    <div>
+        To:
+        <input type="date" id="toDate" />
+    </div>
 
 </div>
 
-<a id="download-pdf" href="/Reports/DownloadPdf?pageSize=3&pageNumber=1&Category=ALL">Download PDF</a>
+<hr />
 
+<h4>Search Filters</h4>
 
+<div style="display:flex;gap:15px;flex-wrap:wrap">
+
+    <input id="f_tid" placeholder="Transaction Id" />
+    <input id="f_uid" placeholder="User Id" />
+    <input id="f_type" placeholder="Type" />
+    <input id="f_desc" placeholder="Description" />
+
+    <button id="btnSearch" type="button">Search</button>
+
+</div>
+
+<hr />
+
+<div id="transaction-data"></div>
+
+<div style="margin-top:10px">
+
+    <button id="prev">Prev</button>
+
+    <input type="hidden" id="total-pages" value="@TotalPages" />
+    <input id="page-number" type="hidden" value="@PageNumber" />
+
+    <span id="page-info">Page @PageNumber of @TotalPages</span>
+
+    <button id="next">Next</button>
+
+</div>
+
+<br />
+
+<a id="download-pdf"
+   href="/Reports/DownloadPdf?pageSize=3&pageNumber=1&Category=ALL">
+    Download PDF
+</a>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="/js/Reports/Transaction.js"></script>

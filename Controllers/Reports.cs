@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using QuestPDF.Fluent;
+using QuestPDF.Helpers;
+using QuestPDF.Infrastructure;
 using SecureBank_Pro.BankEntities;
 using SecureBank_Pro.Data;
+using SecureBank_Pro.Services;
 using static System.Net.WebRequestMethods;
-using QuestPDF.Fluent;
-using QuestPDF.Infrastructure;
-using QuestPDF.Helpers;
 
 
 namespace SecureBank_Pro.Controllers
@@ -26,28 +27,37 @@ namespace SecureBank_Pro.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> TransactionReportTable(int pageSize, int pageNumber , string Category , int UserId)
+        public async Task<IActionResult> TransactionReportTable(
+        int pageSize,
+        int pageNumber,
+        string Category,
+        int UserId,
+        string fromDate,
+        string toDate,
+        string searchTransactionId,
+        string searchUserId,
+        string searchType,
+        string searchDescription)
         {
-            try
-            {
-                var transactions =
-                    await SecureBank_Pro.Services.Reports.GenerateTransactionReport(
-                        pageSize,
-                        pageNumber,
-                        Category,
-                        UserId,
-                        _context,
-                        _http
-                    );
+            var transactions =
+                await Reports.GenerateTransactionReport(
+                    pageSize,
+                    pageNumber,
+                    Category,
+                    UserId,
+                    fromDate,
+                    toDate,
+                    searchTransactionId,
+                    searchUserId,
+                    searchType,
+                    searchDescription,
+                    _context,
+                    _http
+                );
 
-                return PartialView("_transactionData", transactions);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                return BadRequest();
-            }
+            return PartialView("_transactionData", transactions);
         }
+
 
         [HttpGet]
         public IActionResult GetTotalPage()
@@ -65,19 +75,36 @@ namespace SecureBank_Pro.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> DownloadPdf(int pageSize, int pageNumber , string Category, int UserId)
+        public async Task<IActionResult> DownloadPdf(
+        int pageSize,
+        int pageNumber,
+        string Category,
+        int UserId,
+        string fromDate,
+        string toDate,
+        string searchTransactionId,
+        string searchUserId,
+        string searchType,
+        string searchDescription)
         {
             try
             {
                 var transactions =
-                    await SecureBank_Pro.Services.Reports.GenerateTransactionReport(
-                        pageSize,
-                        pageNumber,
-                        Category,
-                        UserId,
-                        _context,
-                        _http
-                    );
+                await Reports.GenerateTransactionReport(
+                    pageSize,
+                    pageNumber,
+                    Category,
+                    UserId,
+                    fromDate,
+                    toDate,
+                    searchTransactionId,
+                    searchUserId,
+                    searchType,
+                    searchDescription,
+                    _context,
+                    _http
+                );
+
 
                 var document = Document.Create(container =>
                 {

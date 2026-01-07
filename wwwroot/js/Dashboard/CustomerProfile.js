@@ -1,11 +1,19 @@
 ﻿$(function () {
 
     var data = {
-        pageSize: 5,
+        pageSize: 3,
         pageNumber: 1,
-        totalPages: 0,
-        category: "All",
-        userId: $("#transaction-id").val()
+        totalPages: Number($("#total-pages").val()),
+        Category: "All",
+        UserId: $('#profile-id').val(),
+
+        // 🔥 new filters
+        fromDate: "",
+        toDate: "",
+        searchTransactionId: "",
+        searchUserId: "",
+        searchType: "",
+        searchDescription: ""
     };
 
     function updateButtons() {
@@ -13,6 +21,27 @@
         $("#next").prop("disabled", data.pageNumber >= data.totalPages);
         $("#page-info").text("Page " + data.pageNumber + " of " + data.totalPages);
     }
+
+    function updateURL() {
+        let pageSize = $("#pageSize").val();
+        let PageNumber = $("#page-number").val();
+
+        let newUrl = '/Reports/DownloadPdf'
+            + '?pageSize=' + pageSize
+            + '&pageNumber=' + PageNumber
+            + '&Category=' + data.Category
+            + '&UserId=' + data.UserId
+            + '&fromDate=' + (data.fromDate || "")
+            + '&toDate=' + (data.toDate || "")
+            + '&searchTransactionId=' + (data.searchTransactionId || "")
+            + '&searchUserId=' + (data.searchUserId || "")
+            + '&searchType=' + (data.searchType || "")
+            + '&searchDescription=' + (data.searchDescription || "");
+
+        $("#download-pdf").attr("href", newUrl);
+    }
+
+
 
     function loadTable() {
         $.ajax({
@@ -22,50 +51,90 @@
             success: function (html) {
                 $("#transaction-data").html(html);
                 updateButtons();
+                getTotalPage();
+                updateURL();
             }
         });
     }
 
-    function getTotalPage(callback) {
+    function getTotalPage() {
         $.ajax({
             url: "/Reports/GetTotalPage",
             type: "GET",
             data: data,
-            success: function (res) {
-                data.totalPages = res.totalPage;
-                $("#total-pages").val(res.totalPage);
-                if (callback) callback();
+            success: function (_page) {
+                data.totalPages = _page.totalPage;
+                $("#total-pages").val(_page.totalPage);
+                $("#page-info").text("Page " + data.pageNumber + " of " + _page.totalPage);
+                updateButtons();
             }
         });
     }
 
-    // Initial load
-    getTotalPage(function () {
-        loadTable();
-    });
+    // 🔥 initial load
+    loadTable();
 
-    // Prev / Next
-    $("#prev, #next").on("click", function () {
-
-        if (this.id === "prev" && data.pageNumber > 1)
-            data.pageNumber--;
-
-        if (this.id === "next" && data.pageNumber < data.totalPages)
-            data.pageNumber++;
-
+    // 🔥 pagination buttons
+    $("button").on("click", function () {
+        let btnid = $(this).attr("id");
+        if (btnid === "prev") data.pageNumber--;
+        if (btnid === "next") data.pageNumber++;
         $("#page-number").val(data.pageNumber);
-
         loadTable();
     });
 
-    // Page size change
+    // 🔥 page size change
     $("#pageSize").on("change", function () {
-        data.pageSize = Number($(this).val());
+        data.pageSize = $("#pageSize").val();
         data.pageNumber = 1;
+        loadTable();
+    });
 
-        getTotalPage(function () {
-            loadTable();
-        });
+    // 🔥 category change
+    $("#Catogory").on("change", function () {
+        data.Category = $("#Catogory").val();
+        data.pageNumber = 1;
+        loadTable();
+    });
+
+
+    // ===============================
+    // ⭐ NEW: DATE FILTER EVENTS ⭐
+    // ===============================
+
+    $("#fromDate").on("change", function () {
+        data.fromDate = $(this).val();
+        data.pageNumber = 1;
+        loadTable();
+    });
+
+    $("#toDate").on("change", function () {
+        data.toDate = $(this).val();
+        data.pageNumber = 1;
+        loadTable();
+    });
+
+
+    // ===============================
+    // ⭐ NEW: COLUMN FILTER EVENTS ⭐
+    // ===============================
+
+    $("#f_tid").on("input", function () {
+        data.searchTransactionId = $(this).val();
+    });
+
+    $("#f_type").on("input", function () {
+        data.searchType = $(this).val();
+    });
+
+    $("#f_desc").on("input", function () {
+        data.searchDescription = $(this).val();
+    });
+
+    // 🔥 search button
+    $("#btnSearch").on("click", function () {
+        data.pageNumber = 1;
+        loadTable();
     });
 
 });

@@ -2,6 +2,11 @@
 
 @{
     ViewData["Title"] = "Customer Profile";
+    ViewBag.Title = "Transactions";
+    int PageSize = 3;
+    int PageNumber = 1;
+
+    int TotalPages = Context.Session.GetInt32("TotalPages") ?? 0;
 }
 
 <h1>Customer Profile</h1>
@@ -33,6 +38,7 @@
             <tr><th>Last Updated</th><td>@Model.Balance.LastUpdated.ToString("dd-MM-yyyy HH:mm")</td></tr>
             <tr><th>Frozen</th><td>@(Model.Balance.IsFrozen ? "Yes" : "No")</td></tr>
         </table>
+        <input type="hidden" id="profile-id" value="@Model.Balance.UserId"/>
     }
     else
     {
@@ -42,28 +48,77 @@
 
 <hr />
 
-<div>
-    Page Size:
-    <select id="pageSize">
-        <option value="5" selected>5</option>
-        <option value="10">10</option>
-        <option value="15">15</option>
-    </select>
+<h2>Transactions</h2>
 
-    <div id="transaction-data"></div>
+<div style="display:flex;gap:25px;flex-wrap:wrap">
 
     <div>
-        <input id="transaction-id" type="hidden" value="@Model.Users.id" />
-
-        <button id="prev" type="button">Prev</button>
-
-        <input id="page-number" type="hidden" value="1" />
-        <input id="total-pages" type="hidden" value="0" />
-
-        <span id="page-info">Page 1 of 0</span>
-
-        <button id="next" type="button">Next</button>
+        Page Size:
+        <select id="pageSize">
+            <option value="3" selected>3</option>
+            <option value="5">5</option>
+            <option value="10">10</option>
+        </select>
     </div>
+
+    <div>
+        Category:
+        <select id="Catogory">
+            <option value="All" selected>All</option>
+            <option value="Bank_Transfer">Bank Transfer</option>
+            <option value="EMI">EMI</option>
+        </select>
+    </div>
+
+    <div>
+        From:
+        <input type="date" id="fromDate" />
+    </div>
+
+    <div>
+        To:
+        <input type="date" id="toDate" />
+    </div>
+
 </div>
 
+<hr />
+
+<h4>Search Filters</h4>
+
+<div style="display:flex;gap:15px;flex-wrap:wrap">
+
+    <input id="f_tid" placeholder="Transaction Id" />
+    <input id="f_type" placeholder="Type" />
+    <input id="f_desc" placeholder="Description" />
+
+    <button id="btnSearch" type="button">Search</button>
+
+</div>
+
+<hr />
+
+<div id="transaction-data"></div>
+
+<div style="margin-top:10px">
+
+    <button id="prev">Prev</button>
+
+    <input type="hidden" id="total-pages" value="@TotalPages" />
+    <input id="page-number" type="hidden" value="@PageNumber" />
+
+    <span id="page-info">Page @PageNumber of @TotalPages</span>
+
+    <button id="next">Next</button>
+
+</div>
+
+<br />
+
+<a id="download-pdf"
+   href="/Reports/DownloadPdf?pageSize=3&pageNumber=1&Category=ALL">
+    Download PDF
+</a>
+
 <script src="~/js/Dashboard/CustomerProfile.js"></script>
+

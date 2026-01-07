@@ -7,42 +7,60 @@ namespace SecureBank_Pro.Services
 {
     public class Reports
     {
-        public async static Task<List<Transaction>> GenerateTransactionReport(int pageSize, int pageNumber, string Category,int UserId, BankDbContext context, IHttpContextAccessor _http)
+        public async static Task<List<Transaction>> GenerateTransactionReport(
+    int pageSize,
+    int pageNumber,
+    string Category,
+    int UserId,
+    string fromDate,
+    string toDate,
+    string searchTransactionId,
+    string searchUserId,
+    string searchType,
+    string searchDescription,
+    BankDbContext context,
+    IHttpContextAccessor _http)
         {
-            try
-            {
-                List<Transaction> transactions = new List<Transaction>();
-                int totalRecords;
-                if (UserId != -1)
-                {
-                    totalRecords = context.Transactions.Count();
-                    transactions = await context.Transactions
-                        .Skip((pageNumber - 1) * pageSize)
-                        .Take(pageSize)
-                        .ToListAsync();
-                }
-                else
-                {
-                    totalRecords = context.Transactions.Count();
-                    transactions = context.Transactions
-                    .Where(t =>
-                        Category == "All" ||
-                        (Category == "EMI" && t.IsEmi) ||
-                        (Category == "Bank_Transfer" && !t.IsEmi))
-                    .Skip((pageNumber - 1) * pageSize)
-                    .Take(pageSize)
-                    .ToList();
-                }
+            var q = context.Transactions.AsQueryable();
 
-                int totalPages = (int)Math.Ceiling(totalRecords / (double)pageSize);
-                _http.HttpContext.Session.SetInt32("TotalPages", totalPages);
-                return transactions;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                throw;
-            }
+            if (Category == "EMI")
+                q = q.Where(t => t.IsEmi);
+
+            if (Category == "Bank_Transfer")
+                q = q.Where(t => !t.IsEmi);
+
+            if (UserId != -1)
+                q = q.Where(t => t.UserId == UserId);
+
+            if (!string.IsNullOrEmpty(fromDate))
+                q = q.Where(t => t.CreatedAt >= DateTime.Parse(fromDate));
+
+            if (!string.IsNullOrEmpty(toDate))
+                q = q.Where(t => t.CreatedAt <= DateTime.Parse(toDate));
+
+            if (!string.IsNullOrEmpty(searchTransactionId))
+                q = q.Where(t => t.Trasactionsid.ToString().Contains(searchTransactionId));
+
+            if (!string.IsNullOrEmpty(searchUserId))
+                q = q.Where(t => t.UserId.ToString().Contains(searchUserId));
+
+            if (!string.IsNullOrEmpty(searchType))
+                q = q.Where(t => t.TransactionType.Contains(searchType));
+
+            if (!string.IsNullOrEmpty(searchDescription))
+                q = q.Where(t => t.Description.Contains(searchDescription));
+
+            int totalRecords = await q.CountAsync();
+
+            int totalPages = (int)Math.Ceiling(totalRecords / (double)pageSize);
+            _http.HttpContext.Session.SetInt32("TotalPages", totalPages);
+
+            return await q
+                .OrderByDescending(t => t.CreatedAt)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
         }
+
     }
 }
