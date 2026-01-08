@@ -4,6 +4,14 @@
     string full_name = ViewBag.full_name;
 }
 
+@if (TempData["ErrorMessage"] != null)
+{
+    <script>
+        alert('@TempData["ErrorMessage"]');
+    </script>
+}
+
+
 <form asp-action="CheckOTP" method="post">
     <label for="otp-id">Enter your OTP</label>
     <input name="otp" id="otp-id" type="number"/>

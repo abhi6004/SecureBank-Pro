@@ -7,7 +7,7 @@
 <div>
     @if (!string.IsNullOrEmpty(Model.role))
     {
-        <h3>User Registration Form</h3>
+        <h3>User Edit Form</h3>
 
         <form asp-action="EditUsers" method="post">
 
@@ -15,17 +15,22 @@
             <div>
                 <label>Full Name</label>
                 <input asp-for="full_name"
+                       readonly
                        pattern="^[A-Za-z\s]+$"
                        title="Only alphabets are allowed" />
+                <span asp-validation-for="full_name"></span>
             </div>
 
             <!-- Phone -->
             <div>
                 <label>Phone Number</label>
                 <input asp-for="phone_number"
+                       required
                        maxlength="10"
+                       minlength="10"
                        inputmode="numeric"
                        pattern="\d*" />
+                <span asp-validation-for="phone_number"></span>
             </div>
 
             <!-- Hidden Role -->
@@ -35,12 +40,14 @@
             <div>
                 <label>Email</label>
                 <input asp-for="email" type="email" readonly />
+                <span asp-validation-for="email"></span>
             </div>
 
-            <!-- PASSWORD toggle example -->
+            <!-- Password -->
             <div>
                 <label>Password</label>
-                <input id="password" name="password" type="password" />
+                <input asp-for="password_hash" id="password" type="password" minlength="6"/>
+                <span asp-validation-for="password_hash"></span>
                 <img id="toggleButton" src="/images/hide.png" style="width:22px;cursor:pointer;" />
             </div>
 
@@ -49,21 +56,25 @@
             {
                 <div>
                     <label>Address</label>
-                    <input asp-for="address" maxlength="80" />
+                    <input asp-for="address" required maxlength="80" />
+                    <span asp-validation-for="address"></span>
                 </div>
 
                 <div>
                     <label>Date of Birth</label>
-                    <input asp-for="date_of_birth" type="date" />
+                    <input asp-for="date_of_birth" type="date" required />
+                    <span asp-validation-for="date_of_birth"></span>
                 </div>
 
                 <div>
                     <label>KYC Status</label>
-                    <select asp-for="kyc_status">
+                    <select asp-for="kyc_status" required>
+                        <option value="">-- Select --</option>
                         <option>Pending</option>
                         <option>Verified</option>
                         <option>Rejected</option>
                     </select>
+                    <span asp-validation-for="kyc_status"></span>
                 </div>
             }
 
@@ -72,12 +83,14 @@
             {
                 <div>
                     <label>Branch Assigned</label>
-                    <input asp-for="branch_assigned" />
+                    <input asp-for="branch_assigned" required />
+                    <span asp-validation-for="branch_assigned"></span>
                 </div>
 
                 <div>
                     <label>Hire Date</label>
-                    <input asp-for="hire_date" type="date" />
+                    <input asp-for="hire_date" type="date" required />
+                    <span asp-validation-for="hire_date"></span>
                 </div>
             }
 
@@ -86,7 +99,8 @@
             {
                 <div>
                     <label>Role Title</label>
-                    <input asp-for="role_title" />
+                    <input asp-for="role_title" required />
+                    <span asp-validation-for="role_title"></span>
                 </div>
             }
 
@@ -95,26 +109,26 @@
             {
                 <div>
                     <label>Assigned Region</label>
-                    <input asp-for="assigned_region" />
+                    <input asp-for="assigned_region" required />
+                    <span asp-validation-for="assigned_region"></span>
                 </div>
 
                 <div>
                     <label>Can Export Reports</label>
-                    <select asp-for="can_export_reports">
+                    <select asp-for="can_export_reports" required>
+                        <option value="">-- Select --</option>
                         <option>Yes</option>
                         <option>No</option>
                     </select>
-                </div>
-
-                <div>
-                    <label>Last Login Time</label>
-                    <input asp-for="last_login_time" type="datetime-local" readonly />
+                    <span asp-validation-for="can_export_reports"></span>
                 </div>
             }
 
+            <!-- Active -->
             <div>
-                <label>Is Active</label>
-                <input asp-for="is_active" type="checkbox" />
+                <label>2FA</label>
+                <input asp-for="otp_active" type="checkbox" />
+                <span asp-validation-for="otp_active"></span>
             </div>
 
             <div>
@@ -124,5 +138,6 @@
         </form>
     }
 </div>
+
 
 <script src="~/js/Dashboard/EditUsers.js"></script>

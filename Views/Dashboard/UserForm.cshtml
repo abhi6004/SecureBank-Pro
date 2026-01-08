@@ -1,9 +1,24 @@
 ﻿@model SecureBank_Pro.Models.User
+@using SecureBank_Pro.BankEntities
+@using Newtonsoft.Json
 
 @{
     string userRole = ViewBag.Role;
-    string currentRole = ViewBag.currentRole;
+    var userJson = Context.Session.GetString("UserData");
+    Users currentUser = string.IsNullOrEmpty(userJson)
+        ? null
+        : JsonConvert.DeserializeObject<Users>(userJson);
+
+    string currentRole = currentUser?.role;
 }
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <script>
+        alert('@TempData["ErrorMessage"]');
+    </script>
+}
+
 
 <div>
     @if (!string.IsNullOrEmpty(userRole))
@@ -11,102 +26,120 @@
         <h3>User Registration From</h3>
         <form asp-action="UserForm" method="post">
 
-            <!-- Common for All Roles -->
+            <!-- Full Name -->
             <div>
                 <label>Full Name</label>
-                <input asp-for="FullName" />
+                <input asp-for="FullName" required />
+                <span asp-validation-for="FullName"></span>
             </div>
 
+            <!-- Password -->
             <div>
                 <label>Password</label>
-                <input asp-for="PasswordHash" type="password" autocomplete="new-password"/>
+                <input asp-for="PasswordHash" type="password" autocomplete="new-password" required />
+                <span asp-validation-for="PasswordHash"></span>
             </div>
 
+            <!-- Phone -->
             <div>
                 <label>Phone Number</label>
-                <input asp-for="PhoneNumber" />
+                <input asp-for="PhoneNumber" required />
+                <span asp-validation-for="PhoneNumber"></span>
             </div>
 
-            <!-- Show Email if NOT Auditor -->
-            
+            <!-- Email -->
             <div>
                 <label>Email</label>
-                <input asp-for="Email" type="email" autocomplete="off"/>
+                <input asp-for="Email" type="email" autocomplete="off" required />
+                <span asp-validation-for="Email"></span>
             </div>
-            
 
             <!-- Customer Fields -->
             @if (userRole == "Customer")
             {
                 <div>
                     <label>Address</label>
-                    <input asp-for="Address" />
+                    <input asp-for="Address" required />
+                    <span asp-validation-for="Address"></span>
                 </div>
 
                 <div>
                     <label>Date of Birth</label>
-                    <input asp-for="DateOfBirth" type="date" />
+                    <input asp-for="DateOfBirth" type="date" required />
+                    <span asp-validation-for="DateOfBirth"></span>
                 </div>
 
                 <div>
                     <label>KYC Status</label>
-                    <select asp-for="KycStatus">
+                    <select asp-for="KycStatus" required>
+                        <option value="">-- Select --</option>
                         <option value="Pending">Pending</option>
                         <option value="Verified">Verified</option>
                         <option value="Rejected">Rejected</option>
                     </select>
+                    <span asp-validation-for="KycStatus"></span>
                 </div>
             }
 
-            <!-- Manager & Employee Fields -->
+            <!-- Manager & Employee -->
             @if (userRole == "Manager" || userRole == "Employee")
             {
                 <div>
                     <label>Branch Assigned</label>
-                    <input asp-for="BranchAssigned" />
+                    <input asp-for="BranchAssigned" required />
+                    <span asp-validation-for="BranchAssigned"></span>
                 </div>
 
                 <div>
                     <label>Hire Date</label>
-                    <input asp-for="HireDate" type="date" />
+                    <input asp-for="HireDate" type="date" required />
+                    <span asp-validation-for="HireDate"></span>
                 </div>
             }
 
-            <!-- Employee Specific Field -->
-            @if (userRole == "Employee")
-            {
-                <div>
-                    <label>Role Title</label>
-                    <input asp-for="RoleTitle" />
-                </div>
-            }
+            <div>
+                <label>Role Title</label>
 
-            <!-- Auditor Specific Fields -->
+                <!-- Visible readonly value -->
+                <input type="text"
+                       value="@userRole"
+                       readonly />
+
+                <!-- Actual value submitted -->
+                <input asp-for="Role"
+                       type="hidden"
+                       value="@userRole" />
+
+                <span asp-validation-for="RoleTitle"></span>
+            </div>
+
+
+
+            <!-- Auditor -->
             @if (userRole == "Auditor")
             {
                 <div>
                     <label>Assigned Region</label>
-                    <input asp-for="AssignedRegion" />
+                    <input asp-for="AssignedRegion" required />
+                    <span asp-validation-for="AssignedRegion"></span>
                 </div>
 
                 <div>
                     <label>Can Export Reports</label>
-                    <select asp-for="CanExportReports">
+                    <select asp-for="CanExportReports" required>
+                        <option value="">-- Select --</option>
                         <option value="true">Yes</option>
                         <option value="false">No</option>
                     </select>
-                </div>
-
-                <div>
-                    <label>Last Login Time</label>
-                    <input asp-for="LastLoginTime" type="datetime-local" />
+                    <span asp-validation-for="CanExportReports"></span>
                 </div>
             }
 
-            <!-- Active Status -->
+            <!-- 2FA -->
             <div>
-                <label>Is Active</label>
-                <input asp-for="IsActive" type="checkbox" />
+                <label>2FA</label>
+                <input asp-for="otp_active" type="checkbox" />
+                <span asp-validation-for="otp_active"></span>
             </div>
 
             <div>
@@ -120,15 +153,18 @@
         <form asp-action="UserForm" method="get">
             <div>
                 <label for="Role">Role</label>
+
                 @if (currentRole == "Employee")
                 {
-                    <select name="Role">
+                    <select name="Role" required>
+                        <option value="">-- Select --</option>
                         <option value="Customer">Customers</option>
                     </select>
                 }
                 else if (currentRole == "Manager")
                 {
-                    <select name="Role">
+                    <select name="Role" required>
+                        <option value="">-- Select --</option>
                         <option value="Customer">Customers</option>
                         <option value="Employee">Employee</option>
                         <option value="Manager">Managers</option>

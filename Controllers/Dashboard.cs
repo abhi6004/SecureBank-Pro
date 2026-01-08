@@ -120,8 +120,10 @@ namespace SecureBank_Pro.Controllers
                 }
                 else
                 {
-                    throw new Exception("User Is Alredy Create");
+                    TempData["ErrorMessage"] = "User already exists";
+                    return View();
                 }
+
             }
             catch (Exception ex)
             {
@@ -190,7 +192,7 @@ namespace SecureBank_Pro.Controllers
         {
             try
             {
-                UserFiles _UserFile = await SecureBank_Pro.Services.Upload.GetUserFile(id , _context);
+                UserFiles _UserFile = await SecureBank_Pro.Services.Upload.GetUserFile(id, _context);
                 ViewBag.userId = id;
                 return View(_UserFile);
             }
@@ -226,7 +228,7 @@ namespace SecureBank_Pro.Controllers
                 {
                     role = "Customers";
                 }
-                return RedirectToAction(role , "Dashboard");
+                return RedirectToAction(role, "Dashboard");
             }
             catch (Exception ex)
             {
@@ -234,6 +236,28 @@ namespace SecureBank_Pro.Controllers
                 throw;
             }
 
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteUser(int id)
+        {
+            try
+            {
+                bool isDelete = await UserInserToDB.DeleteUser(id, _context);
+                if (isDelete)
+                {
+                    return Json(new { success = true, message = "User deleted successfully" });
+                }
+                else
+                {
+                    return Json(new { success = false, message = "Error deleting user" });
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw;
+            }
         }
     }
 }

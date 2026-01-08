@@ -17,7 +17,7 @@
 
                 <button class="btn-edit" onclick="EdituserForm('@user.email')">Edit</button>
                 <button class="btn-view" onclick="ViewUser('@user.email')">View</button>
-                <button class="btn-delete" onclick="DeletedUser()">Delete</button>
+                <button class="btn-delete" onclick="DeletedUser(@user.id)">Delete</button>
 
                 <button class="Transaction" data-email="@user.email">
                     Transaction

@@ -69,7 +69,7 @@ namespace SecureBank_Pro.Services
 
                 return _user;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
                 throw;
@@ -85,7 +85,12 @@ namespace SecureBank_Pro.Services
 
                 dbUser.full_name = user.full_name;
                 dbUser.email = user.email;
-                dbUser.password_hash = user.password_hash;
+
+                if (!string.IsNullOrEmpty(user.password_hash))
+                {
+                    dbUser.password_hash = user.password_hash;
+                }
+
                 dbUser.phone_number = user.phone_number;
                 dbUser.role = user.role;
 
@@ -106,6 +111,7 @@ namespace SecureBank_Pro.Services
 
                 dbUser.is_active = user.is_active;
                 dbUser.created_at = user.created_at;
+                dbUser.otp_active = user.otp_active;
 
                 await _context.SaveChangesAsync();
                 return true;
@@ -127,6 +133,23 @@ namespace SecureBank_Pro.Services
                     return null;
                 }
                 return _user;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw;
+            }
+        }
+
+        public static async Task<bool> DeleteUser(int id ,BankDbContext _context)
+        {
+            try
+            {
+                var dbUser = await _context.Users.FirstOrDefaultAsync(u => u.id == id);
+                if (dbUser == null) return false;
+                _context.Users.Remove(dbUser);
+                await _context.SaveChangesAsync();
+                return true;
             }
             catch (Exception ex)
             {

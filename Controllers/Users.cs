@@ -69,7 +69,8 @@ namespace SecureBank_Pro.Controllers
 
                 else
                 {
-                    throw new Exception("Invalid User Login");
+                    TempData["ErrorMessage"] = "Invalid User Login";
+                    return View();
                 }
             }
             catch (Exception ex)
@@ -134,7 +135,8 @@ namespace SecureBank_Pro.Controllers
                 }
                 else
                 {
-                    throw new Exception("Invalid OTP");
+                    TempData["ErrorMessage"] = "Invalid OTP";
+                    return RedirectToAction("VerifyOTP", "Dashboard");
                 }
             }
             catch (Exception ex)

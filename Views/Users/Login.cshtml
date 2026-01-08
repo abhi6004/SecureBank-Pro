@@ -3,6 +3,14 @@
     var returnUrl = Context.Request.Query["ReturnUrl"].ToString();
 }
 
+@if (TempData["ErrorMessage"] != null)
+{
+    <script>
+        alert('@TempData["ErrorMessage"]');
+    </script>
+}
+
+
 <h3>Login Form</h3>
 
 <form asp-action="Login" method="post">

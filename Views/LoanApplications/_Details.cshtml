@@ -62,17 +62,27 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var t in Model.Transactions)
+                @if (Model.Transactions != null)
+                {
+                    foreach (var t in Model.Transactions)
+                    {
+                        <tr>
+                            <td>@t.Trasactionsid</td>
+                            <td>@t.TransactionType</td>
+                            <td>@t.Amount</td>
+                            <td>@t.BalanceAfter</td>
+                            <td>@t.CreatedAt</td>
+                        </tr>
+                    }
+                }
+                else
                 {
                     <tr>
-                        <td>@t.Trasactionsid</td>
-                        <td>@t.TransactionType</td>
-                        <td>@t.Amount</td>
-                        <td>@t.BalanceAfter</td>
-                        <td>@t.CreatedAt</td>
+                        <td colspan="5" class="text-center">No transactions found</td>
                     </tr>
                 }
             </tbody>
+
         </table>
     </div>
 
