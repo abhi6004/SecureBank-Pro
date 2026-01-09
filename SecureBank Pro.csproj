@@ -22,6 +22,7 @@
     <Folder Include="wwwroot\css\Dashboard\" />
     <Folder Include="wwwroot\css\Loan\" />
     <Folder Include="wwwroot\css\LoanApplications\" />
+    <Folder Include="wwwroot\css\Shared\" />
     <Folder Include="wwwroot\css\Users\" />
     <Folder Include="wwwroot\css\Reports\" />
     <Folder Include="wwwroot\images\" />
