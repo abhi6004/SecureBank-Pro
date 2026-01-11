@@ -2,82 +2,88 @@
     string email = ViewBag.email;
 }
 
-<div>
-    <button onclick="showSection('withdraw')">Withdraw</button>
-    <button onclick="showSection('deposit')">Add Balance</button>
-    <button onclick="showSection('transfer')">Transfer</button>
-</div>
+<link rel="stylesheet" href="/css/Account/MainForm.css">
 
-<br />
 
-<!-- Withdraw -->
-<div class="withdraw">
-    <h3>Withdraw</h3>
+<div class="transaction-container">
 
-    <form>
-        <label>Amount</label>
-        <input class="amount" type="number" required />
+    <!-- Action Buttons -->
+    <div class="transaction-actions">
+        <button onclick="showSection('withdraw')">Withdraw</button>
+        <button onclick="showSection('deposit')">Add Balance</button>
+        <button onclick="showSection('transfer')">Transfer</button>
+    </div>
 
-        <label>Description</label>
-        <input class="desc" type="text" />
+    <!-- Withdraw -->
+    <div class="transaction-section withdraw">
+        <h3>Withdraw</h3>
 
-        <input type="hidden" name="Type" value="withdraw" />
-        <input type="hidden" name="Email" value="@email" />
+        <form>
+            <label>Amount</label>
+            <input class="amount" type="number" required />
 
-        <button type="submit">Withdraw</button>
-    </form>
-</div>
+            <label>Description</label>
+            <input class="desc" type="text" />
 
-<!-- Deposit -->
-<div class="deposit" style="display:none;">
-    <h3>Deposit</h3>
+            <input type="hidden" name="Type" value="withdraw" />
+            <input type="hidden" name="Email" value="@email" />
 
-    <form>
-        <label>Amount</label>
-        <input class="amount" type="number" required />
+            <button type="submit">Withdraw</button>
+        </form>
+    </div>
 
-        <label>Currency</label>
-        <select class="currency">
-            @foreach (var c in SecureBank_Pro.Models.StaticFiles.CurrencySymbols.Symbols.Keys)
-            {
-                <option value="@c">@c</option>
-            }
-        </select>
+    <!-- Deposit -->
+    <div class="transaction-section deposit" style="display:none;">
+        <h3>Deposit</h3>
 
-        <div class="conversionAmountWrapper" style="display:none;">
-            <label>Amount in INR</label>
-            <input class="conversionAmount" type="number" readonly />
-        </div>
+        <form>
+            <label>Amount</label>
+            <input class="amount" type="number" required />
 
-        <label>Description</label>
-        <input class="desc" type="text" />
+            <label>Currency</label>
+            <select class="currency">
+                @foreach (var c in SecureBank_Pro.Models.StaticFiles.CurrencySymbols.Symbols.Keys)
+                {
+                    <option value="@c">@c</option>
+                }
+            </select>
 
-        <input type="hidden" name="Type" value="deposit" />
-        <input type="hidden" name="Email" value="@email" />
+            <div class="conversionAmountWrapper" style="display:none;">
+                <label>Amount in INR</label>
+                <input class="conversionAmount" type="number" readonly />
+            </div>
 
-        <button type="submit">Add</button>
-    </form>
-</div>
+            <label>Description</label>
+            <input class="desc" type="text" />
 
-<!-- Transfer -->
-<div class="transfer" style="display:none;">
-    <h3>Transfer</h3>
+            <input type="hidden" name="Type" value="deposit" />
+            <input type="hidden" name="Email" value="@email" />
 
-    <form>
-        <label>Recipient Email</label>
-        <input class="recipient" type="text" required />
+            <button type="submit">Add</button>
+        </form>
+    </div>
 
-        <label>Amount</label>
-        <input class="amount" type="number" required />
+    <!-- Transfer -->
+    <div class="transaction-section transfer" style="display:none;">
+        <h3>Transfer</h3>
 
-        <label>Description</label>
-        <input class="desc" type="text" />
+        <form>
+            <label>Recipient Email</label>
+            <input class="recipient" type="text" required />
 
-        <input type="hidden" name="Type" value="transfer" />
-        <input type="hidden" name="Email" value="@email" />
+            <label>Amount</label>
+            <input class="amount" type="number" required />
 
-        <button type="submit">Transfer</button>
-    </form>
+            <label>Description</label>
+            <input class="desc" type="text" />
+
+            <input type="hidden" name="Type" value="transfer" />
+            <input type="hidden" name="Email" value="@email" />
+
+            <button type="submit">Transfer</button>
+        </form>
+    </div>
+
 </div>
 
 <script src="~/js/Account/MainForm.js"></script>

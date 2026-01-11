@@ -1,2 +1,99 @@
-﻿body {
+﻿/* ==============================
+   MANAGER LIST WRAPPER
+================================ */
+.manager-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+    padding: 10px 0;
+}
+
+/* ==============================
+   MANAGER CARD
+================================ */
+.manager-card {
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+    padding: 15px;
+    transition: transform 0.2s;
+}
+
+    .manager-card:hover {
+        transform: translateY(-3px);
+    }
+
+    /* ==============================
+   MANAGER DATA
+================================ */
+    .manager-card p {
+        margin: 6px 0;
+        font-size: 14px;
+        color: #444;
+    }
+
+    .manager-card strong {
+        color: #222;
+    }
+
+    /* ==============================
+   BUTTONS
+================================ */
+    .manager-card button {
+        margin-top: 8px;
+        margin-right: 6px;
+        padding: 6px 12px;
+        font-size: 13px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .manager-card .btn-edit {
+        background-color: #0d6efd;
+        color: #fff;
+    }
+
+        .manager-card .btn-edit:hover {
+            background-color: #0b5ed7;
+        }
+
+    .manager-card .Upload {
+        background-color: #6c757d;
+        color: #fff;
+    }
+
+        .manager-card .Upload:hover {
+            background-color: #5c636a;
+        }
+
+/* ==============================
+   RESPONSIVE
+================================ */
+@media (max-width: 768px) {
+    .manager-list {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    }
+
+    .manager-card p {
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 480px) {
+    .manager-card button {
+        width: 100%;
+        margin-right: 0;
+    }
+}
+
+@media (max-width: 320px) {
+    .manager-card p {
+        font-size: 12px;
+    }
+
+    .manager-card button {
+        font-size: 12px;
+        padding: 6px;
+    }
 }

@@ -1,18 +1,23 @@
-﻿@model IEnumerable<SecureBank_Pro.BankEntities.Users>
-
-@foreach (var user in Model)
-{
-    <div class="employee-card" data-id="@user.id" data-email="@user.email">
-        <p><strong>Name:</strong> @user.full_name</p>
-        <p><strong>Email:</strong> @user.email</p>
-        <p><strong>Branch:</strong> @user.branch_assigned</p>
-        <p><strong>Role Title:</strong> @user.role_title</p>
-        <p><strong>Hire Date:</strong> @user.hire_date</p>
-
-        <button class="btn-edit" onclick="EdituserForm('@user.email')">Edit</button>
-
-        <button class="Upload" data-id="@user.id">Upload</button>
-    </div>
+﻿@section Styles {
+    <link rel="stylesheet" href="~/css/Dashboard/Employee.css" />
 }
+
+@model IEnumerable<SecureBank_Pro.BankEntities.Users>
+
+<div class="employee-list">
+    @foreach (var user in Model)
+    {
+        <div class="employee-card" data-id="@user.id" data-email="@user.email">
+            <p><strong>Name:</strong> @user.full_name</p>
+            <p><strong>Email:</strong> @user.email</p>
+            <p><strong>Branch:</strong> @user.branch_assigned</p>
+            <p><strong>Role Title:</strong> @user.role_title</p>
+            <p><strong>Hire Date:</strong> @user.hire_date</p>
+
+            <button class="btn-edit" onclick="EdituserForm('@user.email')">Edit</button>
+            <button class="Upload" data-id="@user.id">Upload</button>
+        </div>
+    }
+</div>
 
 <script src="~/js/Dashboard/Employee.js"></script>

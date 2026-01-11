@@ -1,2 +1,169 @@
-﻿body {
+﻿/* ==============================
+   PAGE TITLE
+================================ */
+h2 {
+    font-size: 20px;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+h4 {
+    font-size: 16px;
+    margin: 15px 0 10px;
+    color: #444;
+}
+
+/* ==============================
+   FILTER CONTROLS
+================================ */
+select,
+input[type="date"],
+input[type="text"],
+input[id^="f_"] {
+    padding: 6px 8px;
+    font-size: 14px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    outline: none;
+}
+
+    select:focus,
+    input:focus {
+        border-color: #0d6efd;
+    }
+
+/* ==============================
+   SEARCH BUTTON
+================================ */
+#btnSearch {
+    background-color: #0d6efd;
+    color: #ffffff;
+    border: none;
+    padding: 6px 14px;
+    font-size: 14px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+    #btnSearch:hover {
+        background-color: #0b5ed7;
+    }
+
+/* ==============================
+   TRANSACTION DATA CONTAINER
+================================ */
+#transaction-data {
+    background: #ffffff;
+    border-radius: 6px;
+    padding: 12px;
+    min-height: 100px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    margin-bottom: 15px;
+}
+
+/* ==============================
+   PAGINATION
+================================ */
+#prev,
+#next {
+    background-color: #0d6efd;
+    color: #ffffff;
+    border: none;
+    padding: 6px 14px;
+    font-size: 14px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+    #prev:hover,
+    #next:hover {
+        background-color: #0b5ed7;
+    }
+
+#page-info {
+    margin: 0 10px;
+    font-size: 14px;
+    color: #444;
+}
+
+/* ==============================
+   DOWNLOAD LINK
+================================ */
+#download-pdf {
+    display: inline-block;
+    margin-top: 10px;
+    font-weight: 500;
+    text-decoration: none;
+    color: #0d6efd;
+}
+
+    #download-pdf:hover {
+        text-decoration: underline;
+    }
+
+/* ==============================
+   TABLET (≤ 768px)
+================================ */
+@media (max-width: 768px) {
+    h2 {
+        font-size: 18px;
+    }
+
+    select,
+    input {
+        font-size: 13px;
+    }
+
+    #prev,
+    #next {
+        font-size: 13px;
+        padding: 6px 12px;
+    }
+}
+
+/* ==============================
+   MOBILE (≤ 480px)
+================================ */
+@media (max-width: 480px) {
+    #prev,
+    #next {
+        width: 100%;
+        margin-top: 8px;
+    }
+
+    #page-info {
+        display: block;
+        margin: 8px 0;
+        text-align: center;
+    }
+}
+
+/* ==============================
+   SMALL MOBILE (≤ 320px)
+================================ */
+@media (max-width: 320px) {
+    h2 {
+        font-size: 16px;
+    }
+
+    h4 {
+        font-size: 14px;
+    }
+
+    select,
+    input {
+        font-size: 12px;
+        padding: 5px;
+    }
+
+    #btnSearch,
+    #prev,
+    #next {
+        font-size: 12px;
+        padding: 6px;
+    }
+
+    #page-info {
+        font-size: 12px;
+    }
 }

@@ -1,2 +1,106 @@
-﻿body {
+﻿/* ==============================
+   HEADINGS
+================================ */
+#all-Offers,
+#loan-History {
+    margin-bottom: 15px;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+/* ==============================
+   TABLE BASE
+================================ */
+#loan-offers .table {
+    background: #ffffff;
+    border-radius: 6px;
+    overflow: hidden;
+    font-size: 14px;
+}
+
+    #loan-offers .table th {
+        background-color: #f1f3f5;
+        font-weight: 600;
+        color: #333;
+    }
+
+    #loan-offers .table td,
+    #loan-offers .table th {
+        padding: 10px;
+        vertical-align: middle;
+    }
+
+/* ==============================
+   BUTTONS
+================================ */
+#loan-offers .btn {
+    font-size: 13px;
+    padding: 4px 10px;
+}
+
+/* ==============================
+   TABLET (≤ 768px)
+================================ */
+@media (max-width: 768px) {
+    #loan-offers .table {
+        font-size: 13px;
+    }
+
+        #loan-offers .table td,
+        #loan-offers .table th {
+            padding: 8px;
+        }
+}
+
+/* ==============================
+   MOBILE (≤ 480px)
+   TABLE → CARD VIEW
+================================ */
+@media (max-width: 480px) {
+    #loan-offers .table,
+    #loan-offers .table thead,
+    #loan-offers .table tbody,
+    #loan-offers .table tr,
+    #loan-offers .table th,
+    #loan-offers .table td {
+        display: block;
+        width: 100%;
+    }
+
+        #loan-offers .table thead {
+            display: none;
+        }
+
+        #loan-offers .table tr {
+            margin-bottom: 14px;
+            border: 1px solid #e5e5e5;
+            border-radius: 6px;
+            padding: 10px;
+            background: #ffffff;
+        }
+
+        #loan-offers .table td {
+            border: none;
+            padding: 6px 0;
+            font-size: 13px;
+        }
+
+    #loan-offers .btn {
+        width: 100%;
+        margin-top: 6px;
+    }
+}
+
+/* ==============================
+   SMALL MOBILE (≤ 320px)
+================================ */
+@media (max-width: 320px) {
+    #loan-offers .table td {
+        font-size: 12px;
+    }
+
+    #loan-offers .btn {
+        font-size: 12px;
+        padding: 4px 8px;
+    }
 }

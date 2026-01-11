@@ -1,4 +1,9 @@
 ﻿@using Newtonsoft.Json;
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/Loan/Offers.css" />
+}
+
 @model SecureBank_Pro.Models.LoanData;
 @{
     var Data = Context.Session.GetString("LoanData");

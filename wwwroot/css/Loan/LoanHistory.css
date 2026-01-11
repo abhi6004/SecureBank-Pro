@@ -1,2 +1,92 @@
-﻿body {
+﻿/* ==============================
+   TABLE BASE (BOOTSTRAP SAFE)
+================================ */
+.table {
+    background-color: #ffffff;
+    border-radius: 6px;
+    overflow: hidden;
+    font-size: 14px;
+}
+
+    .table th {
+        background-color: #f1f3f5;
+        color: #333;
+        font-weight: 600;
+        text-align: left;
+    }
+
+    .table td,
+    .table th {
+        padding: 10px;
+        vertical-align: middle;
+    }
+
+    /* ==============================
+   STATUS BUTTONS
+================================ */
+    .table .btn {
+        font-size: 13px;
+        padding: 4px 10px;
+        cursor: default;
+    }
+
+/* ==============================
+   TABLET (≤ 768px)
+================================ */
+@media (max-width: 768px) {
+    .table {
+        font-size: 13px;
+    }
+
+        .table td,
+        .table th {
+            padding: 8px;
+        }
+}
+
+/* ==============================
+   MOBILE (≤ 480px)
+================================ */
+@media (max-width: 480px) {
+    .table,
+    .table thead,
+    .table tbody,
+    .table tr,
+    .table th,
+    .table td {
+        display: block;
+        width: 100%;
+    }
+
+        .table thead {
+            display: none;
+        }
+
+        .table tr {
+            margin-bottom: 12px;
+            border: 1px solid #e5e5e5;
+            border-radius: 6px;
+            padding: 10px;
+            background: #ffffff;
+        }
+
+        .table td {
+            padding: 6px 0;
+            border: none;
+            font-size: 13px;
+        }
+}
+
+/* ==============================
+   SMALL MOBILE (≤ 320px)
+================================ */
+@media (max-width: 320px) {
+    .table td {
+        font-size: 12px;
+    }
+
+    .table .btn {
+        font-size: 12px;
+        padding: 4px 8px;
+    }
 }
