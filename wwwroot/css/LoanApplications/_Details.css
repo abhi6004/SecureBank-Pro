@@ -1,2 +1,153 @@
-﻿body {
+﻿/* ===============================
+   MAIN CARD
+================================ */
+.card {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+}
+
+    /* ===============================
+   HEADINGS
+================================ */
+    .card h2 {
+        font-size: 22px;
+        font-weight: 600;
+        color: #212529;
+    }
+
+    .card h4 {
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+
+    /* ===============================
+   SECTIONS
+================================ */
+    .card .mb-4 {
+        padding: 12px 0;
+    }
+
+    .card hr {
+        margin: 8px 0 12px;
+        opacity: 0.15;
+    }
+
+    /* ===============================
+   PARAGRAPHS
+================================ */
+    .card p {
+        margin-bottom: 6px;
+        font-size: 14px;
+        color: #495057;
+    }
+
+        .card p strong {
+            color: #212529;
+        }
+
+/* ===============================
+   TABLE – TRANSACTIONS
+================================ */
+table.table {
+    background: #ffffff;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+    table.table thead th {
+        background-color: #f1f3f5;
+        font-size: 13px;
+        font-weight: 600;
+        padding: 10px;
+    }
+
+    table.table tbody td {
+        font-size: 13px;
+        padding: 10px;
+    }
+
+/* ===============================
+   ACTION BUTTONS
+================================ */
+.btn-lg {
+    padding: 10px 22px;
+    font-size: 14px;
+    border-radius: 8px;
+}
+
+/* ===============================
+   RESPONSIVE – TABLE TO CARD
+================================ */
+@media (max-width: 768px) {
+
+    table.table,
+    table.table thead,
+    table.table tbody,
+    table.table th,
+    table.table td,
+    table.table tr {
+        display: block;
+    }
+
+        table.table thead {
+            display: none;
+        }
+
+        table.table tbody tr {
+            border: 1px solid #dee2e6;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            padding: 10px;
+        }
+
+        table.table tbody td {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            border: none;
+            font-size: 13px;
+        }
+}
+
+/* ===============================
+   SMALL SCREENS – 480px
+================================ */
+@media (max-width: 480px) {
+
+    .card {
+        padding: 16px !important;
+    }
+
+        .card h2 {
+            font-size: 18px;
+        }
+
+        .card h4 {
+            font-size: 15px;
+        }
+
+    .btn-lg {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+        .btn-lg.ms-3 {
+            margin-left: 0 !important;
+        }
+}
+
+/* ===============================
+   EXTRA SMALL – 320px
+================================ */
+@media (max-width: 360px) {
+
+    .card p {
+        font-size: 13px;
+    }
+
+    table.table tbody td {
+        font-size: 12px;
+    }
 }

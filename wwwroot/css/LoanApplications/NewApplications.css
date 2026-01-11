@@ -1,2 +1,204 @@
-﻿body {
+﻿/* ===============================
+   NEW APPLICATIONS – BASE
+================================ */
+#ApplicationsHeading,
+#ApplicationsHistoryHeading {
+    font-size: 26px;
+    font-weight: 600;
+    margin: 20px 0 10px;
+    color: #212529;
+}
+
+/* ===============================
+   TABLE CONTAINER
+================================ */
+#applications-list {
+    background: #ffffff;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    overflow-x: auto;
+}
+
+    /* ===============================
+   TABLE STYLING
+================================ */
+    #applications-list table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    #applications-list thead th {
+        background-color: #f1f3f5;
+        font-weight: 600;
+        font-size: 14px;
+        color: #333;
+        padding: 12px;
+        border-bottom: 2px solid #dee2e6;
+        text-align: left;
+    }
+
+    #applications-list tbody td {
+        padding: 12px;
+        font-size: 14px;
+        color: #212529;
+        vertical-align: middle;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    /* Empty row */
+    #applications-list tbody tr td[colspan] {
+        font-weight: 500;
+        color: #6c757d;
+    }
+
+    /* ===============================
+   ACTION BUTTONS
+================================ */
+    #applications-list td:last-child {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+.more-info {
+    font-size: 13px;
+    padding: 6px 12px;
+}
+
+.ApplicationButton {
+    font-size: 13px;
+    padding: 6px 12px;
+}
+
+/* ===============================
+   HOVER EFFECT
+================================ */
+#applications-list tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+/* ===============================
+   DETAILS AREA
+================================ */
+#details-area {
+    margin-top: 20px;
+    background: #ffffff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+/* ===============================
+   RESPONSIVE – TABLE TO CARD
+================================ */
+@media (max-width: 768px) {
+
+    #applications-list table,
+    #applications-list thead,
+    #applications-list tbody,
+    #applications-list th,
+    #applications-list td,
+    #applications-list tr {
+        display: block;
+    }
+
+    #applications-list thead {
+        display: none;
+    }
+
+    #applications-list tbody tr {
+        margin-bottom: 15px;
+        border: 1px solid #dee2e6;
+        border-radius: 6px;
+        padding: 10px;
+    }
+
+    #applications-list tbody td {
+        border: none;
+        padding: 8px 0;
+        display: flex;
+        justify-content: space-between;
+        font-size: 13px;
+    }
+
+        #applications-list tbody td::before {
+            content: attr(data-label);
+            font-weight: 600;
+            color: #495057;
+        }
+
+    #applications-list td:last-child {
+        justify-content: flex-start;
+        gap: 6px;
+        margin-top: 8px;
+    }
+}
+
+/* ===============================
+   EXTRA SMALL – 320px
+================================ */
+@media (max-width: 360px) {
+
+    #ApplicationsHeading,
+    #ApplicationsHistoryHeading {
+        font-size: 22px;
+    }
+
+    .more-info,
+    .ApplicationButton {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+/* ===============================
+   APPLICATION TABS
+================================ */
+.applications-tabs {
+    display: flex;
+    gap: 30px;
+    border-bottom: 2px solid #dee2e6;
+    margin: 20px 0 15px;
+}
+
+.app-tab {
+    font-size: 18px;
+    font-weight: 600;
+    color: #6c757d;
+    padding: 8px 0;
+    cursor: pointer;
+    position: relative;
+}
+
+    /* Active tab */
+    .app-tab.active {
+        color: #0d6efd;
+    }
+
+        .app-tab.active::after {
+            content: "";
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: #0d6efd;
+            border-radius: 3px;
+        }
+
+    /* Hover */
+    .app-tab:hover {
+        color: #0d6efd;
+    }
+
+/* Mobile */
+@media (max-width: 480px) {
+    .applications-tabs {
+        gap: 15px;
+    }
+
+    .app-tab {
+        font-size: 16px;
+    }
 }

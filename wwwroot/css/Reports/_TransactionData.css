@@ -1,2 +1,109 @@
-﻿body {
+﻿/* ===============================
+   TRANSACTION TABLE
+================================ */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #ffffff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+    margin-top: 20px;
+}
+
+    /* ===============================
+   HEADER
+================================ */
+    .table thead {
+        background: #f1f3f5;
+    }
+
+        .table thead th {
+            padding: 12px 14px;
+            text-align: left;
+            font-size: 14px;
+            font-weight: 600;
+            color: #212529;
+            border-bottom: 1px solid #dee2e6;
+            white-space: nowrap;
+        }
+
+    /* ===============================
+   BODY
+================================ */
+    .table tbody td {
+        padding: 12px 14px;
+        font-size: 13px;
+        color: #495057;
+        border-bottom: 1px solid #e9ecef;
+        vertical-align: middle;
+    }
+
+    /* Hover effect */
+    .table tbody tr:hover {
+        background: #f8f9fa;
+    }
+
+    /* ===============================
+   COLUMN ALIGNMENTS
+================================ */
+    .table tbody td:nth-child(1),
+    .table tbody td:nth-child(2) {
+        font-weight: 500;
+    }
+
+    .table tbody td:nth-child(4),
+    .table tbody td:nth-child(5) {
+        font-weight: 600;
+    }
+
+/* ===============================
+   SCROLL FOR SMALL SCREENS
+================================ */
+.table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+/* ===============================
+   TABLET – 768px
+================================ */
+@media (max-width: 768px) {
+    .table thead th,
+    .table tbody td {
+        padding: 10px;
+        font-size: 12.5px;
+    }
+}
+
+/* ===============================
+   MOBILE – 480px
+================================ */
+@media (max-width: 480px) {
+    .table {
+        font-size: 12px;
+    }
+
+        .table thead th {
+            font-size: 12px;
+        }
+
+        .table tbody td {
+            font-size: 11.5px;
+        }
+}
+
+/* ===============================
+   EXTRA SMALL – 320px
+================================ */
+@media (max-width: 320px) {
+    .table thead th {
+        font-size: 11px;
+    }
+
+    .table tbody td {
+        font-size: 11px;
+        padding: 8px;
+    }
 }

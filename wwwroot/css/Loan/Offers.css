@@ -104,3 +104,37 @@
         padding: 4px 8px;
     }
 }
+
+/* ==============================
+   TABS (MATCH PREVIOUS SCREEN)
+================================ */
+.loan-tabs {
+    display: flex;
+    gap: 25px;
+    border-bottom: 2px solid #e9ecef;
+    margin-bottom: 15px;
+}
+
+.loan-tab {
+    cursor: pointer;
+    padding-bottom: 8px;
+    font-weight: 600;
+    color: #6c757d;
+    position: relative;
+}
+
+    .loan-tab.active {
+        color: #0d6efd;
+    }
+
+        .loan-tab.active::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: -2px;
+            width: 100%;
+            height: 3px;
+            background-color: #0d6efd;
+            border-radius: 2px;
+        }
+

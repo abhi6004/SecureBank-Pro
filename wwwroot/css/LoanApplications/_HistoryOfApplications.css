@@ -1,2 +1,105 @@
-﻿body {
+﻿/* ===============================
+   APPLICATION HISTORY – WRAPPER
+================================ */
+table.table {
+    background: #ffffff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+    /* ===============================
+   TABLE HEADER
+================================ */
+    table.table thead th {
+        background-color: #f1f3f5;
+        font-size: 14px;
+        font-weight: 600;
+        color: #212529;
+        padding: 12px;
+        border-bottom: 2px solid #dee2e6;
+        text-align: left;
+    }
+
+    /* ===============================
+   TABLE BODY
+================================ */
+    table.table tbody td {
+        font-size: 14px;
+        padding: 12px;
+        color: #212529;
+        border-bottom: 1px solid #e9ecef;
+        vertical-align: middle;
+    }
+
+        /* ===============================
+   STATUS COLORS
+================================ */
+        table.table tbody td:nth-child(5) {
+            font-weight: 600;
+        }
+
+            table.table tbody td:nth-child(5):contains("Approved") {
+                color: #198754;
+            }
+
+            table.table tbody td:nth-child(5):contains("Denied") {
+                color: #dc3545;
+            }
+
+    /* ===============================
+   ROW HOVER
+================================ */
+    table.table tbody tr:hover {
+        background-color: #f8f9fa;
+    }
+
+/* ===============================
+   RESPONSIVE – TABLE TO CARD
+================================ */
+@media (max-width: 768px) {
+
+    table.table,
+    table.table thead,
+    table.table tbody,
+    table.table th,
+    table.table td,
+    table.table tr {
+        display: block;
+    }
+
+        table.table thead {
+            display: none;
+        }
+
+        table.table tbody tr {
+            margin-bottom: 15px;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 10px;
+        }
+
+        table.table tbody td {
+            border: none;
+            padding: 8px 0;
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+        }
+
+            table.table tbody td::before {
+                content: attr(data-label);
+                font-weight: 600;
+                color: #495057;
+            }
+}
+
+/* ===============================
+   EXTRA SMALL – 320px
+================================ */
+@media (max-width: 360px) {
+
+    table.table tbody td {
+        font-size: 12px;
+    }
 }

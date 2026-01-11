@@ -38,62 +38,102 @@
                     <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                         <ul class="navbar-nav flex-grow-1">
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Dashboard" asp-action="Profile">Profile</a>
+                                <a class="nav-link @(_userData.role == "Profile" ? "active" : "")"
+                                   asp-controller="Dashboard" asp-action="Profile">
+                                    Profile
+                                </a>
+
                             </li>
                             @{
                                 if (_userData.role == "Manager" || _userData.role == "Employee" || _userData.role == "Auditor")
                                 {
                                     <li class="nav-item">
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="Dashboard" asp-action="Customers">Customers</a>
+                                        <a class="nav-link @(_userData.role == "Customers" ? "active" : "")"
+                                           asp-controller="Dashboard" asp-action="Customers">
+                                            Customers
+                                        </a>
+
                                     </li>
                                 }
                                 if (_userData.role == "Manager")
                                 {
                                     <li class="nav-item">
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="Dashboard" asp-action="Employee">Employee</a>
+                                        <a class="nav-link @(_userData.role == "Employee" ? "active" : "")"
+                                           asp-controller="Dashboard" asp-action="Employee">
+                                            Employee
+                                        </a>
+
                                     </li>
                                 }
                                 if (_userData.role == "Manager")
                                 {
                                     <li class="nav-item">
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="Dashboard" asp-action="Managers">Managers</a>
+                                        <a class="nav-link @(_userData.role == "Managers" ? "active" : "")"
+                                           asp-controller="Dashboard" asp-action="Managers">
+                                            Managers
+                                        </a>
+
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="Dashboard" asp-action="Auditor">Auditor</a>
+                                        <a class="nav-link @(_userData.role == "Auditor" ? "active" : "")"
+                                           asp-controller="Dashboard" asp-action="Auditor">
+                                            Auditor
+                                        </a>
+
                                     </li>
                                 }
                                 if (_userData.role == "Manager" || _userData.role == "Employee")
                                 {
                                     <li class="nav-item">
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="Dashboard" asp-action="UserForm">UserForm</a>
+                                        <a class="nav-link @(_userData.role == "UserForm" ? "active" : "")"
+                                           asp-controller="Dashboard" asp-action="UserForm">
+                                            UserForm
+                                        </a>
+
                                     </li>
                                 }
 
                                 if (_userData.role == "Manager" || _userData.role == "Employee" || _userData.role == "Auditor")
                                 {
                                     <li class="nav-item">
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="Chat" asp-action="ChatRoom">ChatBox</a>
+                                        <a class="nav-link @(_userData.role == "ChatRoom" ? "active" : "")"
+                                           asp-controller="Chat" asp-action="ChatRoom">
+                                            ChatBox
+                                        </a>
+
                                     </li>
                                 }
 
                                 if (_userData.role == "Customer")   
                                 {
                                     <li class="nav-item">
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="Loan" asp-action="Offers">Offers</a>
+                                        <a class="nav-link @(_userData.role == "Offers" ? "active" : "")"
+                                           asp-controller="Loan" asp-action="Offers">
+                                            Offers
+                                        </a>
+
                                     </li>
                                 }
 
                                 if (_userData.role == "Manager")
                                 {
                                     <li class="nav-item">
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="LoanApplications" asp-action="NewApplications">NewApplications</a>
+                                        <a class="nav-link @(_userData.role == "NewApplications" ? "active" : "")"
+                                           asp-controller="LoanApplications" asp-action="NewApplications">
+                                            NewApplications
+                                        </a>
+
                                     </li>
                                 }
 
                                 if (_userData.role == "Auditor")
                                 {
                                     <li class="nav-item">
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="Reports" asp-action="Transaction">Transaction</a>
+                                        <a class="nav-link @(_userData.role == "Transaction" ? "active" : "")"
+                                           asp-controller="Reports" asp-action="Transaction">
+                                            Transaction
+                                        </a>
+
                                     </li>
                                 }
                             }

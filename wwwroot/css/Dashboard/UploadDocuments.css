@@ -1,2 +1,138 @@
-﻿body {
+﻿/* ===============================
+   PAGE CONTAINER
+================================ */
+form {
+    max-width: 720px;
+    margin: 40px auto;
+    padding: 24px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+}
+
+/* ===============================
+   IMAGE PREVIEW
+================================ */
+#signature-preview,
+#profile-preview {
+    display: block;
+    max-width: 200px;
+    max-height: 120px;
+    margin-bottom: 12px;
+    border-radius: 6px;
+    border: 1px solid #dee2e6;
+    object-fit: contain;
+}
+
+/* ===============================
+   FORM GROUPS
+================================ */
+form > div {
+    margin-bottom: 18px;
+}
+
+/* ===============================
+   LABELS
+================================ */
+label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #212529;
+}
+
+/* ===============================
+   FILE INPUT
+================================ */
+.imageUpload {
+    width: 100%;
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    background-color: #f8f9fa;
+    cursor: pointer;
+}
+
+/* ===============================
+   HORIZONTAL LINE
+================================ */
+hr {
+    margin: 24px 0;
+    opacity: 0.2;
+}
+
+/* ===============================
+   SUBMIT BUTTON
+================================ */
+button[type="submit"] {
+    padding: 10px 26px;
+    font-size: 15px;
+    font-weight: 600;
+    border-radius: 8px;
+    border: none;
+    background-color: #0d6efd;
+    color: #ffffff;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+    button[type="submit"]:hover {
+        background-color: #0b5ed7;
+    }
+
+/* ===============================
+   TABLET – 768px
+================================ */
+@media (max-width: 768px) {
+
+    form {
+        margin: 20px;
+        padding: 20px;
+    }
+
+    #signature-preview,
+    #profile-preview {
+        max-width: 160px;
+        max-height: 100px;
+    }
+}
+
+/* ===============================
+   MOBILE – 480px
+================================ */
+@media (max-width: 480px) {
+
+    form {
+        padding: 16px;
+    }
+
+    button[type="submit"] {
+        width: 100%;
+    }
+
+    #signature-preview,
+    #profile-preview {
+        max-width: 100%;
+        max-height: 120px;
+    }
+}
+
+/* ===============================
+   EXTRA SMALL – 320px
+================================ */
+@media (max-width: 360px) {
+
+    label {
+        font-size: 14px;
+    }
+
+    .imageUpload {
+        font-size: 13px;
+    }
+
+    button[type="submit"] {
+        font-size: 14px;
+        padding: 10px;
+    }
 }

@@ -1,2 +1,116 @@
-﻿body {
+﻿/* ===============================
+   USER PROFILE CARD
+================================ */
+.user-profile-card {
+    max-width: 720px;
+    margin: 40px auto;
+    padding: 28px;
+    background: #ffffff;
+    border-radius: 14px;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.08);
+}
+
+    /* ===============================
+   HEADING
+================================ */
+    .user-profile-card h3 {
+        text-align: center;
+        margin-bottom: 24px;
+        font-weight: 600;
+        color: #212529;
+    }
+
+    /* ===============================
+   INFO ROWS
+================================ */
+    .user-profile-card > div {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        padding: 10px 0;
+        border-bottom: 1px solid #e9ecef;
+        font-size: 14px;
+        color: #495057;
+    }
+
+        /* Remove border from last item */
+        .user-profile-card > div:last-child {
+            border-bottom: none;
+        }
+
+    /* ===============================
+   LABEL (LEFT)
+================================ */
+    .user-profile-card strong {
+        font-weight: 600;
+        color: #212529;
+        min-width: 180px;
+    }
+
+    /* ===============================
+   VALUE (RIGHT)
+================================ */
+    .user-profile-card span,
+    .user-profile-card div {
+        word-break: break-word;
+    }
+
+        /* ===============================
+   STATUS COLORS
+================================ */
+        .user-profile-card div:has(strong:contains("Active")) {
+            font-weight: 600;
+        }
+
+/* ===============================
+   TABLET – 768px
+================================ */
+@media (max-width: 768px) {
+    .user-profile-card {
+        margin: 20px;
+        padding: 22px;
+    }
+
+        .user-profile-card > div {
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .user-profile-card strong {
+            min-width: unset;
+        }
+}
+
+/* ===============================
+   MOBILE – 480px
+================================ */
+@media (max-width: 480px) {
+    .user-profile-card {
+        padding: 18px;
+    }
+
+        .user-profile-card h3 {
+            font-size: 18px;
+        }
+
+        .user-profile-card > div {
+            font-size: 13px;
+        }
+}
+
+/* ===============================
+   EXTRA SMALL – 320px
+================================ */
+@media (max-width: 320px) {
+    .user-profile-card {
+        padding: 14px;
+    }
+
+        .user-profile-card h3 {
+            font-size: 16px;
+        }
+
+        .user-profile-card > div {
+            font-size: 12px;
+        }
 }

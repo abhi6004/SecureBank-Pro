@@ -1,33 +1,72 @@
 ﻿$(function () {
-    $(".btn.btn-info.more-info").on("click", function () {
+
+    /* ===============================
+       TAB SWITCHING
+    ================================ */
+
+    $("#tab-new").on("click", function () {
+        $(this).addClass("active");
+        $("#tab-history").removeClass("active");
+
+        $("#applications-list").show();
+        $("#applications-history").hide();
+        $("#details-area").hide();
+    });
+
+    $("#tab-history").on("click", function () {
+        $(this).addClass("active");
+        $("#tab-new").removeClass("active");
+
+        $("#applications-list").hide();
+        $("#details-area").hide();
+
+        $("#applications-history")
+            .load("/LoanApplications/HistoryOfApplication")
+            .show();
+    });
+
+
+    /* ===============================
+       MORE INFO (DETAILS VIEW)
+    ================================ */
+    $(document).on("click", ".btn.btn-info.more-info", function () {
 
         let id = $(this).attr("id");
 
-        $("#details-area").load("/LoanApplications/Details/" + id);
+        $("#details-area")
+            .load("/LoanApplications/Details/" + id)
+            .show();
+
         $("#applications-list").hide();
-        $("#details-area").show();
         $("#applications-history").hide();
+
+        // remove active tab highlight
+        $(".app-tab").removeClass("active");
     });
 
-})
 
-$(function () {
-    $('.ApplicationButton').on('click', function (e) {
+    /* ===============================
+       ACCEPT / REJECT (TABLE)
+    ================================ */
+    $(document).on("click", ".ApplicationButton", function (e) {
         e.preventDefault();
-        var form = $(this);
-        var _class = form.attr('class');
-        var status = ""
 
-        if (_class.includes('btn-success')) {
-            status = "Approved"
+        let btn = $(this);
+        let status = "";
+
+        if (btn.hasClass("btn-success")) {
+            status = "Approved";
         }
-        else if (_class.includes('btn-danger')) {
-            status = "Denied"
+        else if (btn.hasClass("btn-danger")) {
+            status = "Denied";
         }
 
-        var id = form.closest('td').children('.btn.btn-info.more-info').attr('id');
+        let id = btn
+            .closest("td")
+            .find(".btn.btn-info.more-info")
+            .attr("id");
 
-        var data = {
+        let data = {
             id: id,
             status: status
         };
@@ -51,45 +90,28 @@ $(function () {
             }
         });
     });
-})
-
-$(function () {
-
-    $("#ApplicationsHistoryHeading").on("click", function () {
-
-        var listHeading = $("#applications-history").attr("style") || "";
-
-        if (listHeading.includes("none")) {
-            $("#applications-history")
-                .load("/LoanApplications/HistoryOfApplication")
-                .show();
-
-            $("#applications-list").hide();
-            $("#details-area").hide();
-        }
-    });
-
-    $("#ApplicationsHeading").on("click", function () {
-
-        var listHeading = $("#applications-list").attr("style") || "";
-
-        if (listHeading.includes("none")) {
-            $("#applications-history").hide();
-            $("#applications-list").show();
-            $("#details-area").hide();
-        }
-    });
-
-});
 
 
-$(function () {
+    /* ===============================
+       ACCEPT / REJECT (DETAILS PAGE)
+    ================================ */
 
-    // ACCEPT
-    $(".btn.btn-success.btn-lg").on("click", function () {
+    $(document).on("click", ".btn.btn-success.btn-lg", function () {
 
         let id = $(this).closest("div").siblings("h2").attr("id");
-        let status = "Approved";
+
+        processApplication(id, "Approved");
+    });
+
+    $(document).on("click", ".btn.btn-danger.btn-lg.ms-3", function () {
+
+        let id = $(this).closest("div").siblings("h2").attr("id");
+
+        processApplication(id, "Denied");
+    });
+
+
+    function processApplication(id, status) {
 
         let data = {
             id: id,
@@ -114,41 +136,6 @@ $(function () {
                 alert("An error occurred while updating the application status.");
             }
         });
-    });
-
-
-    // REJECT
-    $(".btn.btn-danger.btn-lg.ms-3").on("click", function () {
-
-        let id = $(this).closest("div").siblings("h2").attr("id");
-        let status = "Denied";
-
-        let data = {
-            id: id,
-            status: status
-        };
-
-        $.ajax({
-            type: "POST",
-            url: "/LoanApplications/ApplicationProcess",
-            data: JSON.stringify(data),
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (response) {
-                if (response.success) {
-                    alert("Application status updated successfully.");
-                    location.href = "/LoanApplications/NewApplications";
-                } else {
-                    alert("Failed to update application status.");
-                }
-            },
-            error: function () {
-                alert("An error occurred while updating the application status.");
-            }
-        });
-    });
+    }
 
 });
-
-
-

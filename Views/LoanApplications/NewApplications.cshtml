@@ -4,8 +4,15 @@
     var newApplications = System.Text.Json.JsonSerializer.Deserialize<List<NewApplications>>(value);
 }
 
-<h2 id="ApplicationsHeading">New Applications</h2>
-<h2 id="ApplicationsHistoryHeading">Applications History</h2>
+@section Styles {
+    <link rel="stylesheet" href="~/css/LoanApplications/NewApplications.css" />
+}
+
+<div class="applications-tabs">
+    <span id="tab-new" class="app-tab active">New Applications</span>
+    <span id="tab-history" class="app-tab">Applications History</span>
+</div>
+
 
 <div id="applications-list">
     <table class="table table-bordered">
