@@ -21,8 +21,11 @@ builder.Services.AddHttpClient();
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 builder.Logging.SetMinimumLevel(LogLevel.Information);
-var redis = ConnectionMultiplexer.Connect("localhost:6379");
-builder.Services.AddSingleton<IConnectionMultiplexer>(redis);
+if (builder.Environment.IsDevelopment())
+{
+    var redis = ConnectionMultiplexer.Connect("localhost:6379");
+    builder.Services.AddSingleton<IConnectionMultiplexer>(redis);
+}
 
 
 
