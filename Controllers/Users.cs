@@ -19,13 +19,16 @@ namespace SecureBank_Pro.Controllers
 {
     public class UsersController : Controller
     {
-
-        private readonly IDatabase _redis;
         private readonly BankDbContext _context;
 
-        public UsersController(IConnectionMultiplexer connection, BankDbContext context)
+        //public UsersController(IConnectionMultiplexer connection, BankDbContext context)
+        //{
+        //    _redis = connection.GetDatabase();
+        //    _context = context;
+        //}
+
+        public UsersController(BankDbContext context)
         {
-            _redis = connection.GetDatabase();
             _context = context;
         }
 
@@ -93,56 +96,56 @@ namespace SecureBank_Pro.Controllers
             return View();
         }
 
-        [HttpGet]
-        public async Task<IActionResult> VerifyOTP(string email , string role , string full_name)
-        {
-            try
-            {
-                ViewBag.email = email;
-                ViewBag.role = role;
-                ViewBag.full_name = full_name;
+        //[HttpGet]
+        //public async Task<IActionResult> VerifyOTP(string email , string role , string full_name)
+        //{
+        //    try
+        //    {
+        //        ViewBag.email = email;
+        //        ViewBag.role = role;
+        //        ViewBag.full_name = full_name;
 
-                bool isOTPsend = await OTP.SendOTP(_redis , email);
-                return View();
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
+        //        bool isOTPsend = await OTP.SendOTP(_redis , email);
+        //        return View();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw;
+        //    }
+        //}
 
-        [HttpPost]
-        public async Task<IActionResult> CheckOTP(string otp, string role, string email , string full_name)
-        {
-            try
-            {
-                Users isLogin = await UserInserToDB.GetuserFromEmail(_context, email);
+        //[HttpPost]
+        //public async Task<IActionResult> CheckOTP(string otp, string role, string email , string full_name)
+        //{
+        //    try
+        //    {
+        //        Users isLogin = await UserInserToDB.GetuserFromEmail(_context, email);
 
-                if(otp != null)
-                {
-                    bool isCorrect = await OTP.VerifyOTP(_redis, email , otp);
-                    var claims = new List<Claim>
-                        {
-                        new Claim(ClaimTypes.Email, email) ,
-                        new Claim(ClaimTypes.Role , role)
-                        };
-                    var claimsIdentity = new ClaimsIdentity(claims, "UserCookies");
+        //        if(otp != null)
+        //        {
+        //            bool isCorrect = await OTP.VerifyOTP(_redis, email , otp);
+        //            var claims = new List<Claim>
+        //                {
+        //                new Claim(ClaimTypes.Email, email) ,
+        //                new Claim(ClaimTypes.Role , role)
+        //                };
+        //            var claimsIdentity = new ClaimsIdentity(claims, "UserCookies");
 
-                    ViewBag.UserName = full_name;
-                    HttpContext.Session.SetString("UserData", JsonConvert.SerializeObject(isLogin));
-                    await HttpContext.SignInAsync("UserCookies", new ClaimsPrincipal(claimsIdentity));
-                    return RedirectToAction("Profile", "Dashboard");
-                }
-                else
-                {
-                    TempData["ErrorMessage"] = "Invalid OTP";
-                    return RedirectToAction("VerifyOTP", "Dashboard");
-                }
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
+        //            ViewBag.UserName = full_name;
+        //            HttpContext.Session.SetString("UserData", JsonConvert.SerializeObject(isLogin));
+        //            await HttpContext.SignInAsync("UserCookies", new ClaimsPrincipal(claimsIdentity));
+        //            return RedirectToAction("Profile", "Dashboard");
+        //        }
+        //        else
+        //        {
+        //            TempData["ErrorMessage"] = "Invalid OTP";
+        //            return RedirectToAction("VerifyOTP", "Dashboard");
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw;
+        //    }
+        //}
     }
 }
