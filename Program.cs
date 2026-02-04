@@ -12,7 +12,7 @@ using StackExchange.Redis;
 var builder = WebApplication.CreateBuilder(args);
 
 QuestPDF.Settings.License = LicenseType.Community;
-// Add services to the container.
+
 builder.Services.AddControllersWithViews();
 builder.Services.AddHttpContextAccessor();  
 builder.Services.AddSession();
@@ -21,11 +21,11 @@ builder.Services.AddHttpClient();
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 builder.Logging.SetMinimumLevel(LogLevel.Information);
-//if (builder.Environment.IsDevelopment())
-//{
-//    var redis = ConnectionMultiplexer.Connect("localhost:6379");
-//    builder.Services.AddSingleton<IConnectionMultiplexer>(redis);
-//}
+if (builder.Environment.IsDevelopment())
+{
+    var redis = ConnectionMultiplexer.Connect("localhost:6379");
+    builder.Services.AddSingleton<IConnectionMultiplexer>(redis);
+}
 
 
 
@@ -49,7 +49,6 @@ builder.Services.AddAuthentication("UserCookies")
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -57,7 +56,7 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseStaticFiles();   // for .css and .js
+app.UseStaticFiles();
 app.UseRouting();
 app.UseSession();
 
